@@ -1,0 +1,8 @@
+/home/chuu/Desktop/chip-player-js/fluidlite/build/CMakeFiles/fluidlite-static.dir
+/home/chuu/Desktop/chip-player-js/fluidlite/build/CMakeFiles/fluidlite.dir
+/home/chuu/Desktop/chip-player-js/fluidlite/build/CMakeFiles/edit_cache.dir
+/home/chuu/Desktop/chip-player-js/fluidlite/build/CMakeFiles/rebuild_cache.dir
+/home/chuu/Desktop/chip-player-js/fluidlite/build/CMakeFiles/list_install_components.dir
+/home/chuu/Desktop/chip-player-js/fluidlite/build/CMakeFiles/install.dir
+/home/chuu/Desktop/chip-player-js/fluidlite/build/CMakeFiles/install/local.dir
+/home/chuu/Desktop/chip-player-js/fluidlite/build/CMakeFiles/install/strip.dir

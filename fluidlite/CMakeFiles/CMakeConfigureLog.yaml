@@ -1,0 +1,1278 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake:228 (message)"
+      - "CMakeLists.txt:4 (project)"
+    message: |
+      The target system is: Emscripten - 1 - x86
+      The host system is: Linux - 6.17.0-14-generic - x86_64
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake:34 (cmake_check_compiler_flag)"
+      - "game-music-emu/CMakeLists.txt:86 (check_cxx_compiler_flag)"
+    checks:
+      - "Performing Test __LIBGME_SWITCH_FALLTHROUGH_WARNINGS"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-X3wK0p"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-X3wK0p"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_CXX_FLAGS: " -Wall -W -Wextra -std=c++11 -fvisibility=hidden -fvisibility-inlines-hidden -fwrapv"
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "__LIBGME_SWITCH_FALLTHROUGH_WARNINGS"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-X3wK0p'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_be935/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_be935.dir/build.make CMakeFiles/cmTC_be935.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-X3wK0p'
+        Building CXX object CMakeFiles/cmTC_be935.dir/src.cxx.o
+        /usr/bin/em++ -D__LIBGME_SWITCH_FALLTHROUGH_WARNINGS  -Wall -W -Wextra -std=c++11 -fvisibility=hidden -fvisibility-inlines-hidden -fwrapv    -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_be935.dir/src.cxx.o -MF CMakeFiles/cmTC_be935.dir/src.cxx.o.d -o CMakeFiles/cmTC_be935.dir/src.cxx.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-X3wK0p/src.cxx
+        Linking CXX executable cmTC_be935.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_be935.dir/link.txt --verbose=1
+        /usr/bin/em++  -Wall -W -Wextra -std=c++11 -fvisibility=hidden -fvisibility-inlines-hidden -fwrapv  @CMakeFiles/cmTC_be935.dir/objects1.rsp -o cmTC_be935.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-X3wK0p'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/FindThreads.cmake:97 (CHECK_C_SOURCE_COMPILES)"
+      - "/usr/share/cmake-3.28/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "/usr/share/cmake-3.28/Modules/FindSDL.cmake:163 (find_package)"
+      - "game-music-emu/player/CMakeLists.txt:1 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-JqTteX"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-JqTteX"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-JqTteX'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_4db19/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_4db19.dir/build.make CMakeFiles/cmTC_4db19.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-JqTteX'
+        Building C object CMakeFiles/cmTC_4db19.dir/src.c.o
+        /usr/bin/emcc -DCMAKE_HAVE_LIBC_PTHREAD   -MD -MT CMakeFiles/cmTC_4db19.dir/src.c.o -MF CMakeFiles/cmTC_4db19.dir/src.c.o.d -o CMakeFiles/cmTC_4db19.dir/src.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-JqTteX/src.c
+        Linking C executable cmTC_4db19.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4db19.dir/link.txt --verbose=1
+        /usr/bin/emcc @CMakeFiles/cmTC_4db19.dir/objects1.rsp -o cmTC_4db19.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-JqTteX'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:51 (check_c_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:100 (xmp_add_warning_flag)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Performing Test HAVE_W_ALL"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OupRJ7"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OupRJ7"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g -DDEBUG -D_DEBUG"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_W_ALL"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OupRJ7'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_1f729/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_1f729.dir/build.make CMakeFiles/cmTC_1f729.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OupRJ7'
+        Building C object CMakeFiles/cmTC_1f729.dir/src.c.o
+        /usr/bin/emcc -DHAVE_W_ALL  -Wall -MD -MT CMakeFiles/cmTC_1f729.dir/src.c.o -MF CMakeFiles/cmTC_1f729.dir/src.c.o.d -o CMakeFiles/cmTC_1f729.dir/src.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OupRJ7/src.c
+        Linking C executable cmTC_1f729.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1f729.dir/link.txt --verbose=1
+        /usr/bin/emcc @CMakeFiles/cmTC_1f729.dir/objects1.rsp -o cmTC_1f729.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OupRJ7'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:51 (check_c_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:101 (xmp_add_warning_flag)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Performing Test HAVE_W_WRITE_STRINGS"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-hpUwgf"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-hpUwgf"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall"
+      CMAKE_C_FLAGS_DEBUG: "-g -DDEBUG -D_DEBUG"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_W_WRITE_STRINGS"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-hpUwgf'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_4e94a/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_4e94a.dir/build.make CMakeFiles/cmTC_4e94a.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-hpUwgf'
+        Building C object CMakeFiles/cmTC_4e94a.dir/src.c.o
+        /usr/bin/emcc -DHAVE_W_WRITE_STRINGS  -Wall    -Wwrite-strings -MD -MT CMakeFiles/cmTC_4e94a.dir/src.c.o -MF CMakeFiles/cmTC_4e94a.dir/src.c.o.d -o CMakeFiles/cmTC_4e94a.dir/src.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-hpUwgf/src.c
+        Linking C executable cmTC_4e94a.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4e94a.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall  @CMakeFiles/cmTC_4e94a.dir/objects1.rsp -o cmTC_4e94a.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-hpUwgf'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:51 (check_c_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:102 (xmp_add_warning_flag)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Performing Test HAVE_W_EXTRA"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Kcp0Lm"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Kcp0Lm"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings"
+      CMAKE_C_FLAGS_DEBUG: "-g -DDEBUG -D_DEBUG"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_W_EXTRA"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Kcp0Lm'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e8f42/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_e8f42.dir/build.make CMakeFiles/cmTC_e8f42.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Kcp0Lm'
+        Building C object CMakeFiles/cmTC_e8f42.dir/src.c.o
+        /usr/bin/emcc -DHAVE_W_EXTRA  -Wall -Wwrite-strings    -Wextra -MD -MT CMakeFiles/cmTC_e8f42.dir/src.c.o -MF CMakeFiles/cmTC_e8f42.dir/src.c.o.d -o CMakeFiles/cmTC_e8f42.dir/src.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Kcp0Lm/src.c
+        Linking C executable cmTC_e8f42.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e8f42.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings  @CMakeFiles/cmTC_e8f42.dir/objects1.rsp -o cmTC_e8f42.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Kcp0Lm'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:58 (check_c_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:106 (xmp_disable_warning_flag)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Performing Test HAVE_W_NO_UNKNOWN_WARNING"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-4eVqUc"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-4eVqUc"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra"
+      CMAKE_C_FLAGS_DEBUG: "-g -DDEBUG -D_DEBUG"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_W_NO_UNKNOWN_WARNING"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-4eVqUc'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_80a7f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_80a7f.dir/build.make CMakeFiles/cmTC_80a7f.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-4eVqUc'
+        Building C object CMakeFiles/cmTC_80a7f.dir/src.c.o
+        /usr/bin/emcc -DHAVE_W_NO_UNKNOWN_WARNING  -Wall -Wwrite-strings -Wextra    -Wunknown-warning-option -MD -MT CMakeFiles/cmTC_80a7f.dir/src.c.o -MF CMakeFiles/cmTC_80a7f.dir/src.c.o.d -o CMakeFiles/cmTC_80a7f.dir/src.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-4eVqUc/src.c
+        Linking C executable cmTC_80a7f.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_80a7f.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra  @CMakeFiles/cmTC_80a7f.dir/objects1.rsp -o cmTC_80a7f.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-4eVqUc'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:58 (check_c_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:107 (xmp_disable_warning_flag)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Performing Test HAVE_W_NO_UNUSED_PARAMETER"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-oQd3iI"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-oQd3iI"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option"
+      CMAKE_C_FLAGS_DEBUG: "-g -DDEBUG -D_DEBUG"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_W_NO_UNUSED_PARAMETER"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-oQd3iI'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_b09d6/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_b09d6.dir/build.make CMakeFiles/cmTC_b09d6.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-oQd3iI'
+        Building C object CMakeFiles/cmTC_b09d6.dir/src.c.o
+        /usr/bin/emcc -DHAVE_W_NO_UNUSED_PARAMETER  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option    -Wunused-parameter -MD -MT CMakeFiles/cmTC_b09d6.dir/src.c.o -MF CMakeFiles/cmTC_b09d6.dir/src.c.o.d -o CMakeFiles/cmTC_b09d6.dir/src.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-oQd3iI/src.c
+        Linking C executable cmTC_b09d6.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b09d6.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option  @CMakeFiles/cmTC_b09d6.dir/objects1.rsp -o cmTC_b09d6.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-oQd3iI'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:58 (check_c_compiler_flag)"
+      - "libxmp/cmake/libxmp-checks.cmake:108 (xmp_disable_warning_flag)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Performing Test HAVE_W_NO_SIGN_COMPARE"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mOOkPF"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mOOkPF"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter"
+      CMAKE_C_FLAGS_DEBUG: "-g -DDEBUG -D_DEBUG"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_W_NO_SIGN_COMPARE"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mOOkPF'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_250c0/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_250c0.dir/build.make CMakeFiles/cmTC_250c0.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mOOkPF'
+        Building C object CMakeFiles/cmTC_250c0.dir/src.c.o
+        /usr/bin/emcc -DHAVE_W_NO_SIGN_COMPARE  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter    -Wsign-compare -MD -MT CMakeFiles/cmTC_250c0.dir/src.c.o -MF CMakeFiles/cmTC_250c0.dir/src.c.o.d -o CMakeFiles/cmTC_250c0.dir/src.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mOOkPF/src.c
+        Linking C executable cmTC_250c0.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_250c0.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter  @CMakeFiles/cmTC_250c0.dir/objects1.rsp -o cmTC_250c0.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mOOkPF'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:135 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for powf"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yZpNPw"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yZpNPw"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_POWF_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yZpNPw'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_fe5f8/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_fe5f8.dir/build.make CMakeFiles/cmTC_fe5f8.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yZpNPw'
+        Building C object CMakeFiles/cmTC_fe5f8.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=powf -MD -MT CMakeFiles/cmTC_fe5f8.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_fe5f8.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_fe5f8.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yZpNPw/CheckFunctionExists.c
+        /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yZpNPw/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'powf' [-Wincompatible-library-redeclaration]
+          CHECK_FUNCTION_EXISTS(void);
+          ^
+        <command line>:6:31: note: expanded from here
+        #define CHECK_FUNCTION_EXISTS powf
+                                      ^
+        /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yZpNPw/CheckFunctionExists.c:7:3: note: 'powf' is a builtin with type 'float (float, float)'
+        <command line>:6:31: note: expanded from here
+        #define CHECK_FUNCTION_EXISTS powf
+                                      ^
+        1 warning generated.
+        Linking C executable cmTC_fe5f8.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fe5f8.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=powf @CMakeFiles/cmTC_fe5f8.dir/objects1.rsp -o cmTC_fe5f8.js 
+        wasm-ld-15: warning: function signature mismatch: powf
+        >>> defined as () -> i32 in CMakeFiles/cmTC_fe5f8.dir/CheckFunctionExists.c.o
+        >>> defined as (f32, f32) -> f32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(powf.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yZpNPw'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:135 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for powf"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-XQHhgb"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-XQHhgb"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_POWF"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-XQHhgb'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_4c9f6/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_4c9f6.dir/build.make CMakeFiles/cmTC_4c9f6.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-XQHhgb'
+        Building C object CMakeFiles/cmTC_4c9f6.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_4c9f6.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_4c9f6.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_4c9f6.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-XQHhgb/CheckSymbolExists.c
+        Linking C executable cmTC_4c9f6.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4c9f6.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_4c9f6.dir/objects1.rsp -o cmTC_4c9f6.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-XQHhgb'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:73 (check_include_file)"
+      - "libxmp/cmake/libxmp-checks.cmake:138 (xmp_check_include)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for alloca.h"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-L0GAat"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-L0GAat"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_ALLOCA_H"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-L0GAat'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_5f8bb/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_5f8bb.dir/build.make CMakeFiles/cmTC_5f8bb.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-L0GAat'
+        Building C object CMakeFiles/cmTC_5f8bb.dir/CheckIncludeFile.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_5f8bb.dir/CheckIncludeFile.c.o -MF CMakeFiles/cmTC_5f8bb.dir/CheckIncludeFile.c.o.d -o CMakeFiles/cmTC_5f8bb.dir/CheckIncludeFile.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-L0GAat/CheckIncludeFile.c
+        Linking C executable cmTC_5f8bb.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5f8bb.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_5f8bb.dir/objects1.rsp -o cmTC_5f8bb.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-L0GAat'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:139 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for popen"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Uhya70"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Uhya70"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_POPEN_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Uhya70'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_859ff/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_859ff.dir/build.make CMakeFiles/cmTC_859ff.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Uhya70'
+        Building C object CMakeFiles/cmTC_859ff.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=popen -MD -MT CMakeFiles/cmTC_859ff.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_859ff.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_859ff.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Uhya70/CheckFunctionExists.c
+        Linking C executable cmTC_859ff.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_859ff.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=popen @CMakeFiles/cmTC_859ff.dir/objects1.rsp -o cmTC_859ff.js 
+        wasm-ld-15: warning: function signature mismatch: popen
+        >>> defined as () -> i32 in CMakeFiles/cmTC_859ff.dir/CheckFunctionExists.c.o
+        >>> defined as (i32, i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libstubs-debug.a(emscripten_libc_stubs.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Uhya70'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:139 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for popen"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-vWUWop"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-vWUWop"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_POPEN"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-vWUWop'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_a614b/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_a614b.dir/build.make CMakeFiles/cmTC_a614b.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-vWUWop'
+        Building C object CMakeFiles/cmTC_a614b.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_a614b.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_a614b.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_a614b.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-vWUWop/CheckSymbolExists.c
+        Linking C executable cmTC_a614b.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a614b.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_a614b.dir/objects1.rsp -o cmTC_a614b.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-vWUWop'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:140 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for fnmatch"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-bjI4iv"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-bjI4iv"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_FNMATCH_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-bjI4iv'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_4188d/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_4188d.dir/build.make CMakeFiles/cmTC_4188d.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-bjI4iv'
+        Building C object CMakeFiles/cmTC_4188d.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=fnmatch -MD -MT CMakeFiles/cmTC_4188d.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_4188d.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_4188d.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-bjI4iv/CheckFunctionExists.c
+        Linking C executable cmTC_4188d.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4188d.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=fnmatch @CMakeFiles/cmTC_4188d.dir/objects1.rsp -o cmTC_4188d.js 
+        wasm-ld-15: warning: function signature mismatch: fnmatch
+        >>> defined as () -> i32 in CMakeFiles/cmTC_4188d.dir/CheckFunctionExists.c.o
+        >>> defined as (i32, i32, i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(fnmatch.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-bjI4iv'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:140 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for fnmatch"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OVa3Ml"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OVa3Ml"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_FNMATCH"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OVa3Ml'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_f4717/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_f4717.dir/build.make CMakeFiles/cmTC_f4717.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OVa3Ml'
+        Building C object CMakeFiles/cmTC_f4717.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_f4717.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_f4717.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_f4717.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OVa3Ml/CheckSymbolExists.c
+        Linking C executable cmTC_f4717.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f4717.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_f4717.dir/objects1.rsp -o cmTC_f4717.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-OVa3Ml'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:141 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for umask"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-SphZw2"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-SphZw2"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_UMASK_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-SphZw2'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_0822f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_0822f.dir/build.make CMakeFiles/cmTC_0822f.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-SphZw2'
+        Building C object CMakeFiles/cmTC_0822f.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=umask -MD -MT CMakeFiles/cmTC_0822f.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_0822f.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_0822f.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-SphZw2/CheckFunctionExists.c
+        Linking C executable cmTC_0822f.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0822f.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=umask @CMakeFiles/cmTC_0822f.dir/objects1.rsp -o cmTC_0822f.js 
+        wasm-ld-15: warning: function signature mismatch: umask
+        >>> defined as () -> i32 in CMakeFiles/cmTC_0822f.dir/CheckFunctionExists.c.o
+        >>> defined as (i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(umask.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-SphZw2'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:141 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for umask"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HyDyYX"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HyDyYX"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_UMASK"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HyDyYX'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_7e603/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_7e603.dir/build.make CMakeFiles/cmTC_7e603.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HyDyYX'
+        Building C object CMakeFiles/cmTC_7e603.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_7e603.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_7e603.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_7e603.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HyDyYX/CheckSymbolExists.c
+        Linking C executable cmTC_7e603.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7e603.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_7e603.dir/objects1.rsp -o cmTC_7e603.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HyDyYX'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:142 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for wait"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UtP3nZ"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UtP3nZ"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_WAIT_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UtP3nZ'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_7a1d8/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_7a1d8.dir/build.make CMakeFiles/cmTC_7a1d8.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UtP3nZ'
+        Building C object CMakeFiles/cmTC_7a1d8.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=wait -MD -MT CMakeFiles/cmTC_7a1d8.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_7a1d8.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_7a1d8.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UtP3nZ/CheckFunctionExists.c
+        Linking C executable cmTC_7a1d8.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7a1d8.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=wait @CMakeFiles/cmTC_7a1d8.dir/objects1.rsp -o cmTC_7a1d8.js 
+        wasm-ld-15: warning: function signature mismatch: wait
+        >>> defined as () -> i32 in CMakeFiles/cmTC_7a1d8.dir/CheckFunctionExists.c.o
+        >>> defined as (i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(wait.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UtP3nZ'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:142 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for wait"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Wjtbno"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Wjtbno"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_WAIT"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Wjtbno'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_6c6b1/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_6c6b1.dir/build.make CMakeFiles/cmTC_6c6b1.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Wjtbno'
+        Building C object CMakeFiles/cmTC_6c6b1.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_6c6b1.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_6c6b1.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_6c6b1.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Wjtbno/CheckSymbolExists.c
+        Linking C executable cmTC_6c6b1.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6c6b1.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_6c6b1.dir/objects1.rsp -o cmTC_6c6b1.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Wjtbno'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:143 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for mkstemp"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dKiHiJ"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dKiHiJ"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_MKSTEMP_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dKiHiJ'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_8ce82/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_8ce82.dir/build.make CMakeFiles/cmTC_8ce82.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dKiHiJ'
+        Building C object CMakeFiles/cmTC_8ce82.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=mkstemp -MD -MT CMakeFiles/cmTC_8ce82.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_8ce82.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_8ce82.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dKiHiJ/CheckFunctionExists.c
+        Linking C executable cmTC_8ce82.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8ce82.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=mkstemp @CMakeFiles/cmTC_8ce82.dir/objects1.rsp -o cmTC_8ce82.js 
+        wasm-ld-15: warning: function signature mismatch: mkstemp
+        >>> defined as () -> i32 in CMakeFiles/cmTC_8ce82.dir/CheckFunctionExists.c.o
+        >>> defined as (i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(mkstemp.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dKiHiJ'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:143 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for mkstemp"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Zmkub5"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Zmkub5"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_MKSTEMP"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Zmkub5'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_417f6/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_417f6.dir/build.make CMakeFiles/cmTC_417f6.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Zmkub5'
+        Building C object CMakeFiles/cmTC_417f6.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_417f6.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_417f6.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_417f6.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Zmkub5/CheckSymbolExists.c
+        Linking C executable cmTC_417f6.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_417f6.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_417f6.dir/objects1.rsp -o cmTC_417f6.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Zmkub5'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:145 (check_include_file)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for unistd.h"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-3aJeHD"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-3aJeHD"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_UNISTD_H"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-3aJeHD'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_d23bb/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_d23bb.dir/build.make CMakeFiles/cmTC_d23bb.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-3aJeHD'
+        Building C object CMakeFiles/cmTC_d23bb.dir/CheckIncludeFile.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_d23bb.dir/CheckIncludeFile.c.o -MF CMakeFiles/cmTC_d23bb.dir/CheckIncludeFile.c.o.d -o CMakeFiles/cmTC_d23bb.dir/CheckIncludeFile.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-3aJeHD/CheckIncludeFile.c
+        Linking C executable cmTC_d23bb.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d23bb.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_d23bb.dir/objects1.rsp -o cmTC_d23bb.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-3aJeHD'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:148 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for pipe"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-96GDH6"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-96GDH6"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_PIPE_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-96GDH6'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_6987f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_6987f.dir/build.make CMakeFiles/cmTC_6987f.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-96GDH6'
+        Building C object CMakeFiles/cmTC_6987f.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=pipe -MD -MT CMakeFiles/cmTC_6987f.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_6987f.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_6987f.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-96GDH6/CheckFunctionExists.c
+        Linking C executable cmTC_6987f.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6987f.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=pipe @CMakeFiles/cmTC_6987f.dir/objects1.rsp -o cmTC_6987f.js 
+        wasm-ld-15: warning: function signature mismatch: pipe
+        >>> defined as () -> i32 in CMakeFiles/cmTC_6987f.dir/CheckFunctionExists.c.o
+        >>> defined as (i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(pipe.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-96GDH6'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:148 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for pipe"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UWbs61"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UWbs61"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_PIPE"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UWbs61'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_afc8e/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_afc8e.dir/build.make CMakeFiles/cmTC_afc8e.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UWbs61'
+        Building C object CMakeFiles/cmTC_afc8e.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_afc8e.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_afc8e.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_afc8e.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UWbs61/CheckSymbolExists.c
+        Linking C executable cmTC_afc8e.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_afc8e.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_afc8e.dir/objects1.rsp -o cmTC_afc8e.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-UWbs61'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:149 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for fork"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HDc0GZ"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HDc0GZ"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_FORK_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HDc0GZ'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_79fb7/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_79fb7.dir/build.make CMakeFiles/cmTC_79fb7.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HDc0GZ'
+        Building C object CMakeFiles/cmTC_79fb7.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=fork -MD -MT CMakeFiles/cmTC_79fb7.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_79fb7.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_79fb7.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HDc0GZ/CheckFunctionExists.c
+        Linking C executable cmTC_79fb7.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_79fb7.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=fork @CMakeFiles/cmTC_79fb7.dir/objects1.rsp -o cmTC_79fb7.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-HDc0GZ'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:149 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for fork"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-VW2S6P"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-VW2S6P"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_FORK"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-VW2S6P'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_48efd/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_48efd.dir/build.make CMakeFiles/cmTC_48efd.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-VW2S6P'
+        Building C object CMakeFiles/cmTC_48efd.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_48efd.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_48efd.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_48efd.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-VW2S6P/CheckSymbolExists.c
+        Linking C executable cmTC_48efd.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_48efd.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_48efd.dir/objects1.rsp -o cmTC_48efd.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-VW2S6P'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:150 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for execvp"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-RC9Qps"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-RC9Qps"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_EXECVP_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-RC9Qps'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_95be3/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_95be3.dir/build.make CMakeFiles/cmTC_95be3.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-RC9Qps'
+        Building C object CMakeFiles/cmTC_95be3.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=execvp -MD -MT CMakeFiles/cmTC_95be3.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_95be3.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_95be3.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-RC9Qps/CheckFunctionExists.c
+        Linking C executable cmTC_95be3.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_95be3.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=execvp @CMakeFiles/cmTC_95be3.dir/objects1.rsp -o cmTC_95be3.js 
+        wasm-ld-15: warning: function signature mismatch: execvp
+        >>> defined as () -> i32 in CMakeFiles/cmTC_95be3.dir/CheckFunctionExists.c.o
+        >>> defined as (i32, i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(execvp.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-RC9Qps'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:150 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for execvp"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-rfpjjX"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-rfpjjX"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_EXECVP"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-rfpjjX'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_339a1/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_339a1.dir/build.make CMakeFiles/cmTC_339a1.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-rfpjjX'
+        Building C object CMakeFiles/cmTC_339a1.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_339a1.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_339a1.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_339a1.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-rfpjjX/CheckSymbolExists.c
+        Linking C executable cmTC_339a1.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_339a1.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_339a1.dir/objects1.rsp -o cmTC_339a1.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-rfpjjX'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:65 (check_function_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:151 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for dup2"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yj0Zc9"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yj0Zc9"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_DUP2_F"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yj0Zc9'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_479cd/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_479cd.dir/build.make CMakeFiles/cmTC_479cd.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yj0Zc9'
+        Building C object CMakeFiles/cmTC_479cd.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=dup2 -MD -MT CMakeFiles/cmTC_479cd.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_479cd.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_479cd.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yj0Zc9/CheckFunctionExists.c
+        Linking C executable cmTC_479cd.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_479cd.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=dup2 @CMakeFiles/cmTC_479cd.dir/objects1.rsp -o cmTC_479cd.js 
+        wasm-ld-15: warning: function signature mismatch: dup2
+        >>> defined as () -> i32 in CMakeFiles/cmTC_479cd.dir/CheckFunctionExists.c.o
+        >>> defined as (i32, i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(dup2.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-yj0Zc9'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:66 (check_symbol_exists)"
+      - "libxmp/cmake/libxmp-checks.cmake:151 (xmp_check_function)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for dup2"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mmQ0Ye"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mmQ0Ye"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_DUP2"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mmQ0Ye'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_06a8a/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_06a8a.dir/build.make CMakeFiles/cmTC_06a8a.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mmQ0Ye'
+        Building C object CMakeFiles/cmTC_06a8a.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_06a8a.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_06a8a.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_06a8a.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mmQ0Ye/CheckSymbolExists.c
+        Linking C executable cmTC_06a8a.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_06a8a.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_06a8a.dir/objects1.rsp -o cmTC_06a8a.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-mmQ0Ye'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "libxmp/cmake/libxmp-checks.cmake:158 (check_symbol_exists)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for opendir"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-ZPc50z"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-ZPc50z"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_DIRENT"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-ZPc50z'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_b6ed6/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_b6ed6.dir/build.make CMakeFiles/cmTC_b6ed6.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-ZPc50z'
+        Building C object CMakeFiles/cmTC_b6ed6.dir/CheckSymbolExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  -MD -MT CMakeFiles/cmTC_b6ed6.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_b6ed6.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_b6ed6.dir/CheckSymbolExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-ZPc50z/CheckSymbolExists.c
+        Linking C executable cmTC_b6ed6.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b6ed6.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare  @CMakeFiles/cmTC_b6ed6.dir/objects1.rsp -o cmTC_b6ed6.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-ZPc50z'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:159 (check_function_exists)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for opendir"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-C6OYYi"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-C6OYYi"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_OPENDIR"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-C6OYYi'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_1550e/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_1550e.dir/build.make CMakeFiles/cmTC_1550e.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-C6OYYi'
+        Building C object CMakeFiles/cmTC_1550e.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=opendir -MD -MT CMakeFiles/cmTC_1550e.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_1550e.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_1550e.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-C6OYYi/CheckFunctionExists.c
+        Linking C executable cmTC_1550e.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1550e.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=opendir @CMakeFiles/cmTC_1550e.dir/objects1.rsp -o cmTC_1550e.js 
+        wasm-ld-15: warning: function signature mismatch: opendir
+        >>> defined as () -> i32 in CMakeFiles/cmTC_1550e.dir/CheckFunctionExists.c.o
+        >>> defined as (i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(opendir.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-C6OYYi'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "libxmp/cmake/libxmp-checks.cmake:160 (check_function_exists)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Looking for readdir"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dPvCas"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dPvCas"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_READDIR"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dPvCas'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_5369e/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_5369e.dir/build.make CMakeFiles/cmTC_5369e.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dPvCas'
+        Building C object CMakeFiles/cmTC_5369e.dir/CheckFunctionExists.c.o
+        /usr/bin/emcc   -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=readdir -MD -MT CMakeFiles/cmTC_5369e.dir/CheckFunctionExists.c.o -MF CMakeFiles/cmTC_5369e.dir/CheckFunctionExists.c.o.d -o CMakeFiles/cmTC_5369e.dir/CheckFunctionExists.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dPvCas/CheckFunctionExists.c
+        Linking C executable cmTC_5369e.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5369e.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -DCHECK_FUNCTION_EXISTS=readdir @CMakeFiles/cmTC_5369e.dir/objects1.rsp -o cmTC_5369e.js 
+        wasm-ld-15: warning: function signature mismatch: readdir
+        >>> defined as () -> i32 in CMakeFiles/cmTC_5369e.dir/CheckFunctionExists.c.o
+        >>> defined as (i32) -> i32 in /usr/share/emscripten/cache/sysroot/lib/wasm32-emscripten/libc-debug.a(readdir.o)
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-dPvCas'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "libxmp/cmake/libxmp-checks.cmake:172 (check_c_source_compiles)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Performing Test HAVE_VISIBILITY"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-LzqbGL"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-LzqbGL"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_C_FLAGS_DEBUG: "-g -DDEBUG -D_DEBUG"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_VISIBILITY"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-LzqbGL'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_dcbca/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_dcbca.dir/build.make CMakeFiles/cmTC_dcbca.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-LzqbGL'
+        Building C object CMakeFiles/cmTC_dcbca.dir/src.c.o
+        /usr/bin/emcc -DHAVE_VISIBILITY  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -fvisibility=hidden -Werror -MD -MT CMakeFiles/cmTC_dcbca.dir/src.c.o -MF CMakeFiles/cmTC_dcbca.dir/src.c.o.d -o CMakeFiles/cmTC_dcbca.dir/src.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-LzqbGL/src.c
+        Linking C executable cmTC_dcbca.js
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dcbca.dir/link.txt --verbose=1
+        /usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -fvisibility=hidden -Werror @CMakeFiles/cmTC_dcbca.dir/objects1.rsp -o cmTC_dcbca.js 
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-LzqbGL'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "libxmp/cmake/libxmp-checks.cmake:178 (check_c_source_compiles)"
+      - "libxmp/CMakeLists.txt:8 (include)"
+    checks:
+      - "Performing Test HAVE_EXTERNAL_VISIBILITY"
+    directories:
+      source: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Enzc4k"
+      binary: "/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Enzc4k"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_C_FLAGS: " -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare"
+      CMAKE_C_FLAGS_DEBUG: "-g -DDEBUG -D_DEBUG"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules;/usr/share/emscripten/cmake/Modules"
+    buildResult:
+      variable: "HAVE_EXTERNAL_VISIBILITY"
+      cached: true
+      stdout: |
+        Change Dir: '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Enzc4k'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_fabab/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_fabab.dir/build.make CMakeFiles/cmTC_fabab.dir/build
+        gmake[1]: Entering directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Enzc4k'
+        Building C object CMakeFiles/cmTC_fabab.dir/src.c.o
+        /usr/bin/emcc -DHAVE_EXTERNAL_VISIBILITY  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -fvisibility=hidden -Werror -MD -MT CMakeFiles/cmTC_fabab.dir/src.c.o -MF CMakeFiles/cmTC_fabab.dir/src.c.o.d -o CMakeFiles/cmTC_fabab.dir/src.c.o -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Enzc4k/src.c
+        /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Enzc4k/src.c:1:38: error: unknown attribute 'externally_visible' ignored [-Werror,-Wunknown-attributes]
+        __attribute__((visibility("default"),externally_visible)) int foo(void);
+                                             ^~~~~~~~~~~~~~~~~~
+        1 error generated.
+        emcc: error: '/usr/bin/clang-15 -target wasm32-unknown-emscripten -DEMSCRIPTEN -D__EMSCRIPTEN_major__=3 -D__EMSCRIPTEN_minor__=1 -D__EMSCRIPTEN_tiny__=6 -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr -D_LIBCPP_ABI_VERSION=2 -fno-threadsafe-statics -Werror=implicit-function-declaration -Xclang -iwithsysroot/include/SDL --sysroot=/usr/share/emscripten/cache/sysroot -Xclang -iwithsysroot/include/compat -DHAVE_EXTERNAL_VISIBILITY -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -fvisibility=hidden -Werror -MD -MT CMakeFiles/cmTC_fabab.dir/src.c.o -MF CMakeFiles/cmTC_fabab.dir/src.c.o.d -c /home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Enzc4k/src.c -o CMakeFiles/cmTC_fabab.dir/src.c.o' failed (returned 1)
+        gmake[1]: *** [CMakeFiles/cmTC_fabab.dir/build.make:79: CMakeFiles/cmTC_fabab.dir/src.c.o] Error 1
+        gmake[1]: Leaving directory '/home/chuu/Desktop/chip-player-js/fluidlite/CMakeFiles/CMakeScratch/TryCompile-Enzc4k'
+        gmake: *** [Makefile:127: cmTC_fabab/fast] Error 2
+        
+      exitCode: 2

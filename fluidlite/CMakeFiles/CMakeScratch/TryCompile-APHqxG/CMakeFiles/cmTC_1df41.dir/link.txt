@@ -1,0 +1,1 @@
+/usr/bin/emcc  -Wall -Wwrite-strings -Wextra -Wno-unknown-warning-option -Wno-unused-parameter -Wno-sign-compare -Werror=attributes @CMakeFiles/cmTC_1df41.dir/objects1.rsp -o cmTC_1df41.js 

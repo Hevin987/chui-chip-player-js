@@ -1,0 +1,172 @@
+{
+  "catalog": [
+    {
+      "path": "/Sonic the Hedgehog 2 - 01 - Opening Demo.vgm",
+      "size": 1792,
+      "type": "file",
+      "mtime": 1321179336,
+      "idx": 0
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 02 - Title Screen.vgm",
+      "size": 2222,
+      "type": "file",
+      "mtime": 1321183758,
+      "idx": 1
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 03 - Act Start.vgm",
+      "size": 905,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 2
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 04 - Underground Zone.vgm",
+      "size": 6289,
+      "type": "file",
+      "mtime": 1321179320,
+      "idx": 3
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 05 - Boss Theme (Master System).vgm",
+      "size": 7002,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 4
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 06 - Act Complete.vgm",
+      "size": 1491,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 5
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 07 - Sky High Zone.vgm",
+      "size": 6099,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 6
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 08 - Invincible.vgm",
+      "size": 3956,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 7
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 09 - Aqua Lake Zone.vgm",
+      "size": 2640,
+      "type": "file",
+      "mtime": 1321179320,
+      "idx": 8
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 10 - Power Sneakers (Master System).vgm",
+      "size": 3013,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 9
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 11 - Green Hills Zone.vgm",
+      "size": 3669,
+      "type": "file",
+      "mtime": 1321179320,
+      "idx": 10
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 12 - Found Emerald!.vgm",
+      "size": 1098,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 11
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 13 - Gimmick Mountain Zone.vgm",
+      "size": 6259,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 12
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 14 - Death.vgm",
+      "size": 1307,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 13
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 15 - Scrambled Egg Zone.vgm",
+      "size": 8840,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 14
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 16 - Boss Theme (Game Gear).vgm",
+      "size": 3642,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 15
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 17 - Bad Ending (Game Gear).vgm",
+      "size": 12006,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 16
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 18 - Crystal Egg Zone.vgm",
+      "size": 5558,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 17
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 19 - Ending (Master System).vgm",
+      "size": 16065,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 18
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 20 - Good Ending (Game Gear).vgm",
+      "size": 14536,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 19
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 22 - Unused (Master System).vgm",
+      "size": 3714,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 20
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 23 - Game Over.vgm",
+      "size": 1897,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 21
+    },
+    {
+      "path": "/Sonic the Hedgehog 2 - 24 - Continue Screen.vgm",
+      "size": 4930,
+      "type": "file",
+      "mtime": 1321180252,
+      "idx": 22
+    },
+    {
+      "path": "/Super Mario Bros. 3 (1988-10-23)(Nintendo EAD)(Nintendo).nsf",
+      "size": 36992,
+      "type": "file",
+      "mtime": 1468599428,
+      "idx": 23
+    }
+  ]
+}

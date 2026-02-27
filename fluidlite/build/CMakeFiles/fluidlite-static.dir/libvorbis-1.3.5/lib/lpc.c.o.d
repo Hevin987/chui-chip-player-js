@@ -1,0 +1,31 @@
+CMakeFiles/fluidlite-static.dir/libvorbis-1.3.5/lib/lpc.c.o: \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libvorbis-1.3.5/lib/lpc.c \
+  /usr/share/emscripten/cache/sysroot/include/compat/stdlib.h \
+  /usr/share/emscripten/cache/sysroot/include/stdlib.h \
+  /usr/share/emscripten/cache/sysroot/include/features.h \
+  /usr/share/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /usr/share/emscripten/cache/sysroot/include/alloca.h \
+  /usr/share/emscripten/cache/sysroot/include/compat/string.h \
+  /usr/share/emscripten/cache/sysroot/include/string.h \
+  /usr/share/emscripten/cache/sysroot/include/strings.h \
+  /usr/share/emscripten/cache/sysroot/include/compat/math.h \
+  /usr/share/emscripten/cache/sysroot/include/math.h \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libvorbis-1.3.5/lib/os.h \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libogg-1.3.2/include/ogg/os_types.h \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libogg-1.3.2/include/ogg/config_types.h \
+  /usr/lib/llvm-15/lib/clang/15.0.7/include/inttypes.h \
+  /usr/share/emscripten/cache/sysroot/include/inttypes.h \
+  /usr/lib/llvm-15/lib/clang/15.0.7/include/stdint.h \
+  /usr/share/emscripten/cache/sysroot/include/stdint.h \
+  /usr/share/emscripten/cache/sysroot/include/bits/stdint.h \
+  /usr/share/emscripten/cache/sysroot/include/sys/types.h \
+  /usr/share/emscripten/cache/sysroot/include/endian.h \
+  /usr/share/emscripten/cache/sysroot/include/sys/select.h \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libvorbis-1.3.5/lib/misc.h \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libvorbis-1.3.5/include/vorbis/codec.h \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libogg-1.3.2/include/ogg/ogg.h \
+  /usr/lib/llvm-15/lib/clang/15.0.7/include/stddef.h \
+  /usr/lib/llvm-15/lib/clang/15.0.7/include/__stddef_max_align_t.h \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libvorbis-1.3.5/lib/smallft.h \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libvorbis-1.3.5/lib/lpc.h \
+  /home/chuu/Desktop/chip-player-js/fluidlite/libvorbis-1.3.5/lib/scales.h
