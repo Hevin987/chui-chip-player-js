@@ -1,8 +1,19 @@
+<<<<<<< HEAD
 // Game_Music_Emu $vers. http://www.slack.net/~ant/
 
 #include "Dual_Resampler.h"
 
 /* Copyright (C) 2003-2008 Shay Green. This module is free software; you
+=======
+// Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
+
+#include "Dual_Resampler.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+/* Copyright (C) 2003-2006 Shay Green. This module is free software; you
+>>>>>>> db7344ebf (abc)
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version. This
@@ -15,12 +26,22 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 #include "blargg_source.h"
 
+<<<<<<< HEAD
 // TODO: fix this. hack since resampler holds back some output.
 int const resampler_extra = 34;
 
 int const stereo = 2;
 
 Dual_Resampler::Dual_Resampler() { }
+=======
+Dual_Resampler::Dual_Resampler() :
+	sample_buf_size(0),
+	oversamples_per_frame(-1),
+	buf_pos(-1),
+	resampler_size(0)
+{
+}
+>>>>>>> db7344ebf (abc)
 
 Dual_Resampler::~Dual_Resampler() { }
 
@@ -30,15 +51,22 @@ blargg_err_t Dual_Resampler::reset( int pairs )
 	RETURN_ERR( sample_buf.resize( (pairs + (pairs >> 2)) * 2 ) );
 	resize( pairs );
 	resampler_size = oversamples_per_frame + (oversamples_per_frame >> 2);
+<<<<<<< HEAD
 	RETURN_ERR( resampler.resize_buffer( resampler_size ) );
 	resampler.clear();
 	return blargg_ok;
+=======
+	return resampler.buffer_size( resampler_size );
+>>>>>>> db7344ebf (abc)
 }
 
 void Dual_Resampler::resize( int pairs )
 {
 	int new_sample_buf_size = pairs * 2;
+<<<<<<< HEAD
 	//new_sample_buf_size = new_sample_buf_size / 4 * 4; // TODO: needed only for 3:2 downsampler
+=======
+>>>>>>> db7344ebf (abc)
 	if ( sample_buf_size != new_sample_buf_size )
 	{
 		if ( (unsigned) new_sample_buf_size > sample_buf.size() )
@@ -47,11 +75,16 @@ void Dual_Resampler::resize( int pairs )
 			return;
 		}
 		sample_buf_size = new_sample_buf_size;
+<<<<<<< HEAD
 		oversamples_per_frame = int (pairs * resampler.rate()) * 2 + 2;
+=======
+		oversamples_per_frame = int (pairs * resampler.ratio()) * 2 + 2;
+>>>>>>> db7344ebf (abc)
 		clear();
 	}
 }
 
+<<<<<<< HEAD
 void Dual_Resampler::clear()
 {
 	buf_pos = buffered = 0;
@@ -110,6 +143,37 @@ void Dual_Resampler::dual_play( int count, dsample_t out [], Stereo_Buffer& ster
 {
 	// empty extra buffer
 	int remain = buffered - buf_pos;
+=======
+void Dual_Resampler::play_frame_( Blip_Buffer& blip_buf, dsample_t* out )
+{
+	long pair_count = sample_buf_size >> 1;
+	blip_time_t blip_time = blip_buf.count_clocks( pair_count );
+	int sample_count = oversamples_per_frame - resampler.written();
+
+	int new_count = play_frame( blip_time, sample_count, resampler.buffer() );
+	assert( new_count < resampler_size );
+
+	blip_buf.end_frame( blip_time );
+	assert( blip_buf.samples_avail() == pair_count );
+
+	resampler.write( new_count );
+
+#ifdef	NDEBUG // Avoid warning when asserts are disabled
+	resampler.read( sample_buf.begin(), sample_buf_size );
+#else
+	long count = resampler.read( sample_buf.begin(), sample_buf_size );
+	assert( count == (long) sample_buf_size );
+#endif
+
+	mix_samples( blip_buf, out );
+	blip_buf.remove_samples( pair_count );
+}
+
+void Dual_Resampler::dual_play( long count, dsample_t* out, Blip_Buffer& blip_buf )
+{
+	// empty extra buffer
+	long remain = sample_buf_size - buf_pos;
+>>>>>>> db7344ebf (abc)
 	if ( remain )
 	{
 		if ( remain > count )
@@ -119,6 +183,7 @@ void Dual_Resampler::dual_play( int count, dsample_t out [], Stereo_Buffer& ster
 		out += remain;
 		buf_pos += remain;
 	}
+<<<<<<< HEAD
 	
 	// entire frames
 	while ( count >= sample_buf_size )
@@ -313,3 +378,51 @@ void Dual_Resampler::mix_extra_stereo( Stereo_Buffer& stereo_buf, dsample_t out_
 	BLIP_READER_END( snl, *stereo_buf.left() );
 	BLIP_READER_END( snr, *stereo_buf.right() );
 }
+=======
+
+	// entire frames
+	while ( count >= (long) sample_buf_size )
+	{
+		play_frame_( blip_buf, out );
+		out += sample_buf_size;
+		count -= sample_buf_size;
+	}
+
+	// extra
+	if ( count )
+	{
+		play_frame_( blip_buf, sample_buf.begin() );
+		buf_pos = count;
+		memcpy( out, sample_buf.begin(), count * sizeof *out );
+		out += count;
+	}
+}
+
+void Dual_Resampler::mix_samples( Blip_Buffer& blip_buf, dsample_t* out )
+{
+	Blip_Reader sn;
+	int bass = sn.begin( blip_buf );
+	const dsample_t* in = sample_buf.begin();
+
+	for ( int n = sample_buf_size >> 1; n--; )
+	{
+		int s = sn.read();
+		int32_t l = (int32_t) in [0] * 2 + s;
+		if ( (int16_t) l != l )
+			l = 0x7FFF - (l >> 24);
+
+		sn.next( bass );
+		int32_t r = (int32_t) in [1] * 2 + s;
+		if ( (int16_t) r != r )
+			r = 0x7FFF - (r >> 24);
+
+		in += 2;
+		out [0] = l;
+		out [1] = r;
+		out += 2;
+	}
+
+	sn.end( blip_buf );
+}
+
+>>>>>>> db7344ebf (abc)

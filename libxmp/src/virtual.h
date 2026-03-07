@@ -11,11 +11,21 @@
 #define VIRT_ACTIVE		0x100
 #define VIRT_INVALID		-1
 
+<<<<<<< HEAD
+=======
+LIBXMP_BEGIN_DECLS
+
+>>>>>>> db7344ebf (abc)
 int	libxmp_virt_on		(struct context_data *, int);
 void	libxmp_virt_off		(struct context_data *);
 int	libxmp_virt_mute	(struct context_data *, int, int);
 int	libxmp_virt_setpatch	(struct context_data *, int, int, int, int,
+<<<<<<< HEAD
 				 int, int, int);
+=======
+				 int, int, int, int);
+int	libxmp_virt_queuepatch	(struct context_data *, int, int, int, int);
+>>>>>>> db7344ebf (abc)
 int	libxmp_virt_cvt8bit	(void);
 void	libxmp_virt_setnote	(struct context_data *, int, int);
 void	libxmp_virt_setsmp	(struct context_data *, int, int);
@@ -33,6 +43,14 @@ void	libxmp_virt_resetchannel(struct context_data *, int);
 void	libxmp_virt_resetvoice	(struct context_data *, int, int);
 void	libxmp_virt_reset	(struct context_data *);
 void	libxmp_virt_release	(struct context_data *, int, int);
+<<<<<<< HEAD
 int	libxmp_virt_getroot	(struct context_data *, int);
 
+=======
+void	libxmp_virt_reverse	(struct context_data *, int, int);
+int	libxmp_virt_getroot	(struct context_data *, int);
+
+LIBXMP_END_DECLS
+
+>>>>>>> db7344ebf (abc)
 #endif /* LIBXMP_VIRTUAL_H */

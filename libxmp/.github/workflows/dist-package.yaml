@@ -9,7 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
+<<<<<<< HEAD
         uses: actions/checkout@v2
+=======
+        uses: actions/checkout@v4
+>>>>>>> db7344ebf (abc)
       - name: Install dependencies
         run: sudo apt update && sudo apt install docutils-common rst2pdf
       - name: Create and run configure script
@@ -23,7 +27,11 @@ jobs:
       - name: Create lite package
         run: make -f Makefile.lite DIST="libxmp-lite-$(git rev-parse --short HEAD)"
       - name: Archive dist packages
+<<<<<<< HEAD
         uses: actions/upload-artifact@v2
+=======
+        uses: actions/upload-artifact@v4
+>>>>>>> db7344ebf (abc)
         with:
           name: dist-packages
           path: |

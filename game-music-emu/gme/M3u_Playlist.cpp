@@ -1,8 +1,17 @@
+<<<<<<< HEAD
 // Game_Music_Emu $vers. http://www.slack.net/~ant/
+=======
+// Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
+>>>>>>> db7344ebf (abc)
 
 #include "M3u_Playlist.h"
 #include "Music_Emu.h"
 
+<<<<<<< HEAD
+=======
+#include <string.h>
+
+>>>>>>> db7344ebf (abc)
 /* Copyright (C) 2006 Shay Green. This module is free software; you
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
@@ -20,12 +29,22 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 blargg_err_t Gme_File::load_m3u_( blargg_err_t err )
 {
+<<<<<<< HEAD
 	if ( !err )
 	{
 		require( raw_track_count_ ); // file must be loaded first
 		if ( playlist.size() )
 			track_count_ = playlist.size();
 		
+=======
+	require( raw_track_count_ ); // file must be loaded first
+
+	if ( !err )
+	{
+		if ( playlist.size() )
+			track_count_ = playlist.size();
+
+>>>>>>> db7344ebf (abc)
 		int line = playlist.first_error();
 		if ( line )
 		{
@@ -35,7 +54,11 @@ blargg_err_t Gme_File::load_m3u_( blargg_err_t err )
 			do {
 				*--out = line % 10 + '0';
 			} while ( (line /= 10) > 0 );
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> db7344ebf (abc)
 			static const char str [] = "Problem in m3u at line ";
 			out -= sizeof str - 1;
 			memcpy( out, str, sizeof str - 1 );
@@ -45,6 +68,7 @@ blargg_err_t Gme_File::load_m3u_( blargg_err_t err )
 	return err;
 }
 
+<<<<<<< HEAD
 blargg_err_t Gme_File::load_m3u( const char path [] ) { return load_m3u_( playlist.load( path ) ); }
 
 blargg_err_t Gme_File::load_m3u( Data_Reader& in )  { return load_m3u_( playlist.load( in ) ); }
@@ -52,6 +76,15 @@ blargg_err_t Gme_File::load_m3u( Data_Reader& in )  { return load_m3u_( playlist
 BLARGG_EXPORT gme_err_t gme_load_m3u( Music_Emu* me, const char path [] ) { return me->load_m3u( path ); }
 
 BLARGG_EXPORT gme_err_t gme_load_m3u_data( Music_Emu* me, const void* data, long size )
+=======
+blargg_err_t Gme_File::load_m3u( const char* path ) { return load_m3u_( playlist.load( path ) ); }
+
+blargg_err_t Gme_File::load_m3u( Data_Reader& in )  { return load_m3u_( playlist.load( in ) ); }
+
+gme_err_t gme_load_m3u( Music_Emu* me, const char* path ) { return me->load_m3u( path ); }
+
+gme_err_t gme_load_m3u_data( Music_Emu* me, const void* data, long size )
+>>>>>>> db7344ebf (abc)
 {
 	Mem_File_Reader in( data, size );
 	return me->load_m3u( in );
@@ -59,12 +92,20 @@ BLARGG_EXPORT gme_err_t gme_load_m3u_data( Music_Emu* me, const void* data, long
 
 static char* skip_white( char* in )
 {
+<<<<<<< HEAD
 	while ( unsigned (*in - 1) <= ' ' - 1 )
+=======
+	while ( *in == ' ' )
+>>>>>>> db7344ebf (abc)
 		in++;
 	return in;
 }
 
+<<<<<<< HEAD
 inline unsigned from_dec( unsigned n ) { return n - '0'; }
+=======
+static inline unsigned from_dec( unsigned n ) { return n - '0'; }
+>>>>>>> db7344ebf (abc)
 
 static char* parse_filename( char* in, M3u_Playlist::entry_t& entry )
 {
@@ -76,7 +117,11 @@ static char* parse_filename( char* in, M3u_Playlist::entry_t& entry )
 		int c = *in;
 		if ( !c ) break;
 		in++;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		if ( c == ',' ) // commas in filename
 		{
 			char* p = skip_white( in );
@@ -86,7 +131,11 @@ static char* parse_filename( char* in, M3u_Playlist::entry_t& entry )
 				break;
 			}
 		}
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		if ( c == ':' && in [0] == ':' && in [1] && in [2] != ',' ) // ::type suffix
 		{
 			entry.type = ++in;
@@ -99,7 +148,11 @@ static char* parse_filename( char* in, M3u_Playlist::entry_t& entry )
 			}
 			break;
 		}
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		if ( c == '\\' ) // \ prefix for special characters
 		{
 			c = *in;
@@ -117,16 +170,27 @@ static char* next_field( char* in, int* result )
 	while ( 1 )
 	{
 		in = skip_white( in );
+<<<<<<< HEAD
 		
 		if ( !*in )
 			break;
 		
+=======
+
+		if ( !*in )
+			break;
+
+>>>>>>> db7344ebf (abc)
 		if ( *in == ',' )
 		{
 			in++;
 			break;
 		}
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		*result = 1;
 		in++;
 	}
@@ -148,13 +212,37 @@ static char* parse_int_( char* in, int* out )
 	return in;
 }
 
+<<<<<<< HEAD
+=======
+static char* parse_mil_( char* in, int* out )
+{
+	int n = 0;
+	int x = 100;
+	while ( 1 )
+	{
+		unsigned d = from_dec( *in );
+		if ( d > 9 )
+			break;
+		in++;
+		n += d * x;
+		x /= 10;
+		*out = n;
+	}
+	return in;
+}
+
+>>>>>>> db7344ebf (abc)
 static char* parse_int( char* in, int* out, int* result )
 {
 	return next_field( parse_int_( in, out ), result );
 }
 
 // Returns 16 or greater if not hex
+<<<<<<< HEAD
 inline int from_hex_char( int h )
+=======
+static inline int from_hex_char( int h )
+>>>>>>> db7344ebf (abc)
 {
 	h -= 0x30;
 	if ( (unsigned) h > 9 )
@@ -203,12 +291,22 @@ static char* parse_time_( char* in, int* out )
 				*out = *out * 60 + n;
 		}
 		*out *= 1000;
+<<<<<<< HEAD
 		if ( *in == '.' )
 		{
 			n = -1;
 			in = parse_int_( in + 1, &n );
 			if ( n >= 0 )
 				*out = *out + n; 
+=======
+
+		if ( *in == '.' )
+		{
+			n = -1;
+			in = parse_mil_( in + 1, &n );
+			if ( n >= 0 )
+				*out += n;
+>>>>>>> db7344ebf (abc)
 		}
 	}
 	return in;
@@ -227,7 +325,11 @@ static char* parse_name( char* in )
 		int c = *in;
 		if ( !c ) break;
 		in++;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		if ( c == ',' ) // commas in string
 		{
 			char* p = skip_white( in );
@@ -237,7 +339,11 @@ static char* parse_name( char* in )
 				break;
 			}
 		}
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		if ( c == '\\' ) // \ prefix for special characters
 		{
 			c = *in;
@@ -253,16 +359,25 @@ static char* parse_name( char* in )
 static int parse_line( char* in, M3u_Playlist::entry_t& entry )
 {
 	int result = 0;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	// file
 	entry.file = in;
 	entry.type = "";
 	in = parse_filename( in, entry );
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	// track
 	entry.track = -1;
 	entry.decimal_track = 0;
 	in = parse_track( in, entry, &result );
+<<<<<<< HEAD
 	
 	// name
 	entry.name = in;
@@ -272,6 +387,17 @@ static int parse_line( char* in, M3u_Playlist::entry_t& entry )
 	entry.length = -1;
 	in = parse_time( in, &entry.length, &result );
 	
+=======
+
+	// name
+	entry.name = in;
+	in = parse_name( in );
+
+	// time
+	entry.length = -1;
+	in = parse_time( in, &entry.length, &result );
+
+>>>>>>> db7344ebf (abc)
 	// loop
 	entry.intro = -1;
 	entry.loop  = -1;
@@ -285,8 +411,13 @@ static int parse_line( char* in, M3u_Playlist::entry_t& entry )
 		in = parse_time_( in, &entry.loop );
 		if ( entry.loop >= 0 )
 		{
+<<<<<<< HEAD
 			entry.intro = entry.length - entry.loop;
 			if ( *in == '-' ) // trailing '-' means that intro length was specified 
+=======
+			entry.intro = 0;
+			if ( *in == '-' ) // trailing '-' means that intro length was specified
+>>>>>>> db7344ebf (abc)
 			{
 				in++;
 				entry.intro = entry.loop;
@@ -295,6 +426,7 @@ static int parse_line( char* in, M3u_Playlist::entry_t& entry )
 		}
 	}
 	in = next_field( in, &result );
+<<<<<<< HEAD
 	
 	// fade
 	entry.fade = -1;
@@ -304,6 +436,17 @@ static int parse_line( char* in, M3u_Playlist::entry_t& entry )
 	entry.repeat = -1;
 	in = parse_int( in, &entry.repeat, &result );
 	
+=======
+
+	// fade
+	entry.fade = -1;
+	in = parse_time( in, &entry.fade, &result );
+
+	// repeat
+	entry.repeat = -1;
+	in = parse_int( in, &entry.repeat, &result );
+
+>>>>>>> db7344ebf (abc)
 	return result;
 }
 
@@ -314,14 +457,22 @@ static void parse_comment( char* in, M3u_Playlist::info_t& info, char *& last_co
 	if ( *field != '@' )
 		while ( *in && *in != ':' )
 			in++;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	if ( *in == ':' )
 	{
 		const char* text = skip_white( in + 1 );
 		if ( *text )
 		{
 			*in = 0;
+<<<<<<< HEAD
 			     if ( !strcmp( "Composer" , field ) ) info.composer  = text;
+=======
+				 if ( !strcmp( "Composer" , field ) ) info.composer  = text;
+>>>>>>> db7344ebf (abc)
 			else if ( !strcmp( "Engineer" , field ) ) info.engineer  = text;
 			else if ( !strcmp( "Ripping"  , field ) ) info.ripping   = text;
 			else if ( !strcmp( "Tagging"  , field ) ) info.tagging   = text;
@@ -344,6 +495,7 @@ static void parse_comment( char* in, M3u_Playlist::info_t& info, char *& last_co
 		const char* text = skip_white( in );
 		if ( *text )
 		{
+<<<<<<< HEAD
 			char saved = *in;
 			*in = 0;
 			     if ( !strcmp( "TITLE" ,    field ) ) info.title     = text;
@@ -354,6 +506,17 @@ static void parse_comment( char* in, M3u_Playlist::info_t& info, char *& last_co
 			else if ( !strcmp( "ENGINEER",  field ) ) info.engineer  = text;
 			else if ( !strcmp( "RIPPER",    field ) ) info.ripping   = text;
 			else if ( !strcmp( "TAGGER",    field ) ) info.tagging   = text;
+=======
+			*in = 0;
+				 if ( !strcmp( "TITLE"    , field ) ) info.title     = text;
+			else if ( !strcmp( "ARTIST"   , field ) ) info.artist    = text;
+			else if ( !strcmp( "DATE"     , field ) ) info.date      = text;
+			else if ( !strcmp( "COMPOSER" , field ) ) info.composer  = text;
+			else if ( !strcmp( "SEQUENCER", field ) ) info.sequencer = text;
+			else if ( !strcmp( "ENGINEER" , field ) ) info.engineer  = text;
+			else if ( !strcmp( "RIPPER"   , field ) ) info.ripping   = text;
+			else if ( !strcmp( "TAGGER"   , field ) ) info.tagging   = text;
+>>>>>>> db7344ebf (abc)
 			else
 				text = 0;
 			if ( text )
@@ -361,7 +524,10 @@ static void parse_comment( char* in, M3u_Playlist::info_t& info, char *& last_co
 				last_comment_value = (char*)text;
 				return;
 			}
+<<<<<<< HEAD
 			*in = saved;
+=======
+>>>>>>> db7344ebf (abc)
 		}
 	}
 	else if ( last_comment_value )
@@ -374,7 +540,11 @@ static void parse_comment( char* in, M3u_Playlist::info_t& info, char *& last_co
 		last_comment_value[ len + 2 + field_len ] = 0;
 		return;
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	if ( first )
 		info.title = field;
 }
@@ -390,12 +560,21 @@ blargg_err_t M3u_Playlist::parse_()
 	info_.ripping   = "";
 	info_.tagging   = "";
 	info_.copyright = "";
+<<<<<<< HEAD
 	
 	int const CR = 13;
 	int const LF = 10;
 	
 	data.end() [-1] = LF; // terminate input
 	
+=======
+
+	int const CR = 13;
+	int const LF = 10;
+
+	data.end() [-1] = LF; // terminate input
+
+>>>>>>> db7344ebf (abc)
 	first_error_ = 0;
 	bool first_comment = true;
 	int line  = 0;
@@ -410,13 +589,21 @@ blargg_err_t M3u_Playlist::parse_()
 		while ( *in != CR && *in != LF )
 		{
 			if ( !*in )
+<<<<<<< HEAD
 				return blargg_err_file_type;
+=======
+				return "Not an m3u playlist";
+>>>>>>> db7344ebf (abc)
 			in++;
 		}
 		if ( in [0] == CR && in [1] == LF ) // treat CR,LF as a single line
 			*in++ = 0;
 		*in++ = 0;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		// parse line
 		if ( *begin == '#' )
 		{
@@ -427,7 +614,11 @@ blargg_err_t M3u_Playlist::parse_()
 		{
 			if ( (int) entries.size() <= count )
 				RETURN_ERR( entries.resize( count * 2 + 64 ) );
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> db7344ebf (abc)
 			if ( !parse_line( begin, entries [count] ) )
 				count++;
 			else if ( !first_error_ )
@@ -437,12 +628,20 @@ blargg_err_t M3u_Playlist::parse_()
 		else last_comment_value = 0;
 	}
 	if ( count <= 0 )
+<<<<<<< HEAD
 		return blargg_err_file_type;
 	
 	// Treat first comment as title only if another field is also specified
 	if ( !(info_.artist [0] | info_.composer [0] | info_.date [0] | info_.engineer [0] | info_.ripping [0] | info_.sequencer [0] | info_.tagging [0] | info_.copyright[0]) )
 		info_.title = "";
 	
+=======
+		return "Not an m3u playlist";
+
+	if ( !(info_.composer [0] | info_.engineer [0] | info_.ripping [0] | info_.tagging [0]) )
+		info_.title = "";
+
+>>>>>>> db7344ebf (abc)
 	return entries.resize( count );
 }
 
@@ -450,7 +649,14 @@ blargg_err_t M3u_Playlist::parse()
 {
 	blargg_err_t err = parse_();
 	if ( err )
+<<<<<<< HEAD
 		clear_();
+=======
+	{
+		entries.clear();
+		data.clear();
+	}
+>>>>>>> db7344ebf (abc)
 	return err;
 }
 
@@ -461,7 +667,11 @@ blargg_err_t M3u_Playlist::load( Data_Reader& in )
 	return parse();
 }
 
+<<<<<<< HEAD
 blargg_err_t M3u_Playlist::load( const char path [] )
+=======
+blargg_err_t M3u_Playlist::load( const char* path )
+>>>>>>> db7344ebf (abc)
 {
 	GME_FILE_READER in;
 	RETURN_ERR( in.open( path ) );

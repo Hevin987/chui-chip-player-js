@@ -12,7 +12,11 @@ TEST(test_api_load_module_from_memory)
 	int ret, size;
 	FILE *f;
 
+<<<<<<< HEAD
 	buffer = malloc(BUFFER_SIZE);
+=======
+	buffer = (unsigned char *) malloc(BUFFER_SIZE);
+>>>>>>> db7344ebf (abc)
 	fail_unless(buffer != NULL, "buffer allocation");
 
 	ctx = xmp_create_context();

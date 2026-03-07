@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 #include "test.h"
 #include "../src/mixer.h"
 #include "../src/virtual.h"
+=======
+#include "../src/common.h"
+#include "../src/mixer.h"
+#include "../src/player.h"
+#include "../src/virtual.h"
+#include "test.h"
+>>>>>>> db7344ebf (abc)
 
 TEST(test_api_smix_play_instrument)
 {
@@ -8,6 +16,10 @@ TEST(test_api_smix_play_instrument)
 	struct context_data *ctx;
 	struct player_data *p;
 	struct mixer_voice *vi;
+<<<<<<< HEAD
+=======
+	struct channel_data *xc;
+>>>>>>> db7344ebf (abc)
 	int voc, ret;
 
 	opaque = xmp_create_context();
@@ -56,6 +68,32 @@ TEST(test_api_smix_play_instrument)
 	fail_unless(vi->vol / 16 == 40, "set volume");
 	fail_unless(vi->pos0 ==  0, "sample position");
 
+<<<<<<< HEAD
+=======
+	/* key off, fade, and cut */
+	xc = &p->xc_data[ctx->m.mod.chn];
+	ret = xmp_smix_play_instrument(opaque, 3, XMP_KEY_OFF, 0, 0);
+	fail_unless(ret == 0, "play key off");
+	xmp_play_frame(opaque);
+
+	fail_unless(vi->flags & VOICE_RELEASE, "voice release");
+	fail_unless(!TEST_NOTE(NOTE_FADEOUT), "no note fadeout");
+	fail_unless(xc->period, "no note end");
+
+	ret = xmp_smix_play_instrument(opaque, 3, XMP_KEY_FADE, 0, 0);
+	fail_unless(ret == 0, "play key fade");
+	xmp_play_frame(opaque);
+
+	fail_unless(TEST_NOTE(NOTE_FADEOUT), "note fadeout");
+	fail_unless(xc->period, "no note end");
+
+	ret = xmp_smix_play_instrument(opaque, 3, XMP_KEY_CUT, 0, 0);
+	fail_unless(ret == 0, "play key cut");
+	xmp_play_frame(opaque);
+
+	fail_unless(!xc->period, "note end");
+
+>>>>>>> db7344ebf (abc)
 	xmp_release_module(opaque);
 	xmp_end_smix(opaque);
 	xmp_free_context(opaque);

@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -58,7 +62,11 @@ static int gdm_test(HIO_HANDLE *f, char *t, const int start)
 
 
 
+<<<<<<< HEAD
 void fix_effect(uint8 *fxt, uint8 *fxp)
+=======
+static void gdm_translate_effect(uint8 *fxt, uint8 *fxp)
+>>>>>>> db7344ebf (abc)
 {
 	int h, l;
 	switch (*fxt) {
@@ -209,7 +217,10 @@ static int gdm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	for (i = 0; i < 32; i++) {
 		if (panmap[i] == 255) {
 			panmap[i] = 8;
+<<<<<<< HEAD
 			mod->xxc[i].vol = 0;
+=======
+>>>>>>> db7344ebf (abc)
 			mod->xxc[i].flg |= XMP_CHANNEL_MUTE;
 		} else if (panmap[i] == 16) {
 			panmap[i] = 8;
@@ -270,8 +281,15 @@ static int gdm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		pan = hio_read8(f);
 
 		mod->xxi[i].sub[0].vol = vol > 0x40 ? 0x40 : vol;
+<<<<<<< HEAD
 		mod->xxi[i].sub[0].pan = pan > 15 ? 0x80 : 0x80 + (pan - 8) * 16;
 		libxmp_c2spd_to_note(c4spd, &mod->xxi[i].sub[0].xpo, &mod->xxi[i].sub[0].fin);
+=======
+		mod->xxi[i].sub[0].pan = pan > 15 ? XMP_INST_NO_DEFAULT_PAN :
+						    0x80 + (pan - 8) * 16;
+		libxmp_c2spd_to_note(c4spd, &mod->xxi[i].sub[0].xpo,
+					    &mod->xxi[i].sub[0].fin);
+>>>>>>> db7344ebf (abc)
 
 		mod->xxi[i].sub[0].sid = i;
 		mod->xxs[i].flg = 0;
@@ -415,13 +433,21 @@ static int gdm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 						event->fxt = k & 0x1f;
 						event->fxp = hio_read8(f);
 						len--;
+<<<<<<< HEAD
 						fix_effect(&event->fxt, &event->fxp);
+=======
+						gdm_translate_effect(&event->fxt, &event->fxp);
+>>>>>>> db7344ebf (abc)
 						break;
 					case 1:
 						event->f2t = k & 0x1f;
 						event->f2p = hio_read8(f);
 						len--;
+<<<<<<< HEAD
 						fix_effect(&event->f2t, &event->f2p);
+=======
+						gdm_translate_effect(&event->f2t, &event->f2p);
+>>>>>>> db7344ebf (abc)
 						break;
 					case 2:
 						hio_read8(f);
@@ -445,5 +471,13 @@ static int gdm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	m->quirk |= QUIRK_ARPMEM | QUIRK_FINEFX;
 
+<<<<<<< HEAD
+=======
+	/* BWSB actually gets several aspects of this wrong, but this
+	 * seems to be the intent. No original GDMs exist so it's not
+	 * likely there's a reason to simulate its mistakes here. */
+	m->flow_mode = FLOW_MODE_ST3_321;
+
+>>>>>>> db7344ebf (abc)
 	return 0;
 }

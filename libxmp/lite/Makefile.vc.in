@@ -1,13 +1,31 @@
 # Visual Studio makefile for Windows:
 #	nmake -f Makefile.vc
 #
+<<<<<<< HEAD
 CC	= cl
 CFLAGS	= /O2 /W3 /MD /Iinclude\libxmp-lite /DBUILDING_DLL /DWIN32 \
 	  /D_USE_MATH_DEFINES /D_CRT_SECURE_NO_WARNINGS /DLIBXMP_CORE_PLAYER /DLIBXMP_NO_PROWIZARD /DLIBXMP_NO_DEPACKERS
+=======
+# To disable Impulse Tracker support :
+#	nmake -f Makefile.vc DISABLE_IT=1
+#
+CC	= cl
+CFLAGS	= /O2 /W3 /MD /Iinclude\libxmp-lite /DBUILDING_DLL /DWIN32 \
+	  /D_USE_MATH_DEFINES /D_CRT_SECURE_NO_WARNINGS /DLIBXMP_CORE_PLAYER
+#CFLAGS	= $(CFLAGS) /DDEBUG
+>>>>>>> db7344ebf (abc)
 LD	= link
 LDFLAGS	= /DLL /RELEASE /OUT:$(DLL)
 DLL	= libxmp-lite.dll
 
+<<<<<<< HEAD
+=======
+DISABLE_IT	= 0
+!if $(DISABLE_IT)==1
+CFLAGS	= $(CFLAGS) /DLIBXMP_CORE_DISABLE_IT
+!endif
+
+>>>>>>> db7344ebf (abc)
 OBJS	= @OBJS@
 
 TEST	= src\md5.obj test\test.obj
@@ -17,6 +35,7 @@ TEST	= src\md5.obj test\test.obj
 
 all: $(DLL)
 
+<<<<<<< HEAD
 $(DLL): $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS)
 
@@ -24,6 +43,20 @@ clean:
 	del $(OBJS) $(DLL) *.lib *.exp
 	del $(TEST)
 	del test\*.dll test\*.exe
+=======
+# use a temporary response file
+$(DLL): $(OBJS)
+	$(LD) $(LDFLAGS) @<<libxmp-lite.rsp
+		$(OBJS)
+<<
+
+clean:
+	-del src\*.obj
+	-del src\loaders\*.obj
+	-del test\*.obj
+	-del test\*.dll test\*.exe
+	-del *.dll *.lib *.exp
+>>>>>>> db7344ebf (abc)
 
 check: $(TEST)
 	$(LD) /RELEASE /OUT:test\libxmp-lite-test.exe $(TEST) libxmp-lite.lib

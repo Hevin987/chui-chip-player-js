@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2022 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -33,7 +37,10 @@
 	if (err != NULL) *err = (x);	\
 } while (0)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)
 uint8 read8(FILE *f, int *err)
 {
 	int a;
@@ -103,7 +110,11 @@ uint32 read24l(FILE *f, int *err)
 
     error:
 	set_error(ferror(f) ? errno : EOF);
+<<<<<<< HEAD
 	return 0xffffff;
+=======
+	return 0xffffffff;
+>>>>>>> db7344ebf (abc)
 }
 
 uint32 read24b(FILE *f, int *err)
@@ -119,7 +130,11 @@ uint32 read24b(FILE *f, int *err)
 
     error:
 	set_error(ferror(f) ? errno : EOF);
+<<<<<<< HEAD
 	return 0xffffff;
+=======
+	return 0xffffffff;
+>>>>>>> db7344ebf (abc)
 }
 
 uint32 read32l(FILE *f, int *err)

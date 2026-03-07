@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,7 +26,13 @@
 
 #include "loader.h"
 #include "mod.h"
+<<<<<<< HEAD
 #include "../period.h"
+=======
+#include "../path.h"
+#include "../period.h"
+#include "../rng.h"
+>>>>>>> db7344ebf (abc)
 
 static int flt_test(HIO_HANDLE *, char *, const int);
 static int flt_load(struct module_data *, HIO_HANDLE *, const int);
@@ -118,7 +128,12 @@ static int read_am_instrument(struct module_data *m, HIO_HANDLE *nt, int i)
 	struct xmp_envelope *vol_env = &xxi->aei;
 	struct xmp_envelope *freq_env = &xxi->fei;
 	struct am_instrument am;
+<<<<<<< HEAD
 	char *wave;
+=======
+	struct rng_state rng;
+	const int8 *wave;
+>>>>>>> db7344ebf (abc)
 	int a, b;
 	int8 am_noise[1024];
 
@@ -154,7 +169,11 @@ static int read_am_instrument(struct module_data *m, HIO_HANDLE *nt, int i)
 		xxs->len = 32;
 		xxs->lps = 0;
 		xxs->lpe = 32;
+<<<<<<< HEAD
 		wave = (char *)&am_waveform[am.wf][0];
+=======
+		wave = &am_waveform[am.wf][0];
+>>>>>>> db7344ebf (abc)
 	} else {
 		int j;
 
@@ -162,10 +181,18 @@ static int read_am_instrument(struct module_data *m, HIO_HANDLE *nt, int i)
 		xxs->lps = 0;
 		xxs->lpe = 1024;
 
+<<<<<<< HEAD
 		for (j = 0; j < 1024; j++)
 			am_noise[j] = rand() % 256;
 
 		wave = (char *)&am_noise[0];
+=======
+		libxmp_init_random(&rng);
+		for (j = 0; j < 1024; j++)
+			am_noise[j] = libxmp_get_random(&rng, 256);
+
+		wave = &am_noise[0];
+>>>>>>> db7344ebf (abc)
 	}
 
 	xxs->flg = XMP_SAMPLE_LOOP;
@@ -287,6 +314,18 @@ static int read_am_instrument(struct module_data *m, HIO_HANDLE *nt, int i)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static HIO_HANDLE *flt_check_sample_file(struct libxmp_path *sp,
+					 size_t ext_pos, const char *ext)
+{
+	if (libxmp_path_suffix_at(sp, ext_pos, ext) != 0)
+		return NULL;
+
+	return hio_open(sp->path, "rb");
+}
+
+>>>>>>> db7344ebf (abc)
 static int flt_load(struct module_data *m, HIO_HANDLE * f, const int start)
 {
 	struct xmp_module *mod = &m->mod;
@@ -295,7 +334,12 @@ static int flt_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	struct mod_header mh;
 	uint8 mod_event[4];
 	const char *tracker;
+<<<<<<< HEAD
 	char filename[1024];
+=======
+	struct libxmp_path sp;
+	size_t sp_length;
+>>>>>>> db7344ebf (abc)
 	char buf[16];
 	HIO_HANDLE *nt;
 	int am_synth;
@@ -304,6 +348,7 @@ static int flt_load(struct module_data *m, HIO_HANDLE * f, const int start)
 
 	/* See if we have the synth parameters file */
 	am_synth = 0;
+<<<<<<< HEAD
 	snprintf(filename, 1024, "%s%s.NT", m->dirname, m->basename);
 	if ((nt = hio_open(filename, "rb")) == NULL) {
 		snprintf(filename, 1024, "%s%s.nt", m->dirname, m->basename);
@@ -317,6 +362,25 @@ static int flt_load(struct module_data *m, HIO_HANDLE * f, const int start)
 			}
 		}
 	}
+=======
+	libxmp_path_init(&sp);
+	if (libxmp_path_join(&sp, m->dirname, m->basename) != 0) {
+		return -1;
+	}
+	sp_length = sp.length;
+
+	nt = flt_check_sample_file(&sp, sp_length, ".NT");
+	if (nt == NULL) {
+		nt = flt_check_sample_file(&sp, sp_length, ".nt");
+	}
+	if (nt == NULL) {
+		nt = flt_check_sample_file(&sp, sp_length, ".AS");
+	}
+	if (nt == NULL) {
+		nt = flt_check_sample_file(&sp, sp_length, ".as");
+	}
+	libxmp_path_free(&sp);
+>>>>>>> db7344ebf (abc)
 
 	tracker = "Startrekker";
 
@@ -396,7 +460,11 @@ static int flt_load(struct module_data *m, HIO_HANDLE * f, const int start)
 		xxs->flg = mh.ins[i].loop_size > 1 ? XMP_SAMPLE_LOOP : 0;
 		sub->fin = (int8) (mh.ins[i].finetune << 4);
 		sub->vol = mh.ins[i].volume;
+<<<<<<< HEAD
 		sub->pan = 0x80;
+=======
+		sub->pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		sub->sid = i;
 		xxi->rls = 0xfff;
 
@@ -418,8 +486,13 @@ static int flt_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	 *  format possible, since it can be loaded in a normal 4 channel
 	 *  tracker if you should want to rip sounds or patterns. So, in a
 	 *  8 track FLT8 module, patterns 00 and 01 is "really" pattern 00.
+<<<<<<< HEAD
 	 *  Patterns 02 and 03 together is "really" pattern 01. Thats it.
 	 *  Oh well, I didnt have the time to implement all effect commands
+=======
+	 *  Patterns 02 and 03 together is "really" pattern 01. That's it.
+	 *  Oh well, I didn't have the time to implement all effect commands
+>>>>>>> db7344ebf (abc)
 	 *  either, so some FLT8 modules would play back badly (I think
 	 *  especially the portamento command uses a different "scale" than
 	 *  the normal portamento command, that would be hard to patch).

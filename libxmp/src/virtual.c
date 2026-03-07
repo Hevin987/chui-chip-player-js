@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2025 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,6 +25,10 @@
  */
 
 #include "common.h"
+<<<<<<< HEAD
+=======
+#include "player.h"
+>>>>>>> db7344ebf (abc)
 #include "virtual.h"
 #include "mixer.h"
 
@@ -30,10 +38,13 @@
 
 #define	FREE	-1
 
+<<<<<<< HEAD
 /* For virt_pastnote() */
 void libxmp_player_set_release(struct context_data *, int);
 void libxmp_player_set_fadeout(struct context_data *, int);
 
+=======
+>>>>>>> db7344ebf (abc)
 
 /* Get parent channel */
 int libxmp_virt_getroot(struct context_data *ctx, int chn)
@@ -52,13 +63,46 @@ int libxmp_virt_getroot(struct context_data *ctx, int chn)
 	return vi->root;
 }
 
+<<<<<<< HEAD
+=======
+static void do_virt_resetvoice(struct mixer_voice *vi)
+{
+#ifdef LIBXMP_PAULA_SIMULATOR
+	struct paula_state *paula;
+#endif
+	int anticlick_l, anticlick_r;
+	int flags;
+
+	/* Preserve anticlick decay state through note cut. */
+	anticlick_l = vi->sleft;
+	anticlick_r = vi->sright;
+	flags = vi->flags & ANTICLICK;
+#ifdef LIBXMP_PAULA_SIMULATOR
+	paula = vi->paula;
+#endif
+
+	memset(vi, 0, sizeof(struct mixer_voice));
+
+	vi->sleft = anticlick_l;
+	vi->sright = anticlick_r;
+	vi->flags = flags;
+#ifdef LIBXMP_PAULA_SIMULATOR
+	vi->paula = paula;
+#endif
+	vi->chn = vi->root = FREE;
+}
+
+>>>>>>> db7344ebf (abc)
 void libxmp_virt_resetvoice(struct context_data *ctx, int voc, int mute)
 {
 	struct player_data *p = &ctx->p;
 	struct mixer_voice *vi = &p->virt.voice_array[voc];
+<<<<<<< HEAD
 #ifdef LIBXMP_PAULA_SIMULATOR
 	struct paula_state *paula;
 #endif
+=======
+>>>>>>> db7344ebf (abc)
 
 	if ((uint32)voc >= p->virt.maxvoc) {
 		return;
@@ -71,6 +115,7 @@ void libxmp_virt_resetvoice(struct context_data *ctx, int voc, int mute)
 	p->virt.virt_used--;
 	p->virt.virt_channel[vi->root].count--;
 	p->virt.virt_channel[vi->chn].map = FREE;
+<<<<<<< HEAD
 #ifdef LIBXMP_PAULA_SIMULATOR
 	paula = vi->paula;
 #endif
@@ -79,6 +124,10 @@ void libxmp_virt_resetvoice(struct context_data *ctx, int voc, int mute)
 	vi->paula = paula;
 #endif
 	vi->chn = vi->root = FREE;
+=======
+
+	do_virt_resetvoice(vi);
+>>>>>>> db7344ebf (abc)
 }
 
 /* virt_on (number of tracks) */
@@ -156,16 +205,25 @@ void libxmp_virt_off(struct context_data *ctx)
 {
 	struct player_data *p = &ctx->p;
 #ifdef LIBXMP_PAULA_SIMULATOR
+<<<<<<< HEAD
 	struct module_data *m = &ctx->m;
+=======
+>>>>>>> db7344ebf (abc)
 	int i;
 #endif
 
 #ifdef LIBXMP_PAULA_SIMULATOR
 	/* Free Paula simulator state */
+<<<<<<< HEAD
 	if (IS_AMIGA_MOD()) {
 		for (i = 0; i < p->virt.maxvoc; i++) {
 			free(p->virt.voice_array[i].paula);
 		}
+=======
+	/* Player type may have been changed; always free this. */
+	for (i = 0; i < p->virt.maxvoc; i++) {
+		free(p->virt.voice_array[i].paula);
+>>>>>>> db7344ebf (abc)
 	}
 #endif
 
@@ -196,6 +254,7 @@ void libxmp_virt_reset(struct context_data *ctx)
 
 	for (i = 0; i < p->virt.maxvoc; i++) {
 		struct mixer_voice *vi = &p->virt.voice_array[i];
+<<<<<<< HEAD
 #ifdef LIBXMP_PAULA_SIMULATOR
 		struct paula_state *paula = vi->paula;
 #endif
@@ -205,6 +264,9 @@ void libxmp_virt_reset(struct context_data *ctx)
 #endif
 		vi->chn = FREE;
 		vi->root = FREE;
+=======
+		do_virt_resetvoice(vi);
+>>>>>>> db7344ebf (abc)
 	}
 
 	for (i = 0; i < p->virt.virt_channels; i++) {
@@ -293,15 +355,19 @@ int libxmp_virt_mapchannel(struct context_data *ctx, int chn)
 void libxmp_virt_resetchannel(struct context_data *ctx, int chn)
 {
 	struct player_data *p = &ctx->p;
+<<<<<<< HEAD
 	struct mixer_voice *vi;
 #ifdef LIBXMP_PAULA_SIMULATOR
 	struct paula_state *paula;
 #endif
+=======
+>>>>>>> db7344ebf (abc)
 	int voc;
 
 	if ((voc = map_virt_channel(p, chn)) < 0)
 		return;
 
+<<<<<<< HEAD
 	libxmp_mixer_setvol(ctx, voc, 0);
 
 	p->virt.virt_used--;
@@ -317,6 +383,9 @@ void libxmp_virt_resetchannel(struct context_data *ctx, int chn)
 	vi->paula = paula;
 #endif
 	vi->chn = vi->root = FREE;
+=======
+	libxmp_virt_resetvoice(ctx, voc, 1);
+>>>>>>> db7344ebf (abc)
 }
 
 void libxmp_virt_setvol(struct context_data *ctx, int chn, int vol)
@@ -352,6 +421,21 @@ void libxmp_virt_release(struct context_data *ctx, int chn, int rel)
 	libxmp_mixer_release(ctx, voc, rel);
 }
 
+<<<<<<< HEAD
+=======
+void libxmp_virt_reverse(struct context_data *ctx, int chn, int rev)
+{
+	struct player_data *p = &ctx->p;
+	int voc;
+
+	if ((voc = map_virt_channel(p, chn)) < 0) {
+		return;
+	}
+
+	libxmp_mixer_reverse(ctx, voc, rev);
+}
+
+>>>>>>> db7344ebf (abc)
 void libxmp_virt_setpan(struct context_data *ctx, int chn, int pan)
 {
 	struct player_data *p = &ctx->p;
@@ -433,7 +517,11 @@ void libxmp_virt_setnna(struct context_data *ctx, int chn, int nna)
 }
 
 static void check_dct(struct context_data *ctx, int i, int chn, int ins,
+<<<<<<< HEAD
 			int smp, int note, int nna, int dct, int dca)
+=======
+			int smp, int key, int nna, int dct, int dca)
+>>>>>>> db7344ebf (abc)
 {
 	struct player_data *p = &ctx->p;
 	struct mixer_voice *vi = &p->virt.voice_array[i];
@@ -444,15 +532,24 @@ static void check_dct(struct context_data *ctx, int i, int chn, int ins,
 	if (vi->root == chn && vi->ins == ins) {
 
 		if (nna == XMP_INST_NNA_CUT) {
+<<<<<<< HEAD
 		    libxmp_virt_resetvoice(ctx, i, 1);
 		    return;
+=======
+			libxmp_virt_resetvoice(ctx, i, 1);
+			return;
+>>>>>>> db7344ebf (abc)
 		}
 
 		vi->act = nna;
 
 		if ((dct == XMP_INST_DCT_INST) ||
 		    (dct == XMP_INST_DCT_SMP && vi->smp == smp) ||
+<<<<<<< HEAD
 		    (dct == XMP_INST_DCT_NOTE && vi->note == note)) {
+=======
+		    (dct == XMP_INST_DCT_NOTE && vi->key == key)) {
+>>>>>>> db7344ebf (abc)
 
 			if (nna == XMP_INST_NNA_OFF && dca == XMP_INST_DCA_FADE) {
 				vi->act = VIRT_ACTION_OFF;
@@ -483,7 +580,11 @@ void libxmp_virt_setnote(struct context_data *ctx, int chn, int note)
 }
 
 int libxmp_virt_setpatch(struct context_data *ctx, int chn, int ins, int smp,
+<<<<<<< HEAD
 		    			int note, int nna, int dct, int dca)
+=======
+			 int note, int key, int nna, int dct, int dca)
+>>>>>>> db7344ebf (abc)
 {
 	struct player_data *p = &ctx->p;
 	int voc, vfree;
@@ -501,7 +602,11 @@ int libxmp_virt_setpatch(struct context_data *ctx, int chn, int ins, int smp,
 		int i;
 
 		for (i = 0; i < p->virt.maxvoc; i++) {
+<<<<<<< HEAD
 			check_dct(ctx, i, chn, ins, smp, note, nna, dct, dca);
+=======
+			check_dct(ctx, i, chn, ins, smp, key, nna, dct, dca);
+>>>>>>> db7344ebf (abc)
 		}
 	}
 #endif
@@ -539,10 +644,49 @@ int libxmp_virt_setpatch(struct context_data *ctx, int chn, int ins, int smp,
 	libxmp_mixer_setnote(ctx, voc, note);
 	p->virt.voice_array[voc].ins = ins;
 	p->virt.voice_array[voc].act = nna;
+<<<<<<< HEAD
+=======
+	p->virt.voice_array[voc].key = key;
+>>>>>>> db7344ebf (abc)
 
 	return chn;
 }
 
+<<<<<<< HEAD
+=======
+int libxmp_virt_queuepatch(struct context_data *ctx, int chn, int ins, int smp, int note)
+{
+	/* Protracker 1/2 implements instrument swap in a strange way--the
+	 * volume/finetune take effect immediately but the sample change
+	 * does not apply until the current playing sample reaches the end of
+	 * its loop (or stops, if it's a one-off). */
+	struct player_data *p = &ctx->p;
+	int voc;
+
+	if ((uint32)chn >= p->virt.virt_channels) {
+		return -1;
+	}
+
+	if (ins < 0) {
+		smp = -1;
+	}
+
+	voc = p->virt.virt_channel[chn].map;
+	if (voc > FREE) {
+		libxmp_mixer_queuepatch(ctx, voc, smp);
+		if (ins >= 0) {
+			p->virt.voice_array[voc].ins = ins;
+		}
+		return chn;
+	}
+	/* Original sample stopped--start a new note. */
+	if (smp < 0) {
+		return -1;
+	}
+	return libxmp_virt_setpatch(ctx, chn, ins, smp, note, 0, 0, 0, 0);
+}
+
+>>>>>>> db7344ebf (abc)
 void libxmp_virt_setperiod(struct context_data *ctx, int chn, double period)
 {
 	struct player_data *p = &ctx->p;

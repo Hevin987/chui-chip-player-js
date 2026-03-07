@@ -6,7 +6,11 @@
 
 #include "blargg_endian.h"
 
+<<<<<<< HEAD
 typedef blargg_long cpu_time_t;
+=======
+typedef int32_t cpu_time_t;
+>>>>>>> db7344ebf (abc)
 
 // must be defined by caller
 void ay_cpu_out( class Ay_Cpu*, cpu_time_t, unsigned addr, int data );
@@ -16,6 +20,7 @@ class Ay_Cpu {
 public:
 	// Clear all registers and keep pointer to 64K memory passed in
 	void reset( void* mem_64k );
+<<<<<<< HEAD
 	
 	// Run until specified time is reached. Returns true if suspicious/unsupported
 	// instruction was encountered at any point during run.
@@ -28,15 +33,36 @@ public:
 	void set_time( cpu_time_t t )       { state->time = t - state->base; }
 	void adjust_time( int delta )       { state->time += delta; }
 	
+=======
+
+	// Run until specified time is reached. Returns true if suspicious/unsupported
+	// instruction was encountered at any point during run.
+	bool run( cpu_time_t end_time );
+
+	// Time of beginning of next instruction
+	cpu_time_t time() const             { return state->time + state->base; }
+
+	// Alter current time. Not supported during run() call.
+	void set_time( cpu_time_t t )       { state->time = t - state->base; }
+	void adjust_time( int delta )       { state->time += delta; }
+
+>>>>>>> db7344ebf (abc)
 	#if BLARGG_BIG_ENDIAN
 		struct regs_t { uint8_t b, c, d, e, h, l, flags, a; };
 	#else
 		struct regs_t { uint8_t c, b, e, d, l, h, a, flags; };
 	#endif
+<<<<<<< HEAD
 	BOOST_STATIC_ASSERT( sizeof (regs_t) == 8 );
 	
 	struct pairs_t { uint16_t bc, de, hl, fa; };
 	
+=======
+	static_assert( sizeof (regs_t) == 8, "Invalid register size, padding issue?" );
+
+	struct pairs_t { uint16_t bc, de, hl, fa; };
+
+>>>>>>> db7344ebf (abc)
 	// Registers are not updated until run() returns
 	struct registers_t {
 		uint16_t pc;
@@ -58,10 +84,17 @@ public:
 		uint8_t im;
 	};
 	//registers_t r; (below for efficiency)
+<<<<<<< HEAD
 	
 	// can read this far past end of memory
 	enum { cpu_padding = 0x100 };
 	
+=======
+
+	// can read this far past end of memory
+	enum { cpu_padding = 0x100 };
+
+>>>>>>> db7344ebf (abc)
 public:
 	Ay_Cpu();
 private:

@@ -4,7 +4,11 @@
  * Checksum added by Sipos Attila <h430827@stud.u-szeged.hu>
  * Rewritten for libxmp by Claudio Matsuoka
  *
+<<<<<<< HEAD
  * Copyright (C) 2013 Claudio Matsuoka
+=======
+ * Copyright (C) 2013-2024 Claudio Matsuoka
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -35,7 +39,11 @@ struct io {
 	int srclen;
 };
 
+<<<<<<< HEAD
 static uint8 ctable[] = {
+=======
+static const uint8 ctable[] = {
+>>>>>>> db7344ebf (abc)
 	2, 3, 4, 5, 6, 7, 8, 0,
 	3, 2, 4, 5, 6, 7, 8, 0,
 	4, 3, 5, 2, 6, 7, 8, 0,
@@ -380,7 +388,11 @@ static int test_sqsh(unsigned char *b)
 	return memcmp(b, "XPKF", 4) == 0 && memcmp(b + 8, "SQSH", 4) == 0;
 }
 
+<<<<<<< HEAD
 static int decrunch_sqsh(HIO_HANDLE * f, void ** outbuf, long inlen, long * outlen)
+=======
+static int decrunch_sqsh(HIO_HANDLE * f, void ** outbuf, long * outlen)
+>>>>>>> db7344ebf (abc)
 {
 	unsigned char *src, *dest;
 	int srclen, destlen;
@@ -428,7 +440,11 @@ static int decrunch_sqsh(HIO_HANDLE * f, void ** outbuf, long inlen, long * outl
 	return -1;
 }
 
+<<<<<<< HEAD
 struct depacker libxmp_depacker_sqsh = {
+=======
+const struct depacker libxmp_depacker_sqsh = {
+>>>>>>> db7344ebf (abc)
 	test_sqsh,
 	NULL,
 	decrunch_sqsh

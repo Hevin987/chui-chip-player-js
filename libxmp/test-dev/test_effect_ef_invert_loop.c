@@ -5,6 +5,7 @@ TEST(test_effect_ef_invert_loop)
 {
 	xmp_context opaque;
 	struct context_data *ctx;
+<<<<<<< HEAD
 	struct mixer_data *s;
 	struct module_data *m;
 	struct xmp_frame_info info;
@@ -15,6 +16,13 @@ TEST(test_effect_ef_invert_loop)
 	opaque = xmp_create_context();
 	ctx = (struct context_data *)opaque;
 	s = &ctx->s;
+=======
+	struct module_data *m;
+	HIO_HANDLE *h;
+
+	opaque = xmp_create_context();
+	ctx = (struct context_data *)opaque;
+>>>>>>> db7344ebf (abc)
 	m = &ctx->m;
 
 	create_simple_module(ctx, 2, 2);
@@ -31,6 +39,7 @@ TEST(test_effect_ef_invert_loop)
 
 	new_event(ctx, 0, 0, 0, 49, 1, 0, 0x0e, 0xfe, 0x0f, 1);
 
+<<<<<<< HEAD
 #ifndef MIXER_GENERATE
 	f = fopen("data/invloop.data", "r");
 #else
@@ -57,6 +66,13 @@ TEST(test_effect_ef_invert_loop)
 #ifdef MIXER_GENERATE
 	fail_unless(0, "MIXER_GENERATE is enabled");
 #endif
+=======
+	xmp_start_player(opaque, 16000, XMP_FORMAT_MONO);
+	xmp_set_player(opaque, XMP_PLAYER_INTERP, XMP_INTERP_NEAREST);
+
+	compare_mixer_samples_ext(ctx, "data/invloop.data", 0, 6);
+
+>>>>>>> db7344ebf (abc)
 	xmp_end_player(opaque);
 	xmp_release_module(opaque);
 	xmp_free_context(opaque);

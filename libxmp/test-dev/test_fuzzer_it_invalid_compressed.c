@@ -19,6 +19,19 @@ TEST(test_fuzzer_it_invalid_compressed)
 	ret = xmp_load_module(opaque, "data/f/load_it_invalid_compressed2.it");
 	fail_unless(ret == 0, "module load");
 
+<<<<<<< HEAD
+=======
+	/* This input sets the word length to 32, which can cause invalid shift
+	 * exponents if not carefully implemented. */
+	ret = xmp_load_module(opaque, "data/f/load_it_invalid_compressed3.it");
+	fail_unless(ret == 0, "module load");
+
+	/* This input sets the word length to 31, which can cause signed int
+	 * overflows if not carefully implemented. */
+	ret = xmp_load_module(opaque, "data/f/load_it_invalid_compressed4.it");
+	fail_unless(ret == 0, "module load");
+
+>>>>>>> db7344ebf (abc)
 	xmp_free_context(opaque);
 }
 END_TEST

@@ -2,7 +2,11 @@
  * Copyright (C) 1998 Sylvain "Asle" Chipaux
  * Copyright (C) 2006-2013 Sylvain "Asle" Chipaux
  * Modified by Claudio Matsuoka
+<<<<<<< HEAD
  * Modified in 2021 by Alice Rowan
+=======
+ * Modified in 2021-2024 by Alice Rowan
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -59,7 +63,12 @@ static uint8 set_event(uint8 *x, uint8 c1, uint8 c2, uint8 c3)
 	return b;
 }
 
+<<<<<<< HEAD
 #define track(p,c,r) tdata[((int)(p) * 4 + (c)) * 512 + (r) * 4]
+=======
+/* #define track(p,c,r) tdata[((int)(p) * 4 + (c)) * 512 + (r) * 4] */
+#define track(p,c,r) tdata[(int)(p) * 1024 + (r) * 16 + (c) * 4]
+>>>>>>> db7344ebf (abc)
 
 
 static int decode_pattern(HIO_HANDLE *in, int npat, uint8 *tdata, int taddr[128][4])
@@ -134,7 +143,11 @@ static int decode_pattern(HIO_HANDLE *in, int npat, uint8 *tdata, int taddr[128]
 		    lines = c2;
 		    hio_seek(in, -(((int)c3 << 8) + c4), SEEK_CUR);
 
+<<<<<<< HEAD
 		    for (l = 0; l <= lines; l++, k++) {
+=======
+		    for (l = 0; l <= lines && k < 64; l++, k++) {
+>>>>>>> db7344ebf (abc)
 			x = &track(i, j, k);
 
 			c1 = hio_read8(in);
@@ -175,6 +188,12 @@ static int decode_pattern(HIO_HANDLE *in, int npat, uint8 *tdata, int taddr[128]
 			    }
 			}
 
+<<<<<<< HEAD
+=======
+			if (k >= 64)
+			    break;
+
+>>>>>>> db7344ebf (abc)
 			x = &track(i, j, k);
 			set_event(x, c1, c2, c3);
 		    }
@@ -220,7 +239,11 @@ static int theplayer_depack(HIO_HANDLE *in, FILE *out, int version)
     int taddr[128][4];
     int sdata_addr = 0;
     /* int ssize = 0; */
+<<<<<<< HEAD
     int i, j, k;
+=======
+    int i, j;
+>>>>>>> db7344ebf (abc)
     int smp_size[31];
     int saddr[31];
     /*int unpacked_ssize;*/
@@ -349,6 +372,11 @@ static int theplayer_depack(HIO_HANDLE *in, FILE *out, int version)
     }
 
     /* write pattern data */
+<<<<<<< HEAD
+=======
+    fwrite(tdata, 1024, npat, out);
+    /*
+>>>>>>> db7344ebf (abc)
     for (i = 0; i < npat; i++) {
 	memset(buf, 0, sizeof(buf));
 	for (j = 0; j < 64; j++) {
@@ -357,6 +385,10 @@ static int theplayer_depack(HIO_HANDLE *in, FILE *out, int version)
 	}
 	fwrite(buf, 1024, 1, out);
     }
+<<<<<<< HEAD
+=======
+    */
+>>>>>>> db7344ebf (abc)
 
     free(tdata);
 
@@ -450,10 +482,17 @@ static int theplayer_test(const uint8 *data, char *t, int s, int version)
 
 	/* test pattern table */
 	len = 0;
+<<<<<<< HEAD
 	while (1) {
 		int pat = data[num_ins * 6 + 4 + num_pat * 8 + len];
 
 		if (pat == 0xff || len >= 128)
+=======
+	while (len < 128) {
+		int pat = data[num_ins * 6 + 4 + num_pat * 8 + len];
+
+		if (pat == 0xff)
+>>>>>>> db7344ebf (abc)
 			break;
 
 		if (version >= 0x60) {
@@ -652,7 +691,11 @@ void testP60A_pack (void)
 	/* test pattern table */
 	l = 0;
 	o = 0;
+<<<<<<< HEAD
 	/* first, test if we dont oversize the input file */
+=======
+	/* first, test if we don't oversize the input file */
+>>>>>>> db7344ebf (abc)
 	if ((k * 6 + 8 + m * 8) > in_size) {
 /*printf ( "8,0 Start:%ld\n" , start );*/
 		Test = BAD;

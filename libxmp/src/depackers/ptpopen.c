@@ -12,7 +12,13 @@
  * useful. -- Kurt Keller, Aug 2013
  */
 
+<<<<<<< HEAD
 #ifdef _WIN32
+=======
+#include "../common.h"
+
+#if defined(_WIN32 ) && !LIBXMP_UWP
+>>>>>>> db7344ebf (abc)
 
 #include "ptpopen.h"
 

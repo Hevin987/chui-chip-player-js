@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,7 +28,11 @@
  * Tue, 30 Jun 1998 20:23:11 +0200
  * Reported by John v/d Kamp <blade_@dds.nl>:
  * I have this song from Purple Motion called wcharts.s3m, the global
+<<<<<<< HEAD
  * volume was set to 0, creating a devide by 0 error in xmp. There should
+=======
+ * volume was set to 0, creating a divide by 0 error in xmp. There should
+>>>>>>> db7344ebf (abc)
  * be an extra test if it's 0 or not.
  *
  * Claudio's fix: global volume ignored
@@ -208,7 +216,11 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 {
 	struct xmp_module *mod = &m->mod;
 	int c, r, i;
+<<<<<<< HEAD
 	struct xmp_event *event = 0, dummy;
+=======
+	struct xmp_event *event = NULL, dummy;
+>>>>>>> db7344ebf (abc)
 	struct s3m_file_header sfh;
 	struct s3m_instrument_header sih;
 #ifndef LIBXMP_CORE_PLAYER
@@ -219,6 +231,10 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	uint8 n, b;
 	uint16 *pp_ins;			/* Parapointers to instruments */
 	uint16 *pp_pat;			/* Parapointers to patterns */
+<<<<<<< HEAD
+=======
+	int stereo;
+>>>>>>> db7344ebf (abc)
 	int ret;
 	uint8 buf[96]
 
@@ -283,15 +299,59 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	mod->bpm = sfh.it;
 	mod->chn = 0;
 
+<<<<<<< HEAD
 	for (i = 0; i < 32; i++) {
+=======
+	/* Mix volume and stereo flag conversion (reported by Saga Musix).
+	 * 1) Old format uses mix volume 0-7, and the stereo flag is 0x10.
+	 * 2) Newer ST3s unconditionally convert MV 0x02 and 0x12 to 0x20.
+	 */
+	m->mvolbase = 48;
+
+	if (sfh.ffi == 1) {
+		m->mvol = ((sfh.mv & 0xf) + 1) * 0x10;
+		stereo = sfh.mv & 0x10;
+		CLAMP(m->mvol, 0x10, 0x7f);
+
+	} else if (sfh.mv == 0x02 || sfh.mv == 0x12) {
+		m->mvol = 0x20;
+		stereo = sfh.mv & 0x10;
+
+	} else {
+		m->mvol = sfh.mv & S3M_MV_VOLUME;
+		stereo = sfh.mv & S3M_MV_STEREO;
+
+		if (m->mvol == 0) {
+			m->mvol = 48;		/* Default is 48 */
+		} else if (m->mvol < 16) {
+			m->mvol = 16;		/* Minimum is 16 */
+		}
+	}
+
+	/* "Note that in stereo, the mastermul is internally multiplied by
+	 * 11/8 inside the player since there is generally more room in the
+	 * output stream." Do the inverse to affect fewer modules. */
+	if (!stereo) {
+		m->mvol = m->mvol * 8 / 11;
+	}
+
+	for (i = 0; i < 32; i++) {
+		int x;
+>>>>>>> db7344ebf (abc)
 		if (sfh.chset[i] == S3M_CH_OFF)
 			continue;
 
 		mod->chn = i + 1;
 
+<<<<<<< HEAD
 		if (sfh.mv & 0x80) {	/* stereo */
 			int x = sfh.chset[i] & S3M_CH_PAN;
 			mod->xxc[i].pan = (x & 0x0f) < 8 ? 0x30 : 0xc0;
+=======
+		x = sfh.chset[i] & S3M_CH_NUMBER;
+		if (stereo && x < S3M_CH_ADLIB) {
+			mod->xxc[i].pan = x < S3M_CH_RIGHT ? 0x30 : 0xc0;
+>>>>>>> db7344ebf (abc)
 		} else {
 			mod->xxc[i].pan = 0x80;
 		}
@@ -342,6 +402,7 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 
 	/* Default pan positions */
 
+<<<<<<< HEAD
 	for (i = 0, sfh.dp -= 0xfc; !sfh.dp /* && n */  && (i < 32); i++) {
 		uint8 x = hio_read8(f);
 		if (x & S3M_PAN_SET) {
@@ -349,10 +410,22 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 		} else {
 			mod->xxc[i].pan =
 			    sfh.mv % 0x80 ? 0x30 + 0xa0 * (i & 1) : 0x80;
+=======
+	if (sfh.dp == 0xfc) {
+		for (i = 0; i < 32; i++) {
+			uint8 x = hio_read8(f);
+			if (x & S3M_PAN_SET) {
+				mod->xxc[i].pan = (x << 4) & 0xff;
+			}
+>>>>>>> db7344ebf (abc)
 		}
 	}
 
 	m->c4rate = C4_NTSC_RATE;
+<<<<<<< HEAD
+=======
+	m->flow_mode = FLOW_MODE_ST3_321;
+>>>>>>> db7344ebf (abc)
 
 	if (sfh.version == 0x1300) {
 		m->quirk |= QUIRK_VSALL;
@@ -361,6 +434,7 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 #ifndef LIBXMP_CORE_PLAYER
 	switch (sfh.version >> 12) {
 	case 1:
+<<<<<<< HEAD
 		snprintf(tracker_name, 40, "Scream Tracker %d.%02x",
 			 (sfh.version & 0x0f00) >> 8, sfh.version & 0xff);
 		m->quirk |= QUIRK_ST3BUGS;
@@ -370,6 +444,42 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 			 (sfh.version & 0x0f00) >> 8, sfh.version & 0xff);
 		break;
 	case 3:
+=======
+		if (sfh.version == 0x1320 && sfh.special == 0 && (sfh.ordnum & 0x0f) == 0 && sfh.uc == 0 && (sfh.flags & ~0x50) == 0 && sfh.dp == 0xfc) {
+			if ((sfh.mv & 0x80) != 0) {
+				strcpy(tracker_name, "ModPlug Tracker / OpenMPT 1.17");
+			} else {
+				/* MPT 1.0 alpha5 doesn't set the stereo flag, but MPT 1.0 alpha6 does. */
+				strcpy(tracker_name, "ModPlug Tracker 1.0 alpha");
+			}
+			m->flow_mode = FLOW_MODE_MPT_116;
+		} else if(sfh.version == 0x1320 && sfh.special == 0 && sfh.uc == 0 && sfh.flags == 0 && sfh.dp == 0) {
+			if (sfh.gv == 64 && sfh.mv == 48) {
+				strcpy(tracker_name, "PlayerPRO");
+			} else { // Always stereo
+				strcpy(tracker_name, "Velvet Studio");
+			}
+		} else {
+			snprintf(tracker_name, 40, "Scream Tracker %d.%02x",
+				 (sfh.version & 0x0f00) >> 8, sfh.version & 0xff);
+			m->quirk |= QUIRK_ST3BUGS;
+			if (sfh.version < 0x1303) {
+				m->flow_mode = FLOW_MODE_ST3_301;
+			}
+		}
+		break;
+	case 2:
+		if (sfh.version == 0x2013) {
+			strcpy(tracker_name, "PlayerPRO"); /* PlayerPRO on Intel doesn't byte-swap the tracker ID bytes */
+		} else {
+			snprintf(tracker_name, 40, "Imago Orpheus %d.%02x",
+				 (sfh.version & 0x0f00) >> 8, sfh.version & 0xff);
+			m->flow_mode = FLOW_MODE_ORPHEUS;
+		}
+		break;
+	case 3:
+		m->flow_mode = FLOW_MODE_IT_210;
+>>>>>>> db7344ebf (abc)
 		if (sfh.version == 0x3216) {
 			strcpy(tracker_name, "Impulse Tracker 2.14v3");
 		} else if (sfh.version == 0x3217) {
@@ -381,8 +491,20 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 		}
 		break;
 	case 5:
+<<<<<<< HEAD
 		snprintf(tracker_name, 40, "OpenMPT %d.%02x",
 			 (sfh.version & 0x0f00) >> 8, sfh.version & 0xff);
+=======
+		if (sfh.version == 0x5447) {
+			strcpy(tracker_name, "Graoumf Tracker");
+		} else if (sfh.rsvd2[0] || sfh.rsvd2[1]) {
+			snprintf(tracker_name, 40, "OpenMPT %d.%02x.%02x.%02x",
+				 (sfh.version & 0x0f00) >> 8, sfh.version & 0xff, sfh.rsvd2[1], sfh.rsvd2[0]);
+		} else {
+			snprintf(tracker_name, 40, "OpenMPT %d.%02x",
+				 (sfh.version & 0x0f00) >> 8, sfh.version & 0xff);
+		}
+>>>>>>> db7344ebf (abc)
 		m->quirk |= QUIRK_ST3BUGS;
 		break;
 	case 4:
@@ -472,8 +594,13 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 		}
 	}
 
+<<<<<<< HEAD
 	D_(D_INFO "Stereo enabled: %s", sfh.mv & 0x80 ? "yes" : "no");
 	D_(D_INFO "Pan settings: %s", sfh.dp ? "no" : "yes");
+=======
+	D_(D_INFO "Stereo enabled: %s", stereo ? "yes" : "no");
+	D_(D_INFO "Pan settings: %s", (sfh.dp == 0xfc) ? "yes" : "no");
+>>>>>>> db7344ebf (abc)
 
 	if (libxmp_init_instrument(m) < 0)
 		goto err3;
@@ -497,7 +624,11 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 		sub = &xxi->sub[0];
 
 		hio_seek(f, start + pp_ins[i] * 16, SEEK_SET);
+<<<<<<< HEAD
 		sub->pan = 0x80;
+=======
+		sub->pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		sub->sid = i;
 
 		if (hio_read(buf, 1, 80, f) != 80) {
@@ -574,9 +705,18 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 		xxs->lps = sih.loopbeg;
 		xxs->lpe = sih.loopend;
 
+<<<<<<< HEAD
 		xxs->flg = sih.flags & 1 ? XMP_SAMPLE_LOOP : 0;
 
 		if (sih.flags & 4) {
+=======
+		xxs->flg = (sih.flags & S3M_SAMP_LOOP) ? XMP_SAMPLE_LOOP : 0;
+
+		if (sih.flags & S3M_SAMP_STEREO) {
+			xxs->flg |= XMP_SAMPLE_STEREO;
+		}
+		if (sih.flags & S3M_SAMP_16BIT) {
+>>>>>>> db7344ebf (abc)
 			xxs->flg |= XMP_SAMPLE_16BIT;
 		}
 
@@ -590,9 +730,16 @@ static int s3m_load(struct module_data *m, HIO_HANDLE * f, const int start)
 
 		libxmp_instrument_name(mod, i, sih.name, 28);
 
+<<<<<<< HEAD
 		D_(D_INFO "[%2X] %-28.28s %04x%c%04x %04x %c V%02x %5d",
 		   i, mod->xxi[i].name, mod->xxs[i].len,
 		   xxs->flg & XMP_SAMPLE_16BIT ? '+' : ' ',
+=======
+		D_(D_INFO "[%2X] %-28.28s %04x%c%c %04x %04x %c V%02x %5d",
+		   i, mod->xxi[i].name, mod->xxs[i].len,
+		   xxs->flg & XMP_SAMPLE_16BIT ? '+' : ' ',
+		   xxs->flg & XMP_SAMPLE_STEREO ? 's' : ' ',
+>>>>>>> db7344ebf (abc)
 		   xxs->lps, mod->xxs[i].lpe,
 		   xxs->flg & XMP_SAMPLE_LOOP ? 'L' : ' ', sub->vol, sih.c2spd);
 

@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -20,6 +24,11 @@
  * THE SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#include "../common.h"
+
+>>>>>>> db7344ebf (abc)
 #ifndef LIBXMP_CORE_DISABLE_IT
 
 #include "loader.h"
@@ -30,6 +39,11 @@
 #define MAGIC_IMPI	MAGIC4('I','M','P','I')
 #define MAGIC_IMPS	MAGIC4('I','M','P','S')
 
+<<<<<<< HEAD
+=======
+#define TEMP_BUFFER_LEN	65536
+
+>>>>>>> db7344ebf (abc)
 static int it_test(HIO_HANDLE *, char *, const int);
 static int it_load(struct module_data *, HIO_HANDLE *, const int);
 
@@ -81,9 +95,15 @@ static const uint8 fx[32] = {
 	/* W */ FX_GVOL_SLIDE,
 	/* X */ FX_SETPAN,
 	/* Y */ FX_PANBRELLO,
+<<<<<<< HEAD
 	/* Z */ FX_FLT_CUTOFF,
 	/* ? */ FX_NONE,
 	/* ? */ FX_NONE,
+=======
+	/* Z */ FX_MACRO,
+	/* ? */ FX_NONE,
+	/* / */ FX_MACROSMOOTH,
+>>>>>>> db7344ebf (abc)
 	/* ? */ FX_NONE,
 	/* ? */ FX_NONE,
 	/* ? */ FX_NONE
@@ -137,9 +157,22 @@ static void xlat_fx(int c, struct xmp_event *e, uint8 *last_fxp, int new_fx)
 			e->fxt = FX_SETPAN;
 			e->fxp = l << 4;
 			break;
+<<<<<<< HEAD
 		case 0x9:	/* 0x91 = set surround */
 			e->fxt = FX_SURROUND;
 			e->fxp = l;
+=======
+		case 0x9:
+			if (l == 0 || l == 1) {
+				/* 0x91 = set surround */
+				e->fxt = FX_SURROUND;
+				e->fxp = l;
+			} else if (l == 0xe || l == 0xf) {
+				/* 0x9f Play reverse (MPT) */
+				e->fxt = FX_REVERSE;
+				e->fxp = l - 0xe;
+			}
+>>>>>>> db7344ebf (abc)
 			break;
 		case 0xa:	/* High offset */
 			e->fxt = FX_HIOFFSET;
@@ -158,10 +191,18 @@ static void xlat_fx(int c, struct xmp_event *e, uint8 *last_fxp, int new_fx)
 			e->fxt = FX_IT_ROWDELAY;
 			e->fxp = l;
 			break;
+<<<<<<< HEAD
+=======
+		case 0xf:	/* Set parametered macro */
+			e->fxt = FX_MACRO_SET;
+			e->fxp = l;
+			break;
+>>>>>>> db7344ebf (abc)
 		default:
 			e->fxt = e->fxp = 0;
 		}
 		break;
+<<<<<<< HEAD
 	case FX_FLT_CUTOFF:
 		if (e->fxp > 0x7f && e->fxp < 0x90) {	/* Resonance */
 			e->fxt = FX_FLT_RESN;
@@ -170,6 +211,8 @@ static void xlat_fx(int c, struct xmp_event *e, uint8 *last_fxp, int new_fx)
 			e->fxp *= 2;
 		}
 		break;
+=======
+>>>>>>> db7344ebf (abc)
 	case FX_TREMOR:
 		if (!new_fx && e->fxp != 0) {
 			e->fxp = ((MSN(e->fxp) + 1) << 4) | (LSN(e->fxp) + 1);
@@ -222,7 +265,11 @@ static void xlat_volfx(struct xmp_event *event)
 		}
 		event->f2t = FX_SETPAN;
 	} else if (b >= 193 && b <= 202) {	/* G */
+<<<<<<< HEAD
 		uint8 val[10] = {
+=======
+		static const uint8 val[10] = {
+>>>>>>> db7344ebf (abc)
 			0x00, 0x01, 0x04, 0x08, 0x10,
 			0x20, 0x40, 0x60, 0x80, 0xff
 		};
@@ -251,6 +298,37 @@ static void fix_name(uint8 *s, int l)
 }
 
 
+<<<<<<< HEAD
+=======
+static int load_it_midi_config(struct module_data *m, HIO_HANDLE *f)
+{
+	int i;
+
+	m->midi = (struct midi_macro_data *) calloc(1, sizeof(struct midi_macro_data));
+	if (m->midi == NULL)
+		return -1;
+
+	/* Skip global MIDI macros */
+	if (hio_seek(f, 9 * 32, SEEK_CUR) < 0)
+		return -1;
+
+	/* SFx macros */
+	for (i = 0; i < 16; i++) {
+		if (hio_read(m->midi->param[i].data, 1, 32, f) < 32)
+			return -1;
+		m->midi->param[i].data[31] = '\0';
+	}
+	/* Zxx macros */
+	for (i = 0; i < 128; i++) {
+		if (hio_read(m->midi->fixed[i].data, 1, 32, f) < 32)
+			return -1;
+		m->midi->fixed[i].data[31] = '\0';
+	}
+	return 0;
+}
+
+
+>>>>>>> db7344ebf (abc)
 static int read_envelope(struct xmp_envelope *ei, struct it_envelope *env,
 			  HIO_HANDLE *f)
 {
@@ -306,12 +384,21 @@ static int read_envelope(struct xmp_envelope *ei, struct it_envelope *env,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void identify_tracker(struct module_data *m, struct it_file_header *ifh)
+=======
+static void identify_tracker(struct module_data *m, struct it_file_header *ifh,
+			     int pat_before_smp, int *is_mpt_116)
+>>>>>>> db7344ebf (abc)
 {
 #ifndef LIBXMP_CORE_PLAYER
 	char tracker_name[40];
 	int sample_mode = ~ifh->flags & IT_USE_INST;
 
+<<<<<<< HEAD
+=======
+	m->flow_mode = FLOW_MODE_IT_210;
+>>>>>>> db7344ebf (abc)
 	switch (ifh->cwt >> 8) {
 	case 0x00:
 		strcpy(tracker_name, "unmo3");
@@ -330,6 +417,23 @@ static void identify_tracker(struct module_data *m, struct it_file_header *ifh)
 			strcpy(tracker_name, "ModPlug Tracker 1.16");
 			/* ModPlug Tracker files aren't really IMPM 2.00 */
 			ifh->cmwt = sample_mode ? 0x100 : 0x214;
+<<<<<<< HEAD
+=======
+			m->flow_mode = FLOW_MODE_MPT_116;
+			*is_mpt_116 = 1;
+		} else if (ifh->cmwt == 0x0200 && ifh->cwt == 0x0202 && pat_before_smp) {
+			/* ModPlug Tracker ITs from pre-alpha 4 use tracker
+			 * 0x0202 and format 0x0200. Unfortunately, ITs from
+			 * Impulse Tracker may *also* use this. These MPT ITs
+			 * can be detected because they write patterns before
+			 * samples/instruments. */
+			strcpy(tracker_name, "ModPlug Tracker 1.0 pre-alpha");
+			ifh->cmwt = sample_mode ? 0x100 : 0x200;
+			/* TODO: pre-alpha 4 has its own Pattern Loop behavior;
+			 * the <=1.16 behavior is present in pre-alpha 6. */
+			m->flow_mode = FLOW_MODE_MPT_116;
+			*is_mpt_116 = 1;
+>>>>>>> db7344ebf (abc)
 		} else if (ifh->cwt == 0x0216) {
 			strcpy(tracker_name, "Impulse Tracker 2.14v3");
 		} else if (ifh->cwt == 0x0217) {
@@ -339,12 +443,31 @@ static void identify_tracker(struct module_data *m, struct it_file_header *ifh)
 		} else {
 			snprintf(tracker_name, 40, "Impulse Tracker %d.%02x",
 				 (ifh->cwt & 0x0f00) >> 8, ifh->cwt & 0xff);
+<<<<<<< HEAD
+=======
+
+			if (ifh->cwt < 0x104) {
+				m->flow_mode = FLOW_MODE_IT_100;
+			} else if (ifh->cwt < 0x200) {
+				m->flow_mode = FLOW_MODE_IT_104;
+			} else if (ifh->cwt < 0x210) {
+				m->flow_mode = FLOW_MODE_IT_200;
+			}
+>>>>>>> db7344ebf (abc)
 		}
 		break;
 	case 0x08:
 	case 0x7f:
 		if (ifh->cwt == 0x0888) {
 			strcpy(tracker_name, "OpenMPT 1.17");
+<<<<<<< HEAD
+=======
+			/* TODO: 1.17.02.49 onward implement IT 2.10+
+			 * Pattern Loop when the IT compatibility flag is set
+			 * (by default, it is not set). */
+			m->flow_mode = FLOW_MODE_MPT_116;
+			*is_mpt_116 = 1;
+>>>>>>> db7344ebf (abc)
 		} else if (ifh->cwt == 0x7fff) {
 			strcpy(tracker_name, "munch.py");
 		} else {
@@ -376,12 +499,20 @@ static void identify_tracker(struct module_data *m, struct it_file_header *ifh)
 						ifh->cmwt & 0xff);
 #else
 	libxmp_set_type(m, "Impulse Tracker");
+<<<<<<< HEAD
+=======
+	m->flow_mode = FLOW_MODE_IT_210;
+>>>>>>> db7344ebf (abc)
 #endif
 }
 
 static int load_old_it_instrument(struct xmp_instrument *xxi, HIO_HANDLE *f)
 {
+<<<<<<< HEAD
 	int inst_map[120], inst_rmap[XMP_MAX_KEYS];
+=======
+	uint8 inst_map[255], inst_rmap[XMP_MAX_KEYS];
+>>>>>>> db7344ebf (abc)
 	struct it_instrument1_header i1h;
 	int c, k, j;
 	uint8 buf[64];
@@ -456,17 +587,29 @@ static int load_old_it_instrument(struct xmp_instrument *xxi, HIO_HANDLE *f)
 	}
 
 	/* See how many different instruments we have */
+<<<<<<< HEAD
 	for (j = 0; j < 120; j++)
 		inst_map[j] = -1;
 
 	for (k = j = 0; j < XMP_MAX_KEYS; j++) {
 		c = j < 120 ? i1h.keys[j * 2 + 1] - 1 : -1;
 		if (c < 0 || c >= 120) {
+=======
+	memset(inst_map, 0xff, sizeof(inst_map));
+
+	for (k = j = 0; j < XMP_MAX_KEYS; j++) {
+		c = j < 120 ? i1h.keys[j * 2 + 1] - 1 : -1;
+		if (c < 0) {
+>>>>>>> db7344ebf (abc)
 			xxi->map[j].ins = 0;
 			xxi->map[j].xpo = 0;
 			continue;
 		}
+<<<<<<< HEAD
 		if (inst_map[c] == -1) {
+=======
+		if (inst_map[c] == 0xff) {
+>>>>>>> db7344ebf (abc)
 			inst_map[c] = k;
 			inst_rmap[k] = c;
 			k++;
@@ -492,7 +635,11 @@ static int load_old_it_instrument(struct xmp_instrument *xxi, HIO_HANDLE *f)
 			sub->dct =
 			    i1h.dnc ? XMP_INST_DCT_NOTE : XMP_INST_DCT_OFF;
 			sub->dca = XMP_INST_DCA_CUT;
+<<<<<<< HEAD
 			sub->pan = -1;
+=======
+			sub->pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		}
 	}
 
@@ -511,7 +658,11 @@ static int load_old_it_instrument(struct xmp_instrument *xxi, HIO_HANDLE *f)
 
 static int load_new_it_instrument(struct xmp_instrument *xxi, HIO_HANDLE *f)
 {
+<<<<<<< HEAD
 	int inst_map[120], inst_rmap[XMP_MAX_KEYS];
+=======
+	uint8 inst_map[255], inst_rmap[XMP_MAX_KEYS];
+>>>>>>> db7344ebf (abc)
 	struct it_instrument2_header i2h;
 	struct it_envelope env;
 	int dca2nna[] = { 0, 2, 3, 3 /* Northern Sky (cj-north.it) has this... */ };
@@ -607,17 +758,29 @@ static int load_new_it_instrument(struct xmp_instrument *xxi, HIO_HANDLE *f)
 	}
 
 	/* See how many different instruments we have */
+<<<<<<< HEAD
 	for (j = 0; j < 120; j++)
 		inst_map[j] = -1;
 
 	for (k = j = 0; j < 120; j++) {
 		c = i2h.keys[j * 2 + 1] - 1;
 		if (c < 0 || c >= 120) {
+=======
+	memset(inst_map, 0xff, sizeof(inst_map));
+
+	for (k = j = 0; j < 120; j++) {
+		c = i2h.keys[j * 2 + 1] - 1;
+		if (c < 0) {
+>>>>>>> db7344ebf (abc)
 			xxi->map[j].ins = 0xff;	/* No sample */
 			xxi->map[j].xpo = 0;
 			continue;
 		}
+<<<<<<< HEAD
 		if (inst_map[c] == -1) {
+=======
+		if (inst_map[c] == 0xff) {
+>>>>>>> db7344ebf (abc)
 			inst_map[c] = k;
 			inst_rmap[k] = c;
 			k++;
@@ -627,7 +790,11 @@ static int load_new_it_instrument(struct xmp_instrument *xxi, HIO_HANDLE *f)
 	}
 
 	xxi->nsm = k;
+<<<<<<< HEAD
 	xxi->vol = i2h.gbv >> 1;
+=======
+	xxi->vol = MIN(i2h.gbv, 128) >> 1;
+>>>>>>> db7344ebf (abc)
 
 	if (k) {
 		xxi->sub = (struct xmp_subinstrument *) calloc(k, sizeof(struct xmp_subinstrument));
@@ -641,7 +808,11 @@ static int load_new_it_instrument(struct xmp_instrument *xxi, HIO_HANDLE *f)
 			sub->nna = i2h.nna;
 			sub->dct = i2h.dct;
 			sub->dca = dca2nna[i2h.dca];
+<<<<<<< HEAD
 			sub->pan = i2h.dfp & 0x80 ? -1 : i2h.dfp * 4;
+=======
+			sub->pan = i2h.dfp & 0x80 ? XMP_INST_NO_DEFAULT_PAN : i2h.dfp * 4;
+>>>>>>> db7344ebf (abc)
 			sub->ifc = i2h.ifc;
 			sub->ifr = i2h.ifr;
 			sub->rvv = ((int)i2h.rp << 8) | i2h.rv;
@@ -683,8 +854,55 @@ static void force_sample_length(struct xmp_sample *xxs, struct extra_sample_data
 	}
 }
 
+<<<<<<< HEAD
 static int load_it_sample(struct module_data *m, int i, int start,
 			  int sample_mode, HIO_HANDLE *f)
+=======
+static void *unpack_it_sample(struct xmp_sample *xxs,
+	const struct it_sample_header *ish, uint8 *tmpbuf, HIO_HANDLE *f)
+{
+	void *decbuf;
+	int bytes = xxs->len;
+	int channels = 1;
+	int i;
+
+	if (ish->flags & IT_SMP_16BIT)
+		bytes <<= 1;
+
+	if (ish->flags & IT_SMP_STEREO) {
+		bytes <<= 1;
+		channels = 2;
+	}
+
+	decbuf = calloc(bytes, 1);
+	if (decbuf == NULL)
+		return NULL;
+
+	if (ish->flags & IT_SMP_16BIT) {
+		int16 *pos = (int16 *)decbuf;
+
+		for (i = 0; i < channels; i++) {
+			itsex_decompress16(f, pos, xxs->len,
+					   tmpbuf, TEMP_BUFFER_LEN,
+					   ish->convert & IT_CVT_DIFF);
+			pos += xxs->len;
+		}
+	} else {
+		uint8 *pos = (uint8 *)decbuf;
+
+		for(i = 0; i < channels; i++) {
+			itsex_decompress8(f, pos, xxs->len,
+					  tmpbuf, TEMP_BUFFER_LEN,
+					  ish->convert & IT_CVT_DIFF);
+			pos += xxs->len;
+		}
+	}
+	return decbuf;
+}
+
+static int load_it_sample(struct module_data *m, int i, int start,
+			  int sample_mode, uint8 *tmpbuf, HIO_HANDLE *f)
+>>>>>>> db7344ebf (abc)
 {
 	struct it_sample_header ish;
 	struct xmp_module *mod = &m->mod;
@@ -741,6 +959,12 @@ static int load_it_sample(struct module_data *m, int i, int start,
 	if (ish.flags & IT_SMP_16BIT) {
 		xxs->flg = XMP_SAMPLE_16BIT;
 	}
+<<<<<<< HEAD
+=======
+	if (ish.flags & IT_SMP_STEREO) {
+		xxs->flg |= XMP_SAMPLE_STEREO;
+	}
+>>>>>>> db7344ebf (abc)
 	xxs->len = ish.length;
 
 	xxs->lps = ish.loopbeg;
@@ -759,7 +983,11 @@ static int load_it_sample(struct module_data *m, int i, int start,
 		/* Create an instrument for each sample */
 		mod->xxi[i].vol = 64;
 		mod->xxi[i].sub[0].vol = ish.vol;
+<<<<<<< HEAD
 		mod->xxi[i].sub[0].pan = 0x80;
+=======
+		mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		mod->xxi[i].sub[0].sid = i;
 		mod->xxi[i].nsm = !!(xxs->len);
 		libxmp_instrument_name(mod, i, ish.name, 25);
@@ -767,11 +995,19 @@ static int load_it_sample(struct module_data *m, int i, int start,
 		libxmp_copy_adjust(xxs->name, ish.name, 25);
 	}
 
+<<<<<<< HEAD
 	D_(D_INFO "\n[%2X] %-26.26s %05x%c%05x %05x %05x %05x "
+=======
+	D_(D_INFO "\n[%2X] %-26.26s %05x%c%c %05x %05x %05x %05x "
+>>>>>>> db7344ebf (abc)
 	   "%02x%02x %02x%02x %5d ",
 	   i, sample_mode ? xxs->name : mod->xxs[i].name,
 	   xxs->len,
 	   ish.flags & IT_SMP_16BIT ? '+' : ' ',
+<<<<<<< HEAD
+=======
+	   ish.flags & IT_SMP_STEREO ? 's' : ' ',
+>>>>>>> db7344ebf (abc)
 	   MIN(xxs->lps, 0xfffff), MIN(xxs->lpe, 0xfffff),
 	   MIN(ish.sloopbeg, 0xfffff), MIN(ish.sloopend, 0xfffff),
 	   ish.flags, ish.convert, ish.vol, ish.gvl, ish.c5spd);
@@ -788,7 +1024,11 @@ static int load_it_sample(struct module_data *m, int i, int start,
 			struct xmp_subinstrument *sub = &mod->xxi[j].sub[k];
 			if (sub->sid == i) {
 				sub->vol = ish.vol;
+<<<<<<< HEAD
 				sub->gvl = ish.gvl;
+=======
+				sub->gvl = MIN(ish.gvl, 64);
+>>>>>>> db7344ebf (abc)
 				sub->vra = ish.vis;	/* sample to sub-instrument vibrato */
 				sub->vde = ish.vid << 1;
 				sub->vwf = ish.vit;
@@ -802,7 +1042,11 @@ static int load_it_sample(struct module_data *m, int i, int start,
 				if (ish.dfp & 0x80) {
 					sub->pan = (ish.dfp & 0x7f) * 4;
 				} else if (sample_mode) {
+<<<<<<< HEAD
 					sub->pan = -1;
+=======
+					sub->pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 				}
 			}
 		}
@@ -833,14 +1077,27 @@ static int load_it_sample(struct module_data *m, int i, int start,
 		if (ish.flags & IT_SMP_COMP) {
 			long min_size, file_len, left;
 			void *decbuf;
+<<<<<<< HEAD
 			int ret;
 
+=======
+			int samples = xxs->len;
+			int ret;
+
+			if (ish.flags & IT_SMP_STEREO)
+				samples <<= 1;
+
+>>>>>>> db7344ebf (abc)
 			/* Sanity check - the lower bound on IT compressed
 			 * sample size (in bytes) is a little over 1/8th of the
 			 * number of SAMPLES in the sample.
 			 */
 			file_len = hio_size(f);
+<<<<<<< HEAD
 			min_size = xxs->len >> 3;
+=======
+			min_size = samples >> 3;
+>>>>>>> db7344ebf (abc)
 			left = file_len - (long)ish.sample_ptr;
 			/* No data to read at all? Just skip it... */
 			if (left <= 0)
@@ -855,6 +1112,7 @@ static int load_it_sample(struct module_data *m, int i, int start,
 				force_sample_length(xxs, xtra, left << 3);
 			}
 
+<<<<<<< HEAD
 			decbuf = (uint8 *) calloc(1, xxs->len * 2);
 			if (decbuf == NULL)
 				return -1;
@@ -873,6 +1131,20 @@ static int load_it_sample(struct module_data *m, int i, int start,
 				itsex_decompress8(f, (uint8 *)decbuf, xxs->len,
 						  ish.convert & IT_CVT_DIFF);
 			}
+=======
+			decbuf = unpack_it_sample(xxs, &ish, tmpbuf, f);
+			if (decbuf == NULL)
+				return -1;
+
+#ifdef WORDS_BIGENDIAN
+			if (ish.flags & IT_SMP_16BIT) {
+				/* decompression generates native-endian
+				 * samples, but we want little-endian.
+				 */
+				cvt |= SAMPLE_FLAG_BIGEND;
+			}
+#endif
+>>>>>>> db7344ebf (abc)
 
 			ret = libxmp_load_sample(m, NULL, SAMPLE_FLAG_NOLOAD | cvt,
 					  &mod->xxs[i], decbuf);
@@ -892,12 +1164,21 @@ static int load_it_sample(struct module_data *m, int i, int start,
 }
 
 static int load_it_pattern(struct module_data *m, int i, int new_fx,
+<<<<<<< HEAD
 			   HIO_HANDLE *f)
+=======
+			   uint8 *patbuf, HIO_HANDLE *f)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct xmp_event *event, dummy, lastevent[L_CHANNELS];
 	uint8 mask[L_CHANNELS];
 	uint8 last_fxp[64];
+<<<<<<< HEAD
+=======
+	uint8 *pos;
+	uint8 *end;
+>>>>>>> db7344ebf (abc)
 
 	int r, c, pat_len, num_rows;
 	uint8 b;
@@ -919,11 +1200,23 @@ static int load_it_pattern(struct module_data *m, int i, int new_fx,
 	hio_read16l(f);
 	hio_read16l(f);
 
+<<<<<<< HEAD
 	while (r < num_rows && --pat_len >= 0) {
 		b = hio_read8(f);
 		if (hio_error(f)) {
 			return -1;
 		}
+=======
+	if (hio_read(patbuf, 1, pat_len, f) < (size_t)pat_len) {
+		D_(D_CRIT "read error loading pattern %d", i);
+		return -1;
+	}
+	pos = patbuf;
+	end = patbuf + pat_len;
+
+	while (r < num_rows && pos < end) {
+		b = *(pos++);
+>>>>>>> db7344ebf (abc)
 		if (!b) {
 			r++;
 			continue;
@@ -931,8 +1224,13 @@ static int load_it_pattern(struct module_data *m, int i, int new_fx,
 		c = (b - 1) & 63;
 
 		if (b & 0x80) {
+<<<<<<< HEAD
 			mask[c] = hio_read8(f);
 			pat_len--;
+=======
+			if (pos >= end) break;
+			mask[c] = *(pos++);
+>>>>>>> db7344ebf (abc)
 		}
 		/*
 		 * WARNING: we IGNORE events in disabled channels. Disabled
@@ -946,8 +1244,17 @@ static int load_it_pattern(struct module_data *m, int i, int new_fx,
 			event = &EVENT(i, c, r);
 		}
 
+<<<<<<< HEAD
 		if (mask[c] & 0x01) {
 			b = hio_read8(f);
+=======
+		if ((mask[c] & 0x0f) == 0) {
+			goto skip_packed_event;
+		}
+		if (mask[c] & 0x01) {
+			if (pos >= end) break;
+			b = *(pos++);
+>>>>>>> db7344ebf (abc)
 
 			/* From ittech.txt:
 			 * Note ranges from 0->119 (C-0 -> B-9)
@@ -970,6 +1277,7 @@ static int load_it_pattern(struct module_data *m, int i, int new_fx,
 				}
 			}
 			lastevent[c].note = event->note = b;
+<<<<<<< HEAD
 			pat_len--;
 		}
 		if (mask[c] & 0x02) {
@@ -992,12 +1300,44 @@ static int load_it_pattern(struct module_data *m, int i, int new_fx,
 			} else {
 				event->fxt = b;
 				event->fxp = hio_read8(f);
+=======
+		}
+		if (mask[c] & 0x02) {
+			if (pos >= end) break;
+			b = *(pos++);
+			lastevent[c].ins = event->ins = b;
+		}
+		if (mask[c] & 0x04) {
+			if (pos >= end) break;
+			b = *(pos++);
+			lastevent[c].vol = event->vol = b;
+			xlat_volfx(event);
+		}
+		if (mask[c] & 0x08) {
+			if (pos >= end - 1) break;
+			b = *(pos++);
+			if (b >= ARRAY_SIZE(fx)) {
+				D_(D_WARN "invalid effect %#02x", b);
+				pos++;
+
+			} else {
+				event->fxt = b;
+				event->fxp = *(pos++);
+>>>>>>> db7344ebf (abc)
 
 				xlat_fx(c, event, last_fxp, new_fx);
 				lastevent[c].fxt = event->fxt;
 				lastevent[c].fxp = event->fxp;
 			}
+<<<<<<< HEAD
 			pat_len -= 2;
+=======
+		}
+
+skip_packed_event:
+		if ((mask[c] & 0xf0) == 0) {
+			continue;
+>>>>>>> db7344ebf (abc)
 		}
 		if (mask[c] & 0x10) {
 			event->note = lastevent[c].note;
@@ -1027,7 +1367,16 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	uint32 *pp_ins;		/* Pointers to instruments */
 	uint32 *pp_smp;		/* Pointers to samples */
 	uint32 *pp_pat;		/* Pointers to patterns */
+<<<<<<< HEAD
 	int new_fx, sample_mode;
+=======
+	uint8 *patbuf = NULL;
+	uint8 *pos;
+	uint8 *end;
+	int new_fx, sample_mode;
+	int pat_before_smp = 0;
+	int is_mpt_116 = 0;
+>>>>>>> db7344ebf (abc)
 
 	LOAD_INIT();
 
@@ -1059,8 +1408,13 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	ifh.pwd = hio_read8(f);
 
 	/* Sanity check */
+<<<<<<< HEAD
 	if (ifh.gv > 0x80 || ifh.mv > 0x80) {
 		D_(D_CRIT "invalid gv (%u) or mv (%u)", ifh.gv, ifh.mv);
+=======
+	if (ifh.gv > 0x80) {
+		D_(D_CRIT "invalid gv (%u)", ifh.gv);
+>>>>>>> db7344ebf (abc)
 		goto err;
 	}
 
@@ -1092,18 +1446,30 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	}
 
 	if (mod->ins) {
+<<<<<<< HEAD
 		pp_ins = (uint32 *) calloc(4, mod->ins);
+=======
+		pp_ins = (uint32 *) calloc(mod->ins, sizeof(uint32));
+>>>>>>> db7344ebf (abc)
 		if (pp_ins == NULL)
 			goto err;
 	} else {
 		pp_ins = NULL;
 	}
 
+<<<<<<< HEAD
 	pp_smp = (uint32 *) calloc(4, mod->smp);
 	if (pp_smp == NULL)
 		goto err2;
 
 	pp_pat = (uint32 *) calloc(4, mod->pat);
+=======
+	pp_smp = (uint32 *) calloc(mod->smp, sizeof(uint32));
+	if (pp_smp == NULL)
+		goto err2;
+
+	pp_pat = (uint32 *) calloc(mod->pat, sizeof(uint32));
+>>>>>>> db7344ebf (abc)
 	if (pp_pat == NULL)
 		goto err3;
 
@@ -1118,8 +1484,14 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	for (i = 0; i < 64; i++) {
 		struct xmp_channel *xxc = &mod->xxc[i];
+<<<<<<< HEAD
 
 		if (ifh.chpan[i] == 100) {	/* Surround -> center */
+=======
+		int pan = ifh.chpan[i] & 0x7f;
+
+		if (pan == 100) {		/* Surround -> center */
+>>>>>>> db7344ebf (abc)
 			xxc->flg |= XMP_CHANNEL_SURROUND;
 		}
 
@@ -1128,7 +1500,11 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		}
 
 		if (ifh.flags & IT_STEREO) {
+<<<<<<< HEAD
 			xxc->pan = (int)ifh.chpan[i] * 0x80 >> 5;
+=======
+			xxc->pan = pan * 0x80 >> 5;
+>>>>>>> db7344ebf (abc)
 			if (xxc->pan > 0xff)
 				xxc->pan = 0xff;
 		} else {
@@ -1155,9 +1531,29 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	for (i = 0; i < mod->pat; i++)
 		pp_pat[i] = hio_read32l(f);
 
+<<<<<<< HEAD
 	m->c4rate = C4_NTSC_RATE;
 
 	identify_tracker(m, &ifh);
+=======
+	/* Skip edit history if it exists. */
+	if (ifh.special & IT_EDIT_HISTORY) {
+		int skip = hio_read16l(f) * 8;
+		if (hio_error(f) || (skip && hio_seek(f, skip, SEEK_CUR) < 0))
+			goto err4;
+	}
+
+	if ((ifh.flags & IT_MIDI_CONFIG) || (ifh.special & IT_SPEC_MIDICFG)) {
+		if (load_it_midi_config(m, f) < 0)
+			goto err4;
+	}
+	if (mod->smp && mod->pat && pp_pat[0] != 0 && pp_pat[0] < pp_smp[0])
+		pat_before_smp = 1;
+
+	m->c4rate = C4_NTSC_RATE;
+
+	identify_tracker(m, &ifh, pat_before_smp, &is_mpt_116);
+>>>>>>> db7344ebf (abc)
 
 	MODULE_INFO();
 
@@ -1206,13 +1602,29 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	D_(D_INFO "Stored Samples: %d", mod->smp);
 
+<<<<<<< HEAD
+=======
+	/* This buffer should be able to hold any pattern or sample block.
+	 * Round up to a multiple of 4--the sample decompressor relies on
+	 * this to simplify its code.
+	 */
+	if ((patbuf = (uint8 *)malloc(TEMP_BUFFER_LEN)) == NULL) {
+		D_(D_CRIT "failed to allocate temporary buffer");
+		goto err4;
+	}
+
+>>>>>>> db7344ebf (abc)
 	for (i = 0; i < mod->smp; i++) {
 
 		if (hio_seek(f, start + pp_smp[i], SEEK_SET) < 0) {
 			goto err4;
 		}
 
+<<<<<<< HEAD
 		if (load_it_sample(m, i, start, sample_mode, f) < 0) {
+=======
+		if (load_it_sample(m, i, start, sample_mode, patbuf, f) < 0) {
+>>>>>>> db7344ebf (abc)
 			goto err4;
 		}
 	}
@@ -1251,6 +1663,7 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 			continue;
 		}
 
+<<<<<<< HEAD
 		row = 0;
 		while (row < num_rows && --pat_len >= 0) {
 			int b = hio_read8(f);
@@ -1258,6 +1671,22 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 				D_(D_CRIT "error scanning pattern %d", i);
 				goto err4;
 			}
+=======
+		if (hio_read(patbuf, 1, pat_len, f) < (size_t)pat_len) {
+			D_(D_CRIT "error scanning pattern %d", i);
+			goto err4;
+		}
+		pos = patbuf;
+		end = patbuf + pat_len;
+
+		row = 0;
+		while (row < num_rows && pos < end) {
+			/* Bits 0, 1, 2 add 1 byte each. Bit 3 adds 2 bytes. */
+			static const int bytes_in_packed_event[16] = {
+				0, 1, 1, 2, 1, 2, 2, 3, 2, 3, 3, 4, 3, 4, 4, 5
+			};
+			int b = *(pos++);
+>>>>>>> db7344ebf (abc)
 			if (b == 0) {
 				row++;
 				continue;
@@ -1269,6 +1698,7 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 				max_ch = c;
 
 			if (b & 0x80) {
+<<<<<<< HEAD
 				mask[c] = hio_read8(f);
 				pat_len--;
 			}
@@ -1290,6 +1720,15 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 				hio_read8(f);
 				pat_len -= 2;
 			}
+=======
+				if (pos >= end) break;
+				/* The high nibble is not required to
+				 * calculate the event size. */
+				mask[c] = *(pos++) & 0x0f;
+			}
+			/* Skip packed event */
+			pos += bytes_in_packed_event[mask[c]];
+>>>>>>> db7344ebf (abc)
 		}
 	}
 
@@ -1326,23 +1765,36 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 			goto err4;
 		}
 
+<<<<<<< HEAD
 		if (load_it_pattern(m, i, new_fx, f) < 0) {
+=======
+		if (load_it_pattern(m, i, new_fx, patbuf, f) < 0) {
+>>>>>>> db7344ebf (abc)
 			D_(D_CRIT "error loading pattern %d", i);
 			goto err4;
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	free(patbuf);
+>>>>>>> db7344ebf (abc)
 	free(pp_pat);
 	free(pp_smp);
 	free(pp_ins);
 
 	/* Song message */
+<<<<<<< HEAD
 	if (ifh.special & IT_HAS_MSG) {
+=======
+	if ((ifh.special & IT_HAS_MSG) && ifh.msglen > 0) {
+>>>>>>> db7344ebf (abc)
 		if ((m->comment = (char *)malloc(ifh.msglen)) != NULL) {
 			hio_seek(f, start + ifh.msgofs, SEEK_SET);
 
 			D_(D_INFO "Message length : %d", ifh.msglen);
 
+<<<<<<< HEAD
 			for (j = 0; j + 1 < ifh.msglen; j++) {
 				int b = hio_read8(f);
 				if (b == '\r') {
@@ -1357,6 +1809,21 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 			if (ifh.msglen > 0) {
 				m->comment[j] = 0;
 			}
+=======
+			ifh.msglen = hio_read(m->comment, 1, ifh.msglen, f);
+			hio_error(f); /* Clear error if any */
+
+			for (j = 0; j + 1 < ifh.msglen; j++) {
+				int b = m->comment[j];
+				if (b == '\r') {
+					m->comment[j] = '\n';
+				} else if ((b < 32 || b > 127) && b != '\n'
+					   && b != '\t') {
+					m->comment[j] = '.';
+				}
+			}
+			m->comment[j] = 0;
+>>>>>>> db7344ebf (abc)
 		}
 	}
 
@@ -1383,11 +1850,27 @@ static int it_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	m->gvolbase = 0x80;
 	m->gvol = ifh.gv;
+<<<<<<< HEAD
 	m->read_event_type = READ_EVENT_IT;
 
 	return 0;
 
 err4:
+=======
+	m->mvolbase = 48;
+	m->mvol = ifh.mv;
+	m->read_event_type = READ_EVENT_IT;
+
+#ifndef LIBXMP_CORE_PLAYER
+	if (is_mpt_116)
+		libxmp_apply_mpt_preamp(m);
+#endif
+
+	return 0;
+
+err4:
+	free(patbuf);
+>>>>>>> db7344ebf (abc)
 	free(pp_pat);
 err3:
 	free(pp_smp);

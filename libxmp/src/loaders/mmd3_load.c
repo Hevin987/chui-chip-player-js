@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2025 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -60,8 +64,11 @@ static int mmd3_test(HIO_HANDLE *f, char *t, const int start)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Number of octaves in IFFOCT samples */
 static const int num_oct[6] = { 5, 3, 2, 4, 6, 7 };
+=======
+>>>>>>> db7344ebf (abc)
 
 static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 {
@@ -70,16 +77,25 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	struct MMD0 header;
 	struct MMD2song song;
 	struct MMD1Block block;
+<<<<<<< HEAD
 	struct InstrHdr instr;
 	struct SynthInstr synth;
+=======
+>>>>>>> db7344ebf (abc)
 	struct InstrExt *exp_smp = NULL;
 	struct MMD0exp expdata;
 	struct xmp_event *event;
 	uint32 *blockarr = NULL;
 	uint32 *smplarr = NULL;
+<<<<<<< HEAD
 	int ver = 0;
 	int smp_idx = 0;
 	uint8 e[4];
+=======
+	uint8 *patbuf = NULL;
+	int ver = 0;
+	int smp_idx = 0;
+>>>>>>> db7344ebf (abc)
 	int song_offset;
 	int seqtable_offset;
 	int trackvols_offset;
@@ -93,6 +109,11 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	int mmdinfo_offset;
 	int playseq_offset;
 	int bpm_on, bpmlen, med_8ch, hexvol;
+<<<<<<< HEAD
+=======
+	int max_lines;
+	int tracker_ver;
+>>>>>>> db7344ebf (abc)
 	int retval = -1;
 
 	LOAD_INIT();
@@ -197,6 +218,10 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	 * convert header
 	 */
 	m->c4rate = C4_NTSC_RATE;
+<<<<<<< HEAD
+=======
+	m->quirk |= QUIRK_RTONCE; /* FF1 */
+>>>>>>> db7344ebf (abc)
 	m->quirk |= song.flags & FLAG_STSLIDE ? 0 : QUIRK_VSALL | QUIRK_PBALL;
 	hexvol = song.flags & FLAG_VOLHEX;
 	med_8ch = song.flags & FLAG_8CHANNEL;
@@ -244,9 +269,17 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		hio_seek(f, start + smplarr[i], SEEK_SET);
 		hio_read32b(f);				/* length */
 		type = hio_read16b(f);
+<<<<<<< HEAD
 		if (type == -1) {			/* type is synth? */
 			hio_seek(f, 14, SEEK_CUR);
 			mod->smp += hio_read16b(f);	/* wforms */
+=======
+		if (type == -1 || type == -2) {		/* type is synth? */
+			hio_seek(f, 14, SEEK_CUR);
+			mod->smp += hio_read16b(f);	/* wforms */
+		} else if (type >= 1 && type <= 6) {	/* octave samples */
+			mod->smp += mmd_num_oct[type - 1];
+>>>>>>> db7344ebf (abc)
 		} else {
 			mod->smp++;
 		}
@@ -345,6 +378,10 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	 */
 	D_(D_WARN "find number of channels");
 
+<<<<<<< HEAD
+=======
+	max_lines = 1;
+>>>>>>> db7344ebf (abc)
 	for (i = 0; i < mod->pat; i++) {
 		D_(D_INFO "block %d block_offset = 0x%08x", i, blockarr[i]);
 		if (blockarr[i] == 0)
@@ -353,15 +390,36 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		hio_seek(f, start + blockarr[i], SEEK_SET);
 
 		block.numtracks = hio_read16b(f);
+<<<<<<< HEAD
 		/* block.lines = */ hio_read16b(f);
+=======
+		block.lines = hio_read16b(f);
+>>>>>>> db7344ebf (abc)
 		if (hio_error(f)) {
 			D_(D_CRIT "read error at block %d", i);
+			goto err_cleanup;
+		}
+
+<<<<<<< HEAD
+		if (block.numtracks > mod->chn) {
+			mod->chn = block.numtracks;
+		}
+=======
+		/* Sanity check--Amiga OctaMED files have an upper bound of 3200 lines per block,
+		 * but MED Soundstudio for Windows allows up to 9999 lines.
+		  */
+		if (block.lines + 1 > 9999) {
+			D_(D_CRIT "invalid line count %d in block %d", block.lines + 1, i);
 			goto err_cleanup;
 		}
 
 		if (block.numtracks > mod->chn) {
 			mod->chn = block.numtracks;
 		}
+		if (block.lines + 1 > max_lines) {
+			max_lines = block.lines + 1;
+		}
+>>>>>>> db7344ebf (abc)
 	}
 
 	/* Sanity check */
@@ -372,10 +430,15 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	mod->trk = mod->pat * mod->chn;
 
+<<<<<<< HEAD
 	if (ver == 2)
 		libxmp_set_type(m, "OctaMED v5 MMD2");
 	else
 		libxmp_set_type(m, "OctaMED Soundstudio MMD%c", '0' + ver);
+=======
+	tracker_ver = mmd_tracker_version(m, ver, 0, med_8ch,
+					  expdata_offset ? &expdata : NULL);
+>>>>>>> db7344ebf (abc)
 
 	MODULE_INFO();
 
@@ -391,7 +454,18 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	if (libxmp_init_pattern(mod) < 0)
 		goto err_cleanup;
 
+<<<<<<< HEAD
 	for (i = 0; i < mod->pat; i++) {
+=======
+	if ((patbuf = (uint8 *)malloc(mod->chn * max_lines * 4)) == NULL) {
+		goto err_cleanup;
+	}
+
+	for (i = 0; i < mod->pat; i++) {
+		uint8 *pos;
+		size_t size;
+
+>>>>>>> db7344ebf (abc)
 		if (blockarr[i] == 0)
 			continue;
 
@@ -401,17 +475,24 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		block.lines = hio_read16b(f);
 		hio_read32b(f); /* FIXME: should try to load extra command pages when they exist. */
 
+<<<<<<< HEAD
 		/* Sanity check--Amiga OctaMED files have an upper bound of 3200 lines per block,
 		 * but MED Soundstudio for Windows allows up to 9999 lines.
 		  */
 		if (block.lines + 1 > 9999) {
 			D_(D_CRIT "invalid line count %d in block %d", block.lines + 1, i);
+=======
+		size = block.numtracks * (block.lines + 1) * 4;
+		if (hio_read(patbuf, 1, size, f) < size) {
+			D_(D_CRIT "read error in block %d", i);
+>>>>>>> db7344ebf (abc)
 			goto err_cleanup;
 		}
 
 		if (libxmp_alloc_pattern_tracks_long(mod, i, block.lines + 1) < 0)
 			goto err_cleanup;
 
+<<<<<<< HEAD
 		for (j = 0; j < mod->xxp[i]->rows; j++) {
 			for (k = 0; k < block.numtracks; k++) {
 				e[0] = hio_read8(f);
@@ -428,10 +509,21 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 					else
 						event->note -= 12;
 				};
+=======
+		pos = patbuf;
+		for (j = 0; j < mod->xxp[i]->rows; j++) {
+			for (k = 0; k < block.numtracks; k++) {
+				event = &EVENT(i, k, j);
+				event->note = pos[0] & 0x7f;
+				if (event->note) {
+					event->note += 12 + song.playtransp;
+				}
+>>>>>>> db7344ebf (abc)
 
 				if (event->note >= XMP_MAX_KEYS)
 					event->note = 0;
 
+<<<<<<< HEAD
 				event->ins = e[1] & 0x3f;
 
 				/* Decay */
@@ -450,10 +542,29 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 			}
 		}
 	}
+=======
+				event->ins = pos[1] & 0x3f;
+
+				event->fxt = pos[2];
+				event->fxp = pos[3];
+				mmd_xlat_fx(event, bpm_on, bpmlen,
+						med_8ch, hexvol);
+				pos += 4;
+			}
+		}
+	}
+	free(patbuf);
+	patbuf = NULL;
+>>>>>>> db7344ebf (abc)
 
 	if (libxmp_med_new_module_extras(m) != 0)
 		goto err_cleanup;
 
+<<<<<<< HEAD
+=======
+	MED_MODULE_EXTRAS(*m)->tracker_version = tracker_ver;
+
+>>>>>>> db7344ebf (abc)
 	/*
 	 * Read and convert instruments and samples
 	 */
@@ -477,6 +588,7 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		}
 
 		for (i = 0; i < mod->ins && i < expdata.s_ext_entries; i++) {
+<<<<<<< HEAD
 			int skip = expdata.s_ext_entrsz - 4;
 
 			D_(D_INFO "sample %d expsmp_offset = 0x%08lx", i, hio_tell(f));
@@ -491,6 +603,37 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 				exp_smp[i].instr_flags = hio_read8(f);
 				skip -= 2;
 			}
+=======
+			int skip = expdata.s_ext_entrsz;
+
+			D_(D_INFO "sample %d expsmp_offset = 0x%08lx", i, hio_tell(f));
+
+			if (expdata.s_ext_entrsz >= 2) {	/* MED 3.00 / OctaMED V1 */
+				exp_smp[i].hold = hio_read8(f);
+				exp_smp[i].decay = hio_read8(f);
+				skip -= 2;
+			}
+			if (expdata.s_ext_entrsz >= 4) {	/* MED 3.20 / OctaMED V2 */
+				exp_smp[i].suppress_midi_off = hio_read8(f);
+				exp_smp[i].finetune = hio_read8(f);
+				skip -= 2;
+			}
+			if (expdata.s_ext_entrsz >= 8) {	/* Octamed V5 */
+				exp_smp[i].default_pitch = hio_read8(f);
+				exp_smp[i].instr_flags = hio_read8(f);
+				hio_read16b(f);
+				skip -= 4;
+			}
+			if (expdata.s_ext_entrsz >= 10) {	/* OctaMED V5.02 */
+				hio_read16b(f);
+				skip -= 2;
+			}
+			if (expdata.s_ext_entrsz >= 18) {	/* OctaMED V7 */
+				exp_smp[i].long_repeat = hio_read32b(f);
+				exp_smp[i].long_replen = hio_read32b(f);
+				skip -= 8;
+			}
+>>>>>>> db7344ebf (abc)
 
 			if (hio_error(f)) {
 				D_(D_CRIT "read error at expsmp");
@@ -538,6 +681,7 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 			continue;
 		}
 
+<<<<<<< HEAD
 		hio_seek(f, start + smplarr[i], SEEK_SET);
 		instr.length = hio_read32b(f);
 		instr.type = hio_read16b(f);
@@ -614,6 +758,17 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		} else {
 			/* Invalid instrument type */
 			D_(D_CRIT "invalid instrument type: %d", instr.type);
+=======
+		if (hio_seek(f, start + smplarr[i], SEEK_SET) < 0) {
+			D_(D_CRIT "seek error at instrument %d", i);
+			goto err_cleanup;
+		}
+
+		smp_idx = mmd_load_instrument(f, m, i, smp_idx, &expdata,
+			&exp_smp[i], &song.sample[i], ver);
+
+		if (smp_idx < 0) {
+>>>>>>> db7344ebf (abc)
 			goto err_cleanup;
 		}
 	}
@@ -640,6 +795,10 @@ static int mmd3_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	free(exp_smp);
 	free(blockarr);
 	free(smplarr);
+<<<<<<< HEAD
+=======
+	free(patbuf);
+>>>>>>> db7344ebf (abc)
 
 	return retval;
 }

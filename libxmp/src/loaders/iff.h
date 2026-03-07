@@ -2,7 +2,10 @@
 #define LIBXMP_IFF_H
 
 #include "../hio.h"
+<<<<<<< HEAD
 #include "../list.h"
+=======
+>>>>>>> db7344ebf (abc)
 
 #define IFF_NOBUFFER 0x0001
 
@@ -23,21 +26,36 @@ struct iff_header {
 	char id[4];		/* IFF type identifier */
 };
 
+<<<<<<< HEAD
 struct iff_info {
 	char id[4];
 	int (*loader)(struct module_data *, int, HIO_HANDLE *, void *);
 	struct list_head list;
 };
+=======
+LIBXMP_BEGIN_DECLS
+
+typedef int (*iff_loader)(struct module_data *, uint32, HIO_HANDLE *, void *);
+>>>>>>> db7344ebf (abc)
 
 iff_handle libxmp_iff_new(void);
 int	libxmp_iff_load(iff_handle, struct module_data *, HIO_HANDLE *, void *);
 /* int libxmp_iff_chunk(iff_handle, struct module_data *, HIO_HANDLE *, void *); */
+<<<<<<< HEAD
 int 	libxmp_iff_register(iff_handle, const char *,
 	int (*loader)(struct module_data *, int, HIO_HANDLE *, void *));
+=======
+int 	libxmp_iff_register(iff_handle, const char *, iff_loader);
+>>>>>>> db7344ebf (abc)
 void 	libxmp_iff_id_size(iff_handle, int);
 void 	libxmp_iff_set_quirk(iff_handle, int);
 void 	libxmp_iff_release(iff_handle);
 /* int 	libxmp_iff_process(iff_handle, struct module_data *, char *, long,
 	HIO_HANDLE *, void *); */
 
+<<<<<<< HEAD
+=======
+LIBXMP_END_DECLS
+
+>>>>>>> db7344ebf (abc)
 #endif /* LIBXMP_IFF_H */

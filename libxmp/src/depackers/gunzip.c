@@ -1,14 +1,41 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
  *
  * This file is part of the Extended Module Player and is distributed
  * under the terms of the GNU Lesser General Public License. See COPYING.LIB
  * for more information.
+=======
+ * Copyright (C) 1996-2024 Claudio Matsuoka and Hipolito Carraro Jr
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+>>>>>>> db7344ebf (abc)
  */
 
 #include "../common.h"
 #include "depacker.h"
+<<<<<<< HEAD
 #include "miniz.h"
+=======
+#include "crc32.h"
+#include "../miniz.h"
+>>>>>>> db7344ebf (abc)
 
 /* See RFC1952 for further information */
 
@@ -48,14 +75,23 @@ static int test_gzip(unsigned char *b)
 	return b[0] == 31 && b[1] == 139;
 }
 
+<<<<<<< HEAD
 static int decrunch_gzip(HIO_HANDLE *in, void **out, long inlen, long *outlen)
+=======
+static int decrunch_gzip(HIO_HANDLE *in, void **out, long *outlen)
+>>>>>>> db7344ebf (abc)
 {
 	struct member member;
 	int val, c;
 	size_t in_buf_size;
 	void *pCmp_data, *pOut_buf;
 	size_t pOut_len;
+<<<<<<< HEAD
 	long start, end;
+=======
+	uint32 crc_in, crc;
+	long start, inlen;
+>>>>>>> db7344ebf (abc)
 
 	member.id1 = hio_read8(in);
 	member.id2 = hio_read8(in);
@@ -66,7 +102,11 @@ static int decrunch_gzip(HIO_HANDLE *in, void **out, long inlen, long *outlen)
 	member.os  = hio_read8(in);
 
 	if (member.cm != 0x08) {
+<<<<<<< HEAD
 		D_(D_CRIT "Unsuported compression method: %x", member.cm);
+=======
+		D_(D_CRIT "Unsupported compression method: %x", member.cm);
+>>>>>>> db7344ebf (abc)
 		return -1;
 	}
 
@@ -103,8 +143,17 @@ static int decrunch_gzip(HIO_HANDLE *in, void **out, long inlen, long *outlen)
 	}
 
 	start = hio_tell(in);
+<<<<<<< HEAD
 	end = inlen - 8;
 	in_buf_size = end - start;
+=======
+	inlen = hio_size(in);
+	if (hio_error(in) || start < 0 || inlen < start || inlen - start < 8) {
+		D_(D_CRIT "input file is truncated or is missing gzip footer");
+		return -1;
+	}
+	in_buf_size = inlen - start - 8;
+>>>>>>> db7344ebf (abc)
 
 	pCmp_data = (uint8 *)malloc(in_buf_size);
 	if (!pCmp_data)
@@ -129,8 +178,19 @@ static int decrunch_gzip(HIO_HANDLE *in, void **out, long inlen, long *outlen)
 
 	free(pCmp_data);
 
+<<<<<<< HEAD
 	/* TODO: Check CRC32 */
 	val = hio_read32l(in);
+=======
+	crc_in = hio_read32l(in);
+	crc = libxmp_crc32_A((uint8 *)pOut_buf, pOut_len, 0UL);
+	if (crc_in != crc) {
+		D_(D_CRIT "CRC-32 mismatch: expected %08lx, got %08lx",
+		   (unsigned long)crc_in, (unsigned long)crc);
+		free(pOut_buf);
+		return -1;
+	}
+>>>>>>> db7344ebf (abc)
 
 	/* Check file size */
 	val = hio_read32l(in);
@@ -146,7 +206,11 @@ static int decrunch_gzip(HIO_HANDLE *in, void **out, long inlen, long *outlen)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct depacker libxmp_depacker_gzip = {
+=======
+const struct depacker libxmp_depacker_gzip = {
+>>>>>>> db7344ebf (abc)
 	test_gzip,
 	NULL,
 	decrunch_gzip

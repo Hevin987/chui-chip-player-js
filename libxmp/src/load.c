@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2025 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,12 +27,20 @@
 #include <errno.h>
 
 #include "format.h"
+<<<<<<< HEAD
 #include "list.h"
 #include "hio.h"
 #include "tempfile.h"
 #include "loaders/loader.h"
 
 #ifndef LIBXMP_NO_DEPACKERS
+=======
+#include "hio.h"
+#include "loaders/loader.h"
+
+#ifndef LIBXMP_NO_DEPACKERS
+#include "tempfile.h"
+>>>>>>> db7344ebf (abc)
 #include "depackers/depacker.h"
 #endif
 
@@ -38,6 +50,7 @@
 #endif
 
 
+<<<<<<< HEAD
 void libxmp_load_prologue(struct context_data *);
 void libxmp_load_epilogue(struct context_data *);
 int  libxmp_prepare_scan(struct context_data *);
@@ -47,6 +60,11 @@ int  libxmp_prepare_scan(struct context_data *);
 #endif
 
 #ifndef LIBXMP_CORE_PLAYER
+=======
+#ifndef LIBXMP_CORE_PLAYER
+#define BUFLEN 16384
+
+>>>>>>> db7344ebf (abc)
 static void set_md5sum(HIO_HANDLE *f, unsigned char *digest)
 {
 	unsigned char buf[BUFLEN];
@@ -112,7 +130,11 @@ static int test_module(struct xmp_test_info *info, HIO_HANDLE *h)
 		if (format_loaders[i]->test(h, buf, 0) == 0) {
 			int is_prowizard = 0;
 
+<<<<<<< HEAD
 #if !defined(LIBXMP_CORE_PLAYER) && !defined(LIBXMP_NO_PROWIZARD)
+=======
+#ifndef LIBXMP_NO_PROWIZARD
+>>>>>>> db7344ebf (abc)
 			if (strcmp(format_loaders[i]->name, "prowizard") == 0) {
 				hio_seek(h, 0, SEEK_SET);
 				pw_test_format(h, buf, 0, info);
@@ -156,7 +178,11 @@ int xmp_test_module(const char *path, struct xmp_test_info *info)
 		return -XMP_ERROR_SYSTEM;
 
 #ifndef LIBXMP_NO_DEPACKERS
+<<<<<<< HEAD
 	if (libxmp_decrunch(&h, path, &temp) < 0) {
+=======
+	if (libxmp_decrunch(h, path, &temp) < 0) {
+>>>>>>> db7344ebf (abc)
 		ret = -XMP_ERROR_DEPACK;
 		goto err;
 	}
@@ -183,7 +209,11 @@ int xmp_test_module_from_memory(const void *mem, long size, struct xmp_test_info
 		return -XMP_ERROR_INVALID;
 	}
 
+<<<<<<< HEAD
 	if ((h = hio_open_mem(mem, size, 0)) == NULL)
+=======
+	if ((h = hio_open_const_mem(mem, size)) == NULL)
+>>>>>>> db7344ebf (abc)
 		return -XMP_ERROR_SYSTEM;
 
 	ret = test_module(info, h);
@@ -204,7 +234,11 @@ int xmp_test_module_from_file(void *file, struct xmp_test_info *info)
 		return -XMP_ERROR_SYSTEM;
 
 #ifndef LIBXMP_NO_DEPACKERS
+<<<<<<< HEAD
 	if (libxmp_decrunch(&h, NULL, &temp) < 0) {
+=======
+	if (libxmp_decrunch(h, NULL, &temp) < 0) {
+>>>>>>> db7344ebf (abc)
 		ret = -XMP_ERROR_DEPACK;
 		goto err;
 	}
@@ -368,7 +402,11 @@ int xmp_load_module(xmp_context opaque, const char *path)
 
 #ifndef LIBXMP_NO_DEPACKERS
 	D_(D_INFO "decrunch");
+<<<<<<< HEAD
 	if (libxmp_decrunch(&h, path, &temp_name) < 0) {
+=======
+	if (libxmp_decrunch(h, path, &temp_name) < 0) {
+>>>>>>> db7344ebf (abc)
 		ret = -XMP_ERROR_DEPACK;
 		goto err;
 	}
@@ -428,7 +466,11 @@ int xmp_load_module_from_memory(xmp_context opaque, const void *mem, long size)
 		return -XMP_ERROR_INVALID;
 	}
 
+<<<<<<< HEAD
 	if ((h = hio_open_mem(mem, size, 0)) == NULL)
+=======
+	if ((h = hio_open_const_mem(mem, size)) == NULL)
+>>>>>>> db7344ebf (abc)
 		return -XMP_ERROR_SYSTEM;
 
 	if (ctx->state > XMP_STATE_UNLOADED)
@@ -555,7 +597,13 @@ void xmp_release_module(xmp_context opaque)
 	}
 
 	free(m->xtra);
+<<<<<<< HEAD
 	m->xtra = NULL;
+=======
+	free(m->midi);
+	m->xtra = NULL;
+	m->midi = NULL;
+>>>>>>> db7344ebf (abc)
 
 	libxmp_free_scan(ctx);
 

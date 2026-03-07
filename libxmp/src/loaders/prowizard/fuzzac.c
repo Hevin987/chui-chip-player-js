@@ -32,8 +32,13 @@
  * note: A most worked-up prog ... took some time to finish this !.
  *      there's what lot of my other depacker are missing : the correct
  *      pattern order (most of the time the list is generated badly ..).
+<<<<<<< HEAD
  *      Dont know why I did it for this depacker because I've but one
  *      exemple file ! :)
+=======
+ *      Don't know why I did it for this depacker because I've but one
+ *      example file ! :)
+>>>>>>> db7344ebf (abc)
  */
 
 #include "prowiz.h"

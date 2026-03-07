@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -104,7 +108,42 @@ static const int fx[32] = {
 	FX_VOLSET		/* 31 */
 };
 
+<<<<<<< HEAD
 static int get_cmod(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int okt_translate_effect(struct xmp_event *event, int fxt, int fxp)
+{
+	if (fxt >= ARRAY_SIZE(fx)) {
+		return -1;
+	}
+	event->fxt = fx[fxt];
+	event->fxp = fxp;
+
+	if ((event->fxt == FX_VOLSET) && (event->fxp > 0x40)) {
+		if (event->fxp <= 0x50) {
+			event->fxt = FX_VOLSLIDE;
+			event->fxp -= 0x40;
+		} else if (event->fxp <= 0x60) {
+			event->fxt = FX_VOLSLIDE;
+			event->fxp = (event->fxp - 0x50) << 4;
+		} else if (event->fxp <= 0x70) {
+			event->fxt = FX_F_VSLIDE_DN;
+			event->fxp = event->fxp - 0x60;
+		} else if (event->fxp <= 0x80) {
+			event->fxt = FX_F_VSLIDE_UP;
+			event->fxp = event->fxp - 0x70;
+		}
+	}
+	if (event->fxt == FX_ARPEGGIO)	/* Arpeggio fixup */
+		event->fxp = (((24 - MSN(event->fxp)) % 12) << 4) | LSN(event->fxp);
+	if (event->fxt == NONE)
+		event->fxt = event->fxp = 0;
+
+	return 0;
+}
+
+static int get_cmod(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -135,7 +174,11 @@ static int get_cmod(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_samp(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_samp(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -177,7 +220,11 @@ static int get_samp(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 		sub->vol = hio_read16b(f);
 		data->mode[i] = hio_read16b(f);
 
+<<<<<<< HEAD
 		sub->pan = 0x80;
+=======
+		sub->pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		sub->sid = j;
 
 		data->idx[j] = i;
@@ -192,7 +239,11 @@ static int get_samp(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_spee(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_spee(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 
@@ -202,7 +253,11 @@ static int get_spee(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_slen(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_slen(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -219,7 +274,11 @@ static int get_slen(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_plen(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_plen(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 
@@ -234,7 +293,11 @@ static int get_plen(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_patt(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 
@@ -244,13 +307,21 @@ static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_pbod(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_pbod(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
 	struct xmp_event *e;
 	uint16 rows;
+<<<<<<< HEAD
 	int j;
+=======
+	int j, k;
+>>>>>>> db7344ebf (abc)
 
 	/* Sanity check */
 	if (!data->has_slen || !data->has_cmod) {
@@ -271,6 +342,7 @@ static int get_pbod(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	if (libxmp_alloc_pattern_tracks(mod, data->pattern, rows) < 0)
 		return -1;
 
+<<<<<<< HEAD
 	for (j = 0; j < rows * mod->chn; j++) {
 		uint8 note, ins, fxt;
 
@@ -311,13 +383,46 @@ static int get_pbod(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 			e->fxp = (((24 - MSN(e->fxp)) % 12) << 4) | LSN(e->fxp);
 		if (e->fxt == NONE)
 			e->fxt = e->fxp = 0;
+=======
+	for (j = 0; j < rows; j++) {
+		for (k = 0; k < mod->chn; k++) {
+			uint8 note, ins;
+			uint8 c[4];
+
+			e = &EVENT(data->pattern, k, j);
+			memset(e, 0, sizeof(struct xmp_event));
+
+			if (hio_read(c, 1, 4, f) < 4) {
+				D_(D_CRIT "read error in PBOD %d", data->pattern);
+				return -1;
+			}
+
+			note = c[0];
+			ins = c[1];
+
+			if (note) {
+				e->note = 48 + note;
+				e->ins = 1 + ins;
+			}
+
+			if (okt_translate_effect(e, c[2], c[3]) < 0) {
+				D_(D_CRIT "bad effect in PBOD %d: %02x %02x",
+				   data->pattern, c[2], c[3]);
+				return -1;
+			}
+		}
+>>>>>>> db7344ebf (abc)
 	}
 	data->pattern++;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_sbod(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_sbod(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;

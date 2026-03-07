@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 #include "test.h"
 #include "../src/mixer.h"
 #include "../src/virtual.h"
+=======
+#include "read_event_common.h"
+>>>>>>> db7344ebf (abc)
 
 /*
 Case 2: New instrument (no note)
@@ -26,6 +30,7 @@ OldVol  = Don't play sample, set old default volume
 Cont    = Continue playing sample
 Cut     = Stop playing sample
 
+<<<<<<< HEAD
   * Protracker 1.3/2.3 switches to new sample in the line after the new
     instrument event. The new instrument is not played from start (i.e. a
     short transient sample may not be played). This behaviour is NOT
@@ -38,6 +43,11 @@ Cut     = Stop playing sample
     00 C-2 03 000  <=  Play instrument 03
     01 A-3 02 308  <=  Start portamento with instrument 03
     02 --- 00 xxx  <=  Switch to instrument 02 (weird!)
+=======
+  * Protracker 1.3/2.3 queues sample changes immediately, but they don't take
+    effect until the current playing sample completes its loop. This is
+    supported by libxmp, as it shouldn't significantly hurt PT3 compatibility.
+>>>>>>> db7344ebf (abc)
 
   # Don't reset envelope.
 
@@ -48,6 +58,10 @@ TEST(test_no_note_invalid_ins_ft2)
 	xmp_context opaque;
 	struct context_data *ctx;
 	struct player_data *p;
+<<<<<<< HEAD
+=======
+	struct channel_data *xc;
+>>>>>>> db7344ebf (abc)
 	struct mixer_voice *vi;
 	int voc;
 
@@ -55,6 +69,7 @@ TEST(test_no_note_invalid_ins_ft2)
 	ctx = (struct context_data *)opaque;
 	p = &ctx->p;
 
+<<<<<<< HEAD
  	create_simple_module(ctx, 2, 2);
 	set_instrument_volume(ctx, 0, 0, 22);
 	set_instrument_volume(ctx, 1, 0, 33);
@@ -63,14 +78,32 @@ TEST(test_no_note_invalid_ins_ft2)
 	set_quirk(ctx, QUIRKS_FT2, READ_EVENT_FT2);
 
 	xmp_start_player(opaque, 44100, 0);
+=======
+	create_read_event_test_module(ctx, 2);
+	new_event(ctx, 0, 0, 0, KEY_C5,       INS_0,     0, 0x00, 0, 0, 0);
+	new_event(ctx, 0, 1, 0, 0,            0,         0, FX_VOLSET, SET_VOL,
+							    FX_SETPAN, SET_PAN);
+	new_event(ctx, 0, 2, 0, 0,            INS_INVAL, 0, 0x00, 0, 0, 0);
+	new_event(ctx, 0, 3, 0, 0,            0,         0, FX_VOLSET, SET_VOL,
+							    FX_SETPAN, SET_PAN);
+	new_event(ctx, 0, 4, 0, XMP_KEY_OFF,  INS_INVAL, 0, 0x00, 0, 0, 0);
+	set_quirk(ctx, QUIRKS_FT2, READ_EVENT_FT2);
+
+	xmp_start_player(opaque, XMP_MIN_SRATE, 0);
+>>>>>>> db7344ebf (abc)
 
 	/* Row 0 */
 	xmp_play_frame(opaque);
 
+<<<<<<< HEAD
+=======
+	xc = &p->xc_data[0];
+>>>>>>> db7344ebf (abc)
 	voc = map_channel(p, 0);
 	fail_unless(voc >= 0, "virtual map");
 	vi = &p->virt.voice_array[voc];
 
+<<<<<<< HEAD
 	fail_unless(vi->note == 59, "set note");
 	fail_unless(vi->ins  ==  0, "set instrument");
 	fail_unless(vi->vol  == 43 * 16, "set volume");
@@ -79,16 +112,60 @@ TEST(test_no_note_invalid_ins_ft2)
 	xmp_play_frame(opaque);
 
 	/* Row 1: valid instrument with no note (FT2)
+=======
+	check_new(xc, vi, KEY_C5, INS_0,
+		  INS_0_SUB_0_VOL, INS_0_SUB_0_PAN, INS_0_FADE, "row 0");
+
+	xmp_play_frame(opaque);
+
+	/* Row 1: set non-default volume and pan */
+	xmp_play_frame(opaque);
+	check_on(xc, vi, KEY_C5, INS_0,
+		 SET_VOL, SET_PAN, INS_0_FADE, "row 1");
+
+	xmp_play_frame(opaque);
+
+	/* Row 2: invalid instrument with no note (FT2)
+>>>>>>> db7344ebf (abc)
 	 *
 	 * When a new invalid instrument with no note is played, FT2
 	 * keeps playing the old sample and resets the volume to the
 	 * default old instrument volume
 	 */
 	xmp_play_frame(opaque);
+<<<<<<< HEAD
 	fail_unless(vi->ins  ==  0, "not original instrument");
 	fail_unless(vi->note == 59, "not same note");
 	fail_unless(vi->vol  == 22 * 16, "not old volume");
 	fail_unless(vi->pos0 !=  0, "sample reset");
+=======
+	check_on(xc, vi, KEY_C5, INS_0,
+		 INS_0_SUB_0_VOL, INS_0_SUB_0_PAN, INS_0_FADE, "row 2");
+
+	xmp_play_frame(opaque);
+
+	/* Row 3: set non-default volume and pan */
+	/* FIXME: move to test_keyoff_invalid_ins_ft2.c */
+	xmp_play_frame(opaque);
+	check_on(xc, vi, KEY_C5, INS_0,
+		 SET_VOL, SET_PAN, INS_0_FADE, "row 3");
+
+	xmp_play_frame(opaque);
+
+	/* Row 4: invalid instrument with key off (FT2)
+	 *
+	 * This behaves the same as same instrument with no note, except
+	 * it also acts like key off.
+	 */
+	xmp_play_frame(opaque);
+	check_on(xc, vi, KEY_C5, INS_0,
+		 -1, INS_0_SUB_0_PAN, INS_0_FADE, "row 4");
+
+	fail_unless(xc->fadeout == 65536 - INS_0_FADE, "didn't start fade out");
+	fail_unless(vi->vol == 346, "didn't fade out");
+	xmp_play_frame(opaque);
+	fail_unless(vi->vol == 341, "didn't fade out");
+>>>>>>> db7344ebf (abc)
 
 	xmp_release_module(opaque);
 	xmp_free_context(opaque);

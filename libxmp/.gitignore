@@ -20,16 +20,33 @@ test-dev/gen_module_data
 test-dev/libxmp-covertest
 test-dev/libxmp-tests
 test-dev/libxmp_fuzz_*
+<<<<<<< HEAD
 
 # VC++ files
 /.vs
 /.vscode
+=======
+test-dev/xmpchk
+
+# VC++ files
+/.vs
+>>>>>>> db7344ebf (abc)
 *.exp
 *.lib
 *.suo
 *.ncb
 Makefile.vc.tmp
 
+<<<<<<< HEAD
+=======
+# VSCode/clangd files
+/.cache
+/.clangd
+/.vscode
+*.code-workspace
+compile_commands.json
+
+>>>>>>> db7344ebf (abc)
 # Module formats
 *.mod
 *.MOD
@@ -90,11 +107,18 @@ docs/libxmp.man.rst
 docs/libxmp.pdf
 .test
 libxmp-lite-stagedir/
+<<<<<<< HEAD
 lite/Makefile.in
+=======
+>>>>>>> db7344ebf (abc)
 
 # Other stuff and leftovers
 xmp.out
 .svn
+<<<<<<< HEAD
+=======
+*.d
+>>>>>>> db7344ebf (abc)
 *.orig
 *.rej
 tags
@@ -116,3 +140,8 @@ build/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
+<<<<<<< HEAD
+=======
+libxmp-config-version.cmake.autotools
+libxmp-lite-config-version.cmake.autotools
+>>>>>>> db7344ebf (abc)

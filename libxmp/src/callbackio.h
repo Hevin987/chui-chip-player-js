@@ -31,7 +31,11 @@ static inline int8 cbread8s(CBFILE *f, int *err)
 static inline uint16 cbread16l(CBFILE *f, int *err)
 {
 	uint8 buf[2];
+<<<<<<< HEAD
 	uint16 x = EOF;
+=======
+	uint16 x = 0xffff;
+>>>>>>> db7344ebf (abc)
 	size_t r = f->callbacks.read_func(buf, 2, 1, f->priv);
 	f->eof = (r == 1) ? 0 : EOF;
 
@@ -44,7 +48,11 @@ static inline uint16 cbread16l(CBFILE *f, int *err)
 static inline uint16 cbread16b(CBFILE *f, int *err)
 {
 	uint8 buf[2];
+<<<<<<< HEAD
 	uint16 x = EOF;
+=======
+	uint16 x = 0xffff;
+>>>>>>> db7344ebf (abc)
 	size_t r = f->callbacks.read_func(buf, 2, 1, f->priv);
 	f->eof = (r == 1) ? 0 : EOF;
 
@@ -57,7 +65,11 @@ static inline uint16 cbread16b(CBFILE *f, int *err)
 static inline uint32 cbread24l(CBFILE *f, int *err)
 {
 	uint8 buf[3];
+<<<<<<< HEAD
 	uint32 x = EOF;
+=======
+	uint32 x = 0xffffffff;
+>>>>>>> db7344ebf (abc)
 	size_t r = f->callbacks.read_func(buf, 3, 1, f->priv);
 	f->eof = (r == 1) ? 0 : EOF;
 
@@ -70,7 +82,11 @@ static inline uint32 cbread24l(CBFILE *f, int *err)
 static inline uint32 cbread24b(CBFILE *f, int *err)
 {
 	uint8 buf[3];
+<<<<<<< HEAD
 	uint32 x = EOF;
+=======
+	uint32 x = 0xffffffff;
+>>>>>>> db7344ebf (abc)
 	size_t r = f->callbacks.read_func(buf, 3, 1, f->priv);
 	f->eof = (r == 1) ? 0 : EOF;
 
@@ -83,7 +99,11 @@ static inline uint32 cbread24b(CBFILE *f, int *err)
 static inline uint32 cbread32l(CBFILE *f, int *err)
 {
 	uint8 buf[4];
+<<<<<<< HEAD
 	uint32 x = EOF;
+=======
+	uint32 x = 0xffffffff;
+>>>>>>> db7344ebf (abc)
 	size_t r = f->callbacks.read_func(buf, 4, 1, f->priv);
 	f->eof = (r == 1) ? 0 : EOF;
 
@@ -96,7 +116,11 @@ static inline uint32 cbread32l(CBFILE *f, int *err)
 static inline uint32 cbread32b(CBFILE *f, int *err)
 {
 	uint8 buf[4];
+<<<<<<< HEAD
 	uint32 x = EOF;
+=======
+	uint32 x = 0xffffffff;
+>>>>>>> db7344ebf (abc)
 	size_t r = f->callbacks.read_func(buf, 4, 1, f->priv);
 	f->eof = (r == 1) ? 0 : EOF;
 
@@ -108,7 +132,12 @@ static inline uint32 cbread32b(CBFILE *f, int *err)
 
 static inline size_t cbread(void *dest, size_t len, size_t nmemb, CBFILE *f)
 {
+<<<<<<< HEAD
 	size_t r = f->callbacks.read_func(dest, len, nmemb, f->priv);
+=======
+	size_t r = f->callbacks.read_func(dest, (unsigned long)len,
+					(unsigned long)nmemb, f->priv);
+>>>>>>> db7344ebf (abc)
 	f->eof = (r < nmemb) ? EOF : 0;
 	return r;
 }

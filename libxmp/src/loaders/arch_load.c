@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -159,8 +163,18 @@ static void fix_effect(struct xmp_event *e)
 		e->fxt = FX_JUMP;
 		break;
 	case 0x15:			/* 15 xy Line Jump. (not in manual) */
+<<<<<<< HEAD
 		e->fxt = e->fxp = 0;
 		/* Jump to line 10*x+y in same pattern. (10*x+y>63 ignored) */
+=======
+		/* Jump to line 10*x+y in same pattern. (10*x+y>63 ignored) */
+		if (MSN(e->fxp) * 10 + LSN(e->fxp) < 64) {
+			e->fxt = FX_LINE_JUMP;
+			e->fxp = MSN(e->fxp) * 10 + LSN(e->fxp);
+		} else {
+			e->fxt = e->fxp = 0;
+		}
+>>>>>>> db7344ebf (abc)
 		break;
 	case 0x1c:			/* 1C xy Set Speed */
 		e->fxt = FX_SPEED;
@@ -175,7 +189,11 @@ static void fix_effect(struct xmp_event *e)
 	}
 }
 
+<<<<<<< HEAD
 static int get_tinf(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_tinf(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct local_data *data = (struct local_data *)parm;
 	int x;
@@ -194,6 +212,7 @@ static int get_tinf(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_mvox(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 {
 	struct xmp_module *mod = &m->mod;
@@ -206,11 +225,31 @@ static int get_mvox(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 		return -1;
 	}
 
+=======
+static int get_mvox(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+{
+	struct xmp_module *mod = &m->mod;
+	struct local_data *data = (struct local_data *)parm;
+	uint32 chn;
+
+	chn = hio_read32l(f);
+
+	/* Sanity check */
+	if (chn < 1 || chn > 8 || data->has_mvox) {
+		return -1;
+	}
+
+	mod->chn = chn;
+>>>>>>> db7344ebf (abc)
 	data->has_mvox = 1;
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_ster(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_ster(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -229,7 +268,11 @@ static int get_ster(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_mnam(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_mnam(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 
@@ -239,13 +282,18 @@ static int get_mnam(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_anam(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_anam(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	/*hio_read(m->author, 1, 32, f); */
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_mlen(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 {
 	struct xmp_module *mod = &m->mod;
@@ -270,11 +318,45 @@ static int get_pnum(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	if (mod->pat < 1 || mod->pat > 64 || data->has_pnum)
 		return -1;
 
+=======
+static int get_mlen(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+{
+	struct xmp_module *mod = &m->mod;
+	uint32 len;
+
+	len = hio_read32l(f);
+
+	/* Sanity check */
+	if (len > 0xff)
+		return -1;
+
+	mod->len = len;
+	return 0;
+}
+
+static int get_pnum(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+{
+	struct xmp_module *mod = &m->mod;
+	struct local_data *data = (struct local_data *)parm;
+	uint32 pat;
+
+	pat = hio_read32l(f);
+
+	/* Sanity check */
+	if (pat < 1 || pat > 64 || data->has_pnum)
+		return -1;
+
+	mod->pat = pat;
+>>>>>>> db7344ebf (abc)
 	data->has_pnum = 1;
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_plen(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_plen(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct local_data *data = (struct local_data *)parm;
 
@@ -284,7 +366,11 @@ static int get_plen(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_sequ(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_sequ(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 
@@ -295,7 +381,11 @@ static int get_sequ(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_patt(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -347,7 +437,11 @@ static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_samp(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_samp(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -418,12 +512,28 @@ static int get_samp(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	hio_read32l(f);	/* 0x00000000 */
 
 	mod->xxi[i].sub[0].sid = i;
+<<<<<<< HEAD
 	mod->xxi[i].sub[0].pan = 0x80;
+=======
+	mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 
 	m->vol_table = libxmp_arch_vol_table;
 	m->volbase = 0xff;
 
+<<<<<<< HEAD
 	if (mod->xxs[i].lpe > 2) {
+=======
+	/* Clean bad loops */
+	if (mod->xxs[i].lps < 0 || mod->xxs[i].lps >= mod->xxs[i].len) {
+		mod->xxs[i].lps = mod->xxs[i].lpe = 0;
+	}
+
+	if (mod->xxs[i].lpe > 2) {
+		if (mod->xxs[i].lpe > mod->xxs[i].len - mod->xxs[i].lps) {
+			mod->xxs[i].lpe = mod->xxs[i].len - mod->xxs[i].lps;
+		}
+>>>>>>> db7344ebf (abc)
 		mod->xxs[i].flg = XMP_SAMPLE_LOOP;
 		mod->xxs[i].lpe = mod->xxs[i].lps + mod->xxs[i].lpe;
 	} else if (mod->xxs[i].lpe == 2 && mod->xxs[i].lps > 0) {

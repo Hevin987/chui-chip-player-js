@@ -1,6 +1,9 @@
 #include "test.h"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)
 TEST(test_fuzzer_asy_invalid_samples)
 {
 	xmp_context opaque;
@@ -18,7 +21,11 @@ TEST(test_fuzzer_asy_invalid_samples)
 	 * (All of the original ASYLUM module samples seem to be <64k.)
 	 */
 	ret = xmp_load_module(opaque, "data/f/load_asy_invalid_samples2.amf");
+<<<<<<< HEAD
 	fail_unless(ret = -XMP_ERROR_LOAD, "module load (2)");
+=======
+	fail_unless(ret == -XMP_ERROR_LOAD, "module load (2)");
+>>>>>>> db7344ebf (abc)
 
 	xmp_free_context(opaque);
 }

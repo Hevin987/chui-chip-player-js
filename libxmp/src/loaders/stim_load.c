@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -54,11 +58,19 @@ static int stim_test(HIO_HANDLE *f, char *t, const int start)
 }
 
 struct stim_instrument {
+<<<<<<< HEAD
 	uint16 size;		/* Lenght of the sample (/2) */
 	uint8 finetune;		/* Finetune (as ptk) */
 	uint8 volume;		/* Volume (as ptk) */
 	uint16 loop_start;	/* Loop start (/2) */
 	uint16 loop_size;	/* Loop lenght (/2) */
+=======
+	uint16 size;		/* Length of the sample (/2) */
+	uint8 finetune;		/* Finetune (as ptk) */
+	uint8 volume;		/* Volume (as ptk) */
+	uint16 loop_start;	/* Loop start (/2) */
+	uint16 loop_size;	/* Loop length (/2) */
+>>>>>>> db7344ebf (abc)
 };
 
 struct stim_header {
@@ -191,7 +203,11 @@ static int stim_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		mod->xxs[i].flg = si.loop_size > 1 ? XMP_SAMPLE_LOOP : 0;
 		mod->xxi[i].sub[0].fin = (int8) (si.finetune << 4);
 		mod->xxi[i].sub[0].vol = si.volume;
+<<<<<<< HEAD
 		mod->xxi[i].sub[0].pan = 0x80;
+=======
+		mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		mod->xxi[i].sub[0].sid = i;
 		mod->xxi[i].rls = 0xfff;
 

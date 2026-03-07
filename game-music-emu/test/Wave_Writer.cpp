@@ -35,6 +35,7 @@ Wave_Writer::Wave_Writer( long sample_rate, const char* filename )
 	rate = sample_rate;
 	buf_pos = header_size;
 	chan_count = 1;
+<<<<<<< HEAD
 	
 	buf = (unsigned char*) malloc( buf_size * sizeof *buf );
 	if ( !buf )
@@ -44,6 +45,17 @@ Wave_Writer::Wave_Writer( long sample_rate, const char* filename )
 	if ( !file )
 		exit_with_error( "Couldn't open WAVE file for writing" );
 	
+=======
+
+	buf = (unsigned char*) malloc( buf_size * sizeof *buf );
+	if ( !buf )
+		exit_with_error( "Out of memory" );
+
+	file = fopen( filename, "wb" );
+	if ( !file )
+		exit_with_error( "Couldn't open WAVE file for writing" );
+
+>>>>>>> db7344ebf (abc)
 	setvbuf( file, 0, _IOFBF, 32 * 1024L );
 }
 
@@ -61,12 +73,20 @@ void Wave_Writer::write( const sample_t* in, long remain, int skip )
 	{
 		if ( buf_pos >= buf_size )
 			flush();
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		long n = (buf_size - buf_pos) / sizeof (sample_t);
 		if ( n > remain )
 			n = remain;
 		remain -= n;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		// convert to lsb first format
 		unsigned char* p = &buf [buf_pos];
 		while ( n-- )
@@ -76,7 +96,11 @@ void Wave_Writer::write( const sample_t* in, long remain, int skip )
 			*p++ = (unsigned char) s;
 			*p++ = (unsigned char) (s >> 8);
 		}
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		buf_pos = p - buf;
 		assert( buf_pos <= buf_size );
 	}
@@ -90,12 +114,20 @@ void Wave_Writer::write( const float* in, long remain, int skip )
 	{
 		if ( buf_pos >= buf_size )
 			flush();
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		long n = (buf_size - buf_pos) / sizeof (sample_t);
 		if ( n > remain )
 			n = remain;
 		remain -= n;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		// convert to lsb first format
 		unsigned char* p = &buf [buf_pos];
 		while ( n-- )
@@ -107,7 +139,11 @@ void Wave_Writer::write( const float* in, long remain, int skip )
 			*p++ = (unsigned char) s;
 			*p++ = (unsigned char) (s >> 8);
 		}
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		buf_pos = p - buf;
 		assert( buf_pos <= buf_size );
 	}
@@ -118,7 +154,11 @@ void Wave_Writer::close()
 	if ( file )
 	{
 		flush();
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		// generate header
 		uint32_t ds = sample_count_ * sizeof (sample_t);
 		uint32_t rs = header_size - 8 + ds;
@@ -145,11 +185,19 @@ void Wave_Writer::close()
 			LE32(ds)            // size of sample data
 			// ...              // sample data
 		};
+<<<<<<< HEAD
 		
 		// write header
 //		fseek( file, 0, SEEK_SET );
 		fwrite( header, sizeof header, 1, file );
 		
+=======
+
+		// write header
+//		fseek( file, 0, SEEK_SET );
+		fwrite( header, sizeof header, 1, file );
+
+>>>>>>> db7344ebf (abc)
 		fclose( file );
 		file = 0;
 		free( buf );
@@ -174,7 +222,11 @@ void wave_open( long sample_rate, const char* filename )
 void wave_enable_stereo() { ww->enable_stereo(); }
 
 long wave_sample_count() { return ww->sample_count(); }
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> db7344ebf (abc)
 void wave_write( const short* buf, long count ) { ww->write( buf, count ); }
 
 void wave_close()

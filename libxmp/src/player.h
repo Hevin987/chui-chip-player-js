@@ -56,14 +56,22 @@ struct retrig_control {
 #define FINE_VOLS_2	(1 << 25)
 #define KEY_OFF		(1 << 26)	/* for IT release on envloop end */
 #define TREMOR		(1 << 27)	/* for XM tremor */
+<<<<<<< HEAD
 
 #define NOTE_FADEOUT	(1 << 0)
 #define NOTE_RELEASE	(1 << 1)
+=======
+#define MIDI_MACRO	(1 << 28)	/* IT midi macro */
+
+#define NOTE_FADEOUT	(1 << 0)
+#define NOTE_ENV_RELEASE (1 << 1)	/* envelope sustain loop release */
+>>>>>>> db7344ebf (abc)
 #define NOTE_END	(1 << 2)
 #define NOTE_CUT	(1 << 3)
 #define NOTE_ENV_END	(1 << 4)
 #define NOTE_SAMPLE_END	(1 << 5)
 #define NOTE_SET	(1 << 6)	/* for IT portamento after keyoff */
+<<<<<<< HEAD
 #define NOTE_SUSEXIT	(1 << 7)	/* for delayed note release */
 #define NOTE_KEY_CUT	(1 << 8)	/* note cut with XMP_KEY_CUT event */
 #define NOTE_GLISSANDO	(1 << 9)
@@ -71,6 +79,22 @@ struct retrig_control {
 #define IS_VALID_INSTRUMENT(x) ((uint32)(x) < mod->ins && mod->xxi[(x)].nsm > 0)
 #define IS_VALID_INSTRUMENT_OR_SFX(x) (((uint32)(x) < mod->ins && mod->xxi[(x)].nsm > 0) || (smix->ins > 0 && (uint32)(x) < mod->ins + smix->ins))
 #define IS_VALID_SAMPLE(x) ((uint32)(x) < mod->smp && mod->xxs[(x)].len > 0)
+=======
+#define NOTE_SUSEXIT	(1 << 7)	/* for delayed envelope release */
+#define NOTE_KEY_CUT	(1 << 8)	/* note cut with XMP_KEY_CUT event */
+#define NOTE_GLISSANDO	(1 << 9)
+#define NOTE_SAMPLE_RELEASE (1 << 10)	/* sample sustain loop release */
+
+/* Most of the time, these should be set/reset together. */
+#define NOTE_RELEASE	(NOTE_ENV_RELEASE | NOTE_SAMPLE_RELEASE)
+
+/* Note: checking the data pointer for samples should be good enough to filter
+ * broken samples, since libxmp_load_sample will always allocate it for valid
+ * samples of >0 length and bound the loop values for these samples. */
+#define IS_VALID_INSTRUMENT(x) ((uint32)(x) < mod->ins && mod->xxi[(x)].nsm > 0)
+#define IS_VALID_INSTRUMENT_OR_SFX(x) (((uint32)(x) < mod->ins && mod->xxi[(x)].nsm > 0) || (smix->ins > 0 && (uint32)(x) < mod->ins + smix->ins))
+#define IS_VALID_SAMPLE(x) ((uint32)(x) < mod->smp && mod->xxs[(x)].data != NULL)
+>>>>>>> db7344ebf (abc)
 #define IS_VALID_NOTE(x) ((uint32)(x) < XMP_MAX_KEYS)
 
 struct instrument_vibrato {
@@ -88,7 +112,11 @@ struct channel_data {
 	double per_adj;		/* MED period/pitch adjustment factor hack */
 	int finetune;		/* Guess what */
 	int ins;		/* Instrument number */
+<<<<<<< HEAD
 	int old_ins;		/* Last instruemnt */
+=======
+	int old_ins;		/* Last instrument */
+>>>>>>> db7344ebf (abc)
 	int smp;		/* Sample number */
 	int mastervol;		/* Master vol -- for IT track vol effect */
 	int delay;		/* Note delay in frames */
@@ -153,6 +181,11 @@ struct channel_data {
 	} retrig;
 
 	struct {
+<<<<<<< HEAD
+=======
+#define TREMOR_SUPPRESS	0x40	/* Ignore tremor state until next update (FT2) */
+#define TREMOR_ON	0x80
+>>>>>>> db7344ebf (abc)
 		uint8 up,down;	/* Tremor value */
 		uint8 count;	/* Tremor counter */
 		uint8 memory;	/* Tremor memory */
@@ -193,11 +226,19 @@ struct channel_data {
 		int slide;	/* Frequency slide value */
 		double fslide;	/* Fine frequency slide value */
 		int memory;	/* Portamento effect memory */
+<<<<<<< HEAD
+=======
+		int down_memory;/* Portamento down effect memory (XM) */
+>>>>>>> db7344ebf (abc)
 	} freq;
 
 	struct {
 		double target;	/* Target period for tone portamento */
+<<<<<<< HEAD
 		int dir;	/* Tone portamento up/down directionh */
+=======
+		int dir;	/* Tone portamento up/down direction */
+>>>>>>> db7344ebf (abc)
 		int slide;	/* Delta for tone portamento */
 		int memory;	/* Tone portamento effect memory */
 		int note_memory;/* Tone portamento note memory (ULT) */
@@ -206,6 +247,11 @@ struct channel_data {
 	struct {
 		int up_memory;	/* FT2 has separate memories for these */
 		int down_memory;/* cases (see Porta-LinkMem.xm) */
+<<<<<<< HEAD
+=======
+		int xf_up_memory;
+		int xf_down_memory;
+>>>>>>> db7344ebf (abc)
 	} fine_porta;
 
 	struct {
@@ -231,8 +277,22 @@ struct channel_data {
 		int cutoff;	/* IT filter cutoff frequency */
 		int resonance;	/* IT filter resonance */
 		int envelope;	/* IT filter envelope */
+<<<<<<< HEAD
 	} filter;
 
+=======
+		int can_disable;/* IT hack: allow disabling for cutoff 127 */
+	} filter;
+
+	struct {
+		float val;	/* Current macro effect (use float for slides) */
+		float target;	/* Current macro target (smooth macro) */
+		float slide;	/* Current macro slide (smooth macro) */
+		int active;	/* Current active parameterized macro */
+		int finalvol;	/* Previous tick calculated volume (0-0x400) */
+		int notepan;	/* Previous tick note panning (0x80 center) */
+	} macro;
+>>>>>>> db7344ebf (abc)
 #endif
 
 #ifndef LIBXMP_CORE_PLAYER
@@ -248,6 +308,10 @@ struct channel_data {
 
 	struct xmp_event delayed_event;
 	int delayed_ins;	/* IT save instrument emulation */
+<<<<<<< HEAD
+=======
+	int key_memory;		/* Previous key (XM) */
+>>>>>>> db7344ebf (abc)
 
 	int info_period;	/* Period */
 	int info_pitchbend;	/* Linear pitchbend */
@@ -256,10 +320,34 @@ struct channel_data {
 	int info_finalpan;	/* Final pan including envelopes */
 };
 
+<<<<<<< HEAD
 
 void	libxmp_process_fx	(struct context_data *, struct channel_data *,
 				 int, struct xmp_event *, int);
 void	libxmp_filter_setup	(int, int, int, int*, int*, int *);
 int	libxmp_read_event	(struct context_data *, struct xmp_event *, int);
+=======
+LIBXMP_BEGIN_DECLS
+
+void	libxmp_process_fx	(struct context_data *, struct channel_data *,
+				 int, const struct xmp_event *, int);
+void	libxmp_filter_setup	(int, int, int, int*, int*, int *);
+int	libxmp_read_event	(struct context_data *, const struct xmp_event *, int);
+
+void	libxmp_process_pattern_loop	(struct context_data *,
+	struct flow_control *f, int, int, int);
+void	libxmp_process_pattern_jump	(struct context_data *,
+	struct flow_control *f, int);
+void	libxmp_process_pattern_break	(struct context_data *,
+	struct flow_control *f, int);
+void	libxmp_process_line_jump	(struct context_data *,
+	struct flow_control *f, int, int);
+
+/* For virt_pastnote() */
+void	libxmp_player_set_release	(struct context_data *, int);
+void	libxmp_player_set_fadeout	(struct context_data *, int);
+
+LIBXMP_END_DECLS
+>>>>>>> db7344ebf (abc)
 
 #endif /* LIBXMP_PLAYER_H */

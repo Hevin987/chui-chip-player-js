@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 #ifndef NDEBUG
 #define NDEBUG /* disable assert()s */
 #endif
+=======
+#ifndef DEBUG  /* not a debug build */
+#ifndef NDEBUG
+#define NDEBUG /* disable assert()s */
+#endif
+#endif
+>>>>>>> db7344ebf (abc)
 
 #define STB_VORBIS_NO_PUSHDATA_API
 #define STB_VORBIS_NO_STDIO
@@ -41,4 +49,15 @@
 /* client: */
 #define STB_VORBIS_HEADER_ONLY
 #include "vorbis.c"
+<<<<<<< HEAD
+=======
+
+#else
+
+#ifdef _MSC_VER
+#pragma warning(disable:4456) /* shadowing (hides previous local decl) */
+#pragma warning(disable:4457) /* shadowing (hides function parameter.) */
+#endif
+
+>>>>>>> db7344ebf (abc)
 #endif

@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -75,10 +79,18 @@ static int mtm_test(HIO_HANDLE *f, char *t, const int start)
 static int mtm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 {
 	struct xmp_module *mod = &m->mod;
+<<<<<<< HEAD
 	int i, j;
 	struct mtm_file_header mfh;
 	struct mtm_instrument_header mih;
 	uint8 mt[192];
+=======
+	int i, j, k;
+	struct mtm_file_header mfh;
+	struct mtm_instrument_header mih;
+	uint8 mt[192];
+	int fxx[2];
+>>>>>>> db7344ebf (abc)
 
 	LOAD_INIT();
 
@@ -161,8 +173,13 @@ static int mtm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		xxs->len = mih.length;
 		xxs->lps = mih.loop_start;
 		xxs->lpe = mih.loopend;
+<<<<<<< HEAD
 		xxs->flg = xxs->lpe ? XMP_SAMPLE_LOOP : 0;	/* 1 == Forward loop */
 		if (mfh.attr & 1) {
+=======
+		xxs->flg = (xxs->lpe > 2) ? XMP_SAMPLE_LOOP : 0;	/* 1 == Forward loop */
+		if (mih.attr & 1) {
+>>>>>>> db7344ebf (abc)
 			xxs->flg |= XMP_SAMPLE_16BIT;
 			xxs->len >>= 1;
 			xxs->lps >>= 1;
@@ -170,8 +187,13 @@ static int mtm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		}
 
 		sub->vol = mih.volume;
+<<<<<<< HEAD
 		sub->fin = mih.finetune;
 		sub->pan = 0x80;
+=======
+		sub->fin = (int8)(mih.finetune << 4);
+		sub->pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		sub->sid = i;
 
 		libxmp_instrument_name(mod, i, mih.name, 22);
@@ -192,6 +214,10 @@ static int mtm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	D_(D_INFO "Stored tracks: %d", mod->trk - 1);
 
+<<<<<<< HEAD
+=======
+	fxx[0] = fxx[1] = 0;
+>>>>>>> db7344ebf (abc)
 	for (i = 0; i < mod->trk; i++) {
 
 		if (libxmp_alloc_track(mod, i, mfh.rows) < 0)
@@ -218,6 +244,19 @@ static int mtm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 				e->fxt = e->fxp = 0;
 			}
 
+<<<<<<< HEAD
+=======
+			/* Break is hex (Sybaris/odyssey.mtm pos 14, 30). */
+			if (e->fxt == FX_BREAK) {
+				e->fxt = FX_IT_BREAK;
+			}
+
+			/* See tempo mode detection below. */
+			if (e->fxt == FX_SPEED) {
+				fxx[e->fxp >= 0x20] = 1;
+			}
+
+>>>>>>> db7344ebf (abc)
 			/* Set pan effect translation */
 			if (e->fxt == FX_EXTENDED && MSN(e->fxp) == 0x8) {
 				e->fxt = FX_SETPAN;
@@ -247,8 +286,85 @@ static int mtm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		}
 	}
 
+<<<<<<< HEAD
 	/* Comments */
 	hio_seek(f, mfh.extralen, SEEK_CUR);
+=======
+	/* Tempo mode detection.
+	 *
+	 * The MTM tempo effect has an unusual property: when speed is set, the
+	 * tempo resets to 125, and when tempo is set, the speed resets to 6.
+	 * Modules that use both speed and tempo effects need to emulate this.
+	 * See: Absolve the Ambience by Sybaris, Soma by Ranger Rick.
+	 *
+	 * Dual Module Player and other DOS players did not know about this and
+	 * did not implement support for it, and instead used Protracker Fxx.
+	 * Many MTM authors created modules that rely on this which are various
+	 * degrees of broken in the tracker they were made with! Several MTMs
+	 * by Phoenix and Silent Mode expect this. The majority of them can be
+	 * detected by checking for high Fxx and low Fxx on the same row.
+	 */
+	if (fxx[0] && fxx[1]) {
+		/* Both used, check patterns. */
+		D_(D_INFO "checking patterns for MT or DMP Fxx effect usage");
+		for (i = 0; i < mod->pat; i++) {
+			for (j = 0; j < mfh.rows; j++) {
+				fxx[0] = fxx[1] = 0;
+				for (k = 0; k < mod->chn; k++) {
+					struct xmp_event *e = &EVENT(i, k, j);
+					if (e->fxt == FX_SPEED) {
+						fxx[e->fxp >= 0x20] = 1;
+					}
+				}
+				if (fxx[0] && fxx[1]) {
+					/* Same row, no change required */
+					D_(D_INFO "probably DMP (%d:%d)", i, j);
+					goto probably_dmp;
+				}
+			}
+		}
+		D_(D_INFO "probably MT; injecting speed/BPM reset effects");
+		for (i = 0; i < mod->pat; i++) {
+			for (j = 0; j < mfh.rows; j++) {
+				for (k = 0; k < mod->chn; k++) {
+					struct xmp_event *e = &EVENT(i, k, j);
+					if (e->fxt == FX_SPEED) {
+						e->f2t = FX_SPEED;
+						e->f2p = (e->fxp < 0x20) ? 125 : 6;
+					}
+				}
+			}
+		}
+	}
+    probably_dmp:
+
+	/* Comments */
+	if (mfh.extralen) {
+		m->comment = (char *)malloc(mfh.extralen + 1);
+		if (m->comment) {
+			/* Comments are stored in 40 byte ASCIIZ lines. */
+			int len = hio_read(m->comment, 1, mfh.extralen, f);
+			int line, last_line = 0;
+
+			for (i = 0; i + 40 <= len; i += 40) {
+				if (m->comment[i] != '\0')
+					last_line = i + 40;
+			}
+			for (j = 0, line = 0; line < last_line; line += 40) {
+				char *pos = m->comment + line;
+				for (i = 0; i < 39; i++) {
+					if (pos[i] == '\0')
+						break;
+					m->comment[j++] = pos[i];
+				}
+				m->comment[j++] = '\n';
+			}
+			m->comment[j] = '\0';
+		} else {
+			hio_seek(f, mfh.extralen, SEEK_CUR);
+		}
+	}
+>>>>>>> db7344ebf (abc)
 
 	/* Read samples */
 	D_(D_INFO "Stored samples: %d", mod->smp);

@@ -24,6 +24,11 @@ typedef struct {
 	int noclose;
 } HIO_HANDLE;
 
+<<<<<<< HEAD
+=======
+LIBXMP_BEGIN_DECLS
+
+>>>>>>> db7344ebf (abc)
 int8	hio_read8s	(HIO_HANDLE *);
 uint8	hio_read8	(HIO_HANDLE *);
 uint16	hio_read16l	(HIO_HANDLE *);
@@ -38,11 +43,25 @@ long	hio_tell	(HIO_HANDLE *);
 int	hio_eof		(HIO_HANDLE *);
 int	hio_error	(HIO_HANDLE *);
 HIO_HANDLE *hio_open	(const char *, const char *);
+<<<<<<< HEAD
 HIO_HANDLE *hio_open_mem  (const void *, long, int);
 HIO_HANDLE *hio_open_file (FILE *);
 HIO_HANDLE *hio_open_file2 (FILE *);/* allows fclose()ing the file by libxmp */
 HIO_HANDLE *hio_open_callbacks (void *, struct xmp_callbacks);
 int	hio_close	(HIO_HANDLE *);
 long	hio_size	(HIO_HANDLE *);
+=======
+HIO_HANDLE *hio_open_const_mem  (const void *, long);
+HIO_HANDLE *hio_open_file (FILE *);
+HIO_HANDLE *hio_open_file2 (FILE *);/* allows fclose()ing the file by libxmp */
+HIO_HANDLE *hio_open_callbacks (void *, struct xmp_callbacks);
+int	hio_reopen_mem	(void *, long, int, HIO_HANDLE *);
+int	hio_reopen_file	(FILE *, int, HIO_HANDLE *);
+int	hio_close	(HIO_HANDLE *);
+long	hio_size	(HIO_HANDLE *);
+const unsigned char *hio_get_underlying_memory(HIO_HANDLE *);
+
+LIBXMP_END_DECLS
+>>>>>>> db7344ebf (abc)
 
 #endif

@@ -4,7 +4,10 @@
 #include "../../common.h"
 #include "../../format.h"
 #include "../../hio.h"
+<<<<<<< HEAD
 /*#include "../../list.h"*/
+=======
+>>>>>>> db7344ebf (abc)
 
 #define MIN_FILE_LENGHT 2048
 
@@ -30,7 +33,10 @@ struct pw_format {
 	const char *name;
 	int (*test)(const uint8 *, char *, int);
 	int (*depack)(HIO_HANDLE *, FILE *);
+<<<<<<< HEAD
 	/*struct list_head list;*/
+=======
+>>>>>>> db7344ebf (abc)
 };
 
 int pw_wizardry(HIO_HANDLE *, FILE *, const char **);

@@ -3,7 +3,12 @@
 /* This input caused uninitialized reads in the ProWizard loader due to
  * buggy pattern counting in the Promizer 1.0c loader causing it to emit
  * no patterns for a module with 0 orders.
+<<<<<<< HEAD
  */
+=======
+ *
+ * Note: this case should be valid but fails for some other reason. */
+>>>>>>> db7344ebf (abc)
 
 TEST(test_fuzzer_prowizard_pm10c_zero_length)
 {

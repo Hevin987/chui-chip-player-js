@@ -15,7 +15,11 @@ TEST(test_player_nna_cut)
 	ctx = (struct context_data *)opaque;
 	p = &ctx->p;
 
+<<<<<<< HEAD
  	create_simple_module(ctx, 2, 2);
+=======
+	create_simple_module(ctx, 2, 2);
+>>>>>>> db7344ebf (abc)
 	set_instrument_volume(ctx, 0, 0, 22);
 	set_instrument_volume(ctx, 1, 0, 33);
 	set_instrument_nna(ctx, 1, 0, XMP_INST_NNA_CUT, XMP_INST_DCT_OFF,
@@ -48,7 +52,11 @@ TEST(test_player_nna_cut)
 	fail_unless(vi->pos0 ==  0, "sample didn't reset");
 
 	for (i = 0; i < p->virt.maxvoc; i++) {
+<<<<<<< HEAD
 		struct mixer_voice *vi = &p->virt.voice_array[i];
+=======
+		vi = &p->virt.voice_array[i];
+>>>>>>> db7344ebf (abc)
 		if (i != 0 && vi->root == 0) {
 			break;
 		}

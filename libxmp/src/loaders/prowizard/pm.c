@@ -62,7 +62,11 @@ void Depack_PM (FILE * in, FILE * out)
 		ssize +=
 			(((Header[42 + i * 30] << 8) + Header[43 +
 			     i * 30]) * 2);
+<<<<<<< HEAD
 	/*printf ( "Whole sanple size : %ld\n" , ssize ); */
+=======
+	/*printf ( "Whole sample size : %ld\n" , ssize ); */
+>>>>>>> db7344ebf (abc)
 
 	/* read and write size of pattern list */
 	fread (&npat, 1, 1, in);

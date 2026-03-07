@@ -64,10 +64,17 @@ TEST(test_player_note_off_ft2)
 	xmp_play_frame(opaque);
 	fail_unless(vi->note == 59, "not same note");
 	fail_unless(vi->ins  ==  0, "not same instrument");
+<<<<<<< HEAD
 	fail_unless(vi->vol / 16 == 21, "didn't follow envelope + fadeout");
 
 	xmp_play_frame(opaque);
 	fail_unless(vi->vol / 16 == 32, "didn't follow envelope");
+=======
+	fail_unless(vi->vol / 16 == 16, "didn't follow envelope + fadeout");
+
+	xmp_play_frame(opaque);
+	fail_unless(vi->vol / 16 == 22, "didn't follow envelope");
+>>>>>>> db7344ebf (abc)
 
 	xmp_release_module(opaque);
 	xmp_free_context(opaque);

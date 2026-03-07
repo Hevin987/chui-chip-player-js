@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+<<<<<<< HEAD
 #define XMP_VERSION "4.5.0"
 #define XMP_VERCODE 0x040500
 #define XMP_VER_MAJOR 4
@@ -17,18 +18,51 @@ extern "C" {
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
 # if defined(BUILDING_STATIC)
+=======
+#define XMP_VERSION "4.7.0"
+#define XMP_VERCODE 0x040700
+#define XMP_VER_MAJOR 4
+#define XMP_VER_MINOR 7
+#define XMP_VER_RELEASE 0
+
+#if defined(_WIN32) && !defined(__CYGWIN__)
+# if defined(LIBXMP_STATIC)
+>>>>>>> db7344ebf (abc)
 #  define LIBXMP_EXPORT
 # elif defined(BUILDING_DLL)
 #  define LIBXMP_EXPORT __declspec(dllexport)
 # else
 #  define LIBXMP_EXPORT __declspec(dllimport)
 # endif
+<<<<<<< HEAD
 #elif defined(__OS2__) && defined(__WATCOMC__) && defined(__SW_BD)
 #  define LIBXMP_EXPORT __declspec(dllexport)
 #elif (defined(__GNUC__) || defined(__clang__) || defined(__HP_cc)) && defined(XMP_SYM_VISIBILITY)
 # define LIBXMP_EXPORT __attribute__((visibility ("default")))
 #elif defined(__SUNPRO_C) && defined(XMP_LDSCOPE_GLOBAL)
 # define LIBXMP_EXPORT __global
+=======
+#elif defined(__OS2__) && defined(__WATCOMC__)
+# if defined(LIBXMP_STATIC)
+#  define LIBXMP_EXPORT
+# elif defined(BUILDING_DLL)
+#  define LIBXMP_EXPORT __declspec(dllexport)
+# else
+#  define LIBXMP_EXPORT
+# endif
+#elif (defined(__GNUC__) || defined(__clang__) || defined(__HP_cc)) && defined(XMP_SYM_VISIBILITY)
+# if defined(LIBXMP_STATIC)
+#  define LIBXMP_EXPORT
+# else
+#  define LIBXMP_EXPORT __attribute__((visibility("default")))
+# endif
+#elif defined(__SUNPRO_C) && defined(XMP_LDSCOPE_GLOBAL)
+# if defined(LIBXMP_STATIC)
+#  define LIBXMP_EXPORT
+# else
+#  define LIBXMP_EXPORT __global
+# endif
+>>>>>>> db7344ebf (abc)
 #elif defined(EMSCRIPTEN)
 # define LIBXMP_EXPORT EMSCRIPTEN_KEEPALIVE
 # define LIBXMP_EXPORT_VAR
@@ -36,7 +70,11 @@ extern "C" {
 # define LIBXMP_EXPORT
 #endif
 
+<<<<<<< HEAD
 #if !defined (LIBXMP_EXPORT_VAR)
+=======
+#if !defined(LIBXMP_EXPORT_VAR)
+>>>>>>> db7344ebf (abc)
 # define LIBXMP_EXPORT_VAR LIBXMP_EXPORT
 #endif
 
@@ -52,6 +90,10 @@ extern "C" {
 #define XMP_FORMAT_8BIT		(1 << 0) /* Mix to 8-bit instead of 16 */
 #define XMP_FORMAT_UNSIGNED	(1 << 1) /* Mix to unsigned samples */
 #define XMP_FORMAT_MONO		(1 << 2) /* Mix to mono instead of stereo */
+<<<<<<< HEAD
+=======
+#define XMP_FORMAT_32BIT	(1 << 3) /* Mix to 32-bit int instead of 16 */
+>>>>>>> db7344ebf (abc)
 
 /* player parameters */
 #define XMP_PLAYER_AMP		0	/* Amplification factor */
@@ -115,7 +157,11 @@ extern "C" {
 #define XMP_MAX_ENV_POINTS	32	/* Max number of envelope points */
 #define XMP_MAX_MOD_LENGTH	256	/* Max number of patterns in module */
 #define XMP_MAX_CHANNELS	64	/* Max number of channels in module */
+<<<<<<< HEAD
 #define XMP_MAX_SRATE		192000	/* max sampling rate (Hz) */
+=======
+#define XMP_MAX_SRATE		768000	/* max sampling rate (Hz) */
+>>>>>>> db7344ebf (abc)
 #define XMP_MIN_SRATE		4000	/* min sampling rate (Hz) */
 #define XMP_MIN_BPM		20	/* min BPM */
 /* frame rate = (50 * bpm / 125) Hz */
@@ -183,6 +229,10 @@ struct xmp_envelope {
 struct xmp_subinstrument {
 	int vol;			/* Default volume */
 	int gvl;			/* Global volume */
+<<<<<<< HEAD
+=======
+#define XMP_INST_NO_DEFAULT_PAN	-1
+>>>>>>> db7344ebf (abc)
 	int pan;			/* Pan */
 	int xpo;			/* Transpose */
 	int fin;			/* Finetune */
@@ -241,6 +291,10 @@ struct xmp_sample {
 #define XMP_SAMPLE_LOOP_FULL	(1 << 4)  /* Play full sample before looping */
 #define XMP_SAMPLE_SLOOP	(1 << 5)  /* Sample has sustain loop */
 #define XMP_SAMPLE_SLOOP_BIDIR	(1 << 6)  /* Bidirectional sustain loop */
+<<<<<<< HEAD
+=======
+#define XMP_SAMPLE_STEREO	(1 << 7)  /* Interlaced stereo sample */
+>>>>>>> db7344ebf (abc)
 #define XMP_SAMPLE_SYNTH	(1 << 15) /* Data contains synth patch */
 	int flg;			/* Flags */
 	unsigned char *data;		/* Sample data */
@@ -270,6 +324,12 @@ struct xmp_module {
 	struct xmp_instrument *xxi;	/* Instruments */
 	struct xmp_sample *xxs;		/* Samples */
 	struct xmp_channel xxc[XMP_MAX_CHANNELS]; /* Channel info */
+<<<<<<< HEAD
+=======
+
+#define XMP_MARK_SKIP		0xfe	/* S3M/IT-only: skip position */
+#define XMP_MARK_END		0xff	/* S3M/IT-only: end position */
+>>>>>>> db7344ebf (abc)
 	unsigned char xxo[XMP_MAX_MOD_LENGTH];	/* Orders */
 };
 
@@ -367,9 +427,19 @@ LIBXMP_EXPORT int         xmp_prev_position   (xmp_context);
 LIBXMP_EXPORT int         xmp_set_position    (xmp_context, int);
 LIBXMP_EXPORT int         xmp_set_row         (xmp_context, int);
 LIBXMP_EXPORT int         xmp_set_tempo_factor(xmp_context, double);
+<<<<<<< HEAD
 LIBXMP_EXPORT void        xmp_stop_module     (xmp_context);
 LIBXMP_EXPORT void        xmp_restart_module  (xmp_context);
 LIBXMP_EXPORT int         xmp_seek_time       (xmp_context, int);
+=======
+LIBXMP_EXPORT int         xmp_set_tempo_factor_relative(xmp_context, double);
+LIBXMP_EXPORT double      xmp_get_tempo_factor(xmp_context);
+LIBXMP_EXPORT double      xmp_get_tempo_factor_relative(xmp_context);
+LIBXMP_EXPORT void        xmp_stop_module     (xmp_context);
+LIBXMP_EXPORT void        xmp_restart_module  (xmp_context);
+LIBXMP_EXPORT int         xmp_seek_time       (xmp_context, int);
+LIBXMP_EXPORT int         xmp_seek_time_frame (xmp_context, int);
+>>>>>>> db7344ebf (abc)
 LIBXMP_EXPORT int         xmp_channel_mute    (xmp_context, int, int);
 LIBXMP_EXPORT int         xmp_channel_vol     (xmp_context, int, int);
 LIBXMP_EXPORT int         xmp_set_player      (xmp_context, int, int);

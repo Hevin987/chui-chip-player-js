@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2024 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,7 +28,11 @@
 #include "xz.h"
 #include "crc32.h"
 
+<<<<<<< HEAD
 #define XZ_MAX_OUTPUT	(512 << 20)
+=======
+#define XZ_MAX_OUTPUT	LIBXMP_DEPACK_LIMIT
+>>>>>>> db7344ebf (abc)
 #define XZ_MAX_DICT	(16 << 20)
 #define XZ_BUFFER_SIZE	4096
 
@@ -35,7 +43,11 @@ static int test_xz(unsigned char *b)
 	return !memcmp(b, XZ_MAGIC, sizeof(XZ_MAGIC));
 }
 
+<<<<<<< HEAD
 static int decrunch_xz(HIO_HANDLE *in, void **out, long inlen, long *outlen)
+=======
+static int decrunch_xz(HIO_HANDLE *in, void **out, long *outlen)
+>>>>>>> db7344ebf (abc)
 {
 	struct xz_dec *xz;
 	struct xz_buf buf;
@@ -43,8 +55,11 @@ static int decrunch_xz(HIO_HANDLE *in, void **out, long inlen, long *outlen)
 	uint8 *inbuf = NULL;
 	uint8 *tmp;
 
+<<<<<<< HEAD
 	libxmp_crc32_init_A();
 
+=======
+>>>>>>> db7344ebf (abc)
 	xz = xz_dec_init(XZ_DYNALLOC, XZ_MAX_DICT);
 	if (xz == NULL)
 		return -1;
@@ -102,7 +117,11 @@ static int decrunch_xz(HIO_HANDLE *in, void **out, long inlen, long *outlen)
 	return -1;
 }
 
+<<<<<<< HEAD
 struct depacker libxmp_depacker_xz = {
+=======
+const struct depacker libxmp_depacker_xz = {
+>>>>>>> db7344ebf (abc)
 	test_xz,
 	NULL,
 	decrunch_xz

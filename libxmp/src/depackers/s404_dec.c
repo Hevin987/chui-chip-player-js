@@ -122,7 +122,11 @@ static int decompressS404(uint8 *src, uint8 *orgdst,
   eff = initGetb(&bs, src, src_length);
 
   /* Sanity check--prevent invalid shift exponents. */
+<<<<<<< HEAD
   if (eff < 6 || eff >= 32)
+=======
+  if (eff < 6 || eff >= 16)
+>>>>>>> db7344ebf (abc)
     return -1;
 
   /*printf("_bl: %02X, _bb: %04X, eff: %d\n",_bl,_bb, eff);*/
@@ -364,12 +368,22 @@ static int test_s404(unsigned char *b)
 	return memcmp(b, "S404", 4) == 0;
 }
 
+<<<<<<< HEAD
 static int decrunch_s404(HIO_HANDLE *in, void **out, long inlen, long *outlen)
+=======
+static int decrunch_s404(HIO_HANDLE *in, void **out, long *outlen)
+>>>>>>> db7344ebf (abc)
 {
   int32 oLen, sLen, pLen;
   uint8 *dst = NULL;
   uint8 *buf, *src;
+<<<<<<< HEAD
 
+=======
+  long inlen;
+
+  inlen = hio_size(in);
+>>>>>>> db7344ebf (abc)
   if (inlen <= 16)
     return -1;
   src = buf = (uint8 *) malloc(inlen);
@@ -425,7 +439,11 @@ static int decrunch_s404(HIO_HANDLE *in, void **out, long inlen, long *outlen)
   return -1;
 }
 
+<<<<<<< HEAD
 struct depacker libxmp_depacker_s404 = {
+=======
+const struct depacker libxmp_depacker_s404 = {
+>>>>>>> db7344ebf (abc)
 	test_s404,
 	NULL,
 	decrunch_s404

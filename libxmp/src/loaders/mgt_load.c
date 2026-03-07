@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -164,7 +168,11 @@ static int mgt_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		mod->xxi[i].sub[0].vol = hio_read16b(f) >> 4;
 		hio_read8(f);		/* vol L */
 		hio_read8(f);		/* vol R */
+<<<<<<< HEAD
 		mod->xxi[i].sub[0].pan = 0x80;
+=======
+		mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		flags = hio_read8(f);
 		mod->xxs[i].flg = flags & 0x03 ? XMP_SAMPLE_LOOP : 0;
 		mod->xxs[i].flg |= flags & 0x02 ? XMP_SAMPLE_LOOP_BIDIR : 0;
@@ -196,6 +204,15 @@ static int mgt_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	/* Tracks */
 
+<<<<<<< HEAD
+=======
+	/* Sanity check */
+	if (trk_ptr >= hio_size(f)) {
+		D_(D_CRIT "track pointer past EOF, can't load tracks");
+		return -1;
+	}
+
+>>>>>>> db7344ebf (abc)
 	for (i = 1; i < mod->trk; i++) {
 		int offset, rows;
 		uint8 b;

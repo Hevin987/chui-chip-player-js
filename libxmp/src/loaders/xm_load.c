@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -112,10 +116,28 @@ static int load_xm_pattern(struct module_data *m, int num, int version,
 
 	for (j = 0; j < r; j++) {
 		for (k = 0; k < mod->chn; k++) {
+<<<<<<< HEAD
 			/*
 			if ((pat - patbuf) >= xph.datasize)
 				break;
 			*/
+=======
+			/* Some XMs have cleanly truncated patterns. See:
+			 * Balrog/f0rtify.xm; Decayer-9/purification.xm;
+			 * Falcon (PL)/eaten vinyl.xm; Headcrasher/microcosm.xm;
+			 * Jazztiz/ta-da-da-da.xm; Jisemdu/smile.xm;
+			 * Markus Plomgren/cool jazzy jeff!!!.xm;
+			 * Orange/optical.xm; Skyraver/spirit of life.xm;
+			 * Sonic (UK)'s atomic_subculture.xm, luvdup.xm,
+			 * phuture.xm; Teemu/speed.xm; Warhawk/anaconda.xm.
+			 */
+			if ((pat - patbuf) == (ptrdiff_t)xph.datasize) {
+				D_(D_WARN "early pattern %d end (row:%d/%d, ch:%d/%d)",
+				   num, j, r, k, mod->chn
+				);
+				goto early_pattern_end;
+			}
+>>>>>>> db7344ebf (abc)
 
 			event = &EVENT(num, k, j);
 
@@ -179,6 +201,7 @@ static int load_xm_pattern(struct module_data *m, int num, int version,
 			}
 
 			if (event->note == 0x61) {
+<<<<<<< HEAD
 				/* See OpenMPT keyoff+instr.xm test case */
 				if (event->fxt == 0x0e && MSN(event->fxp) == 0x0d) {
 					event->note = XMP_KEY_OFF;
@@ -186,6 +209,9 @@ static int load_xm_pattern(struct module_data *m, int num, int version,
 					event->note =
 					event->ins ? XMP_KEY_FADE : XMP_KEY_OFF;
 				}
+=======
+				event->note = XMP_KEY_OFF;
+>>>>>>> db7344ebf (abc)
 			} else if (event->note > 0) {
 				event->note += 12;
 			}
@@ -202,6 +228,23 @@ static int load_xm_pattern(struct module_data *m, int num, int version,
 					break;
 				}
 			}
+<<<<<<< HEAD
+=======
+			if (event->fxt == FX_XF_PORTA && MSN(event->fxp) == 0x09) {
+				/* Translate MPT hacks */
+				switch (LSN(event->fxp)) {
+				case 0x0:	/* Surround off */
+				case 0x1:	/* Surround on */
+					event->fxt = FX_SURROUND;
+					event->fxp = LSN(event->fxp);
+					break;
+				case 0xe:	/* Play forward */
+				case 0xf:	/* Play reverse */
+					event->fxt = FX_REVERSE;
+					event->fxp = LSN(event->fxp) - 0xe;
+				}
+			}
+>>>>>>> db7344ebf (abc)
 
 			if (!event->vol) {
 				continue;
@@ -256,6 +299,7 @@ static int load_xm_pattern(struct module_data *m, int num, int version,
 			case 0x0f:	/* Tone portamento */
 				event->f2t = FX_TONEPORTA;
 				event->f2p = (event->vol - 0xf0) << 4;
+<<<<<<< HEAD
 
 				/* From OpenMPT TonePortamentoMemory.xm:
 				* "Another nice bug (...) is the combination of both
@@ -288,12 +332,18 @@ static int load_xm_pattern(struct module_data *m, int num, int version,
 				&& event->f2t == FX_TONEPORTA) {
 					event->fxt = event->fxp = 0;
 				}
+=======
+>>>>>>> db7344ebf (abc)
 				break;
 			}
 			event->vol = 0;
 		}
 	}
+<<<<<<< HEAD
 
+=======
+early_pattern_end:
+>>>>>>> db7344ebf (abc)
 	return 0;
 
 err:
@@ -362,11 +412,24 @@ err:
 #ifndef LIBXMP_CORE_PLAYER
 #define MAGIC_OGGS	0x4f676753
 
+<<<<<<< HEAD
 static int is_ogg_sample(HIO_HANDLE *f)
+=======
+static int is_ogg_sample(HIO_HANDLE *f, struct xmp_sample *xxs)
+>>>>>>> db7344ebf (abc)
 {
 	/* uint32 size; */
 	uint32 id;
 
+<<<<<<< HEAD
+=======
+	/* Sample must be at least 4 bytes long to be an OGG sample.
+	 * Bonnie's Bookstore music.oxm contains zero length samples
+	 * followed immediately by OGG samples. */
+	if (xxs->len < 4)
+		return 0;
+
+>>>>>>> db7344ebf (abc)
 	/* size = */ hio_read32l(f);
 	id = hio_read32b(f);
 	if (hio_error(f) != 0 || hio_seek(f, -8, SEEK_CUR) < 0)
@@ -385,11 +448,14 @@ static int oggdec(struct module_data *m, HIO_HANDLE *f, struct xmp_sample *xxs, 
 	uint8 *data;
 	int16 *pcm16 = NULL;
 
+<<<<<<< HEAD
 	/* Sanity check */
 	if (xxs->len < 4) {
 		return -1;
 	}
 
+=======
+>>>>>>> db7344ebf (abc)
 	if ((data = (uint8 *)calloc(1, len)) == NULL)
 		return -1;
 
@@ -402,14 +468,22 @@ static int oggdec(struct module_data *m, HIO_HANDLE *f, struct xmp_sample *xxs, 
 	n = stb_vorbis_decode_memory(data, len, &ch, &rate, &pcm16);
 	free(data);
 
+<<<<<<< HEAD
 	if (n <= 0) {
+=======
+	if (n < 0 || ch != 1) {
+>>>>>>> db7344ebf (abc)
 		free(pcm16);
 		return -1;
 	}
 
+<<<<<<< HEAD
 	xxs->len = n;
 
 	if ((xxs->flg & XMP_SAMPLE_16BIT) == 0) {
+=======
+	if ((xxs->flg & XMP_SAMPLE_16BIT) == 0 && n > 0) {
+>>>>>>> db7344ebf (abc)
 		uint8 *pcm = (uint8 *)pcm16;
 
 		for (i = 0; i < n; i++) {
@@ -422,6 +496,14 @@ static int oggdec(struct module_data *m, HIO_HANDLE *f, struct xmp_sample *xxs, 
 		}
 		pcm16 = (int16 *)pcm;
 	}
+<<<<<<< HEAD
+=======
+	if (xxs->flg & XMP_SAMPLE_STEREO) {
+		/* OXM stereo is a single channel non-interleaved stream. */
+		n >>= 1;
+	}
+	xxs->len = n;
+>>>>>>> db7344ebf (abc)
 
 	flags |= SAMPLE_FLAG_NOLOAD;
 #ifdef WORDS_BIGENDIAN
@@ -435,7 +517,12 @@ static int oggdec(struct module_data *m, HIO_HANDLE *f, struct xmp_sample *xxs, 
 }
 #endif
 
+<<<<<<< HEAD
 static int load_instruments(struct module_data *m, int version, HIO_HANDLE *f)
+=======
+static int load_instruments(struct module_data *m, int version,
+			    int *mpt_ins_headers, HIO_HANDLE *f)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct xm_instrument_header xih;
@@ -446,6 +533,11 @@ static int load_instruments(struct module_data *m, int version, HIO_HANDLE *f)
 	int i, j;
 	uint8 buf[208];
 
+<<<<<<< HEAD
+=======
+	(void)mpt_ins_headers; /* unused in LIBXMP_CORE_PLAYER */
+
+>>>>>>> db7344ebf (abc)
 	D_(D_INFO "Instruments: %d", mod->ins);
 
 	/* ESTIMATED value! We don't know the actual value at this point */
@@ -490,6 +582,17 @@ static int load_instruments(struct module_data *m, int version, HIO_HANDLE *f)
 			return -1;
 		}
 
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_PLAYER
+		/* Yet another Modplug Tracker tell: it saves huge zero-filled
+		 * instrument headers for unused instruments. */
+		if (xih.size == 0x107 && xih.samples == 0 && xih.sh_size == 0) {
+			*mpt_ins_headers = 1;
+		}
+#endif
+
+>>>>>>> db7344ebf (abc)
 		libxmp_instrument_name(mod, i, xih.name, 22);
 
 		xxi->nsm = xih.samples;
@@ -600,7 +703,11 @@ static int load_instruments(struct module_data *m, int version, HIO_HANDLE *f)
 			for (j = 12; j < 108; j++) {
 				xxi->map[j].ins = xi.sample[j - 12];
 				if (xxi->map[j].ins >= xxi->nsm)
+<<<<<<< HEAD
 					xxi->map[j].ins = -1;
+=======
+					xxi->map[j].ins = 0xff;
+>>>>>>> db7344ebf (abc)
 			}
 		}
 
@@ -668,18 +775,36 @@ static int load_instruments(struct module_data *m, int version, HIO_HANDLE *f)
 				xxs->lps >>= 1;
 				xxs->lpe >>= 1;
 			}
+<<<<<<< HEAD
+=======
+			if (xsh[j].type & XM_SAMPLE_STEREO) {
+				xxs->flg |= XMP_SAMPLE_STEREO;
+				xxs->len >>= 1;
+				xxs->lps >>= 1;
+				xxs->lpe >>= 1;
+			}
+>>>>>>> db7344ebf (abc)
 
 			xxs->flg |= xsh[j].type & XM_LOOP_FORWARD ? XMP_SAMPLE_LOOP : 0;
 			xxs->flg |= xsh[j].type & XM_LOOP_PINGPONG ? XMP_SAMPLE_LOOP | XMP_SAMPLE_LOOP_BIDIR : 0;
 
+<<<<<<< HEAD
 			D_(D_INFO "  size:%06x loop start:%06x loop end:%06x %c V%02x F%+04d P%02x R%+03d %s",
+=======
+			D_(D_INFO "  size:%06x loop start:%06x loop end:%06x %c V%02x F%+04d P%02x R%+03d %s%s",
+>>>>>>> db7344ebf (abc)
 			   mod->xxs[sub->sid].len,
 			   mod->xxs[sub->sid].lps,
 			   mod->xxs[sub->sid].lpe,
 			   mod->xxs[sub->sid].flg & XMP_SAMPLE_LOOP_BIDIR ? 'B' :
 			   mod->xxs[sub->sid].flg & XMP_SAMPLE_LOOP ? 'L' : ' ',
 			   sub->vol, sub->fin, sub->pan, sub->xpo,
+<<<<<<< HEAD
 			   mod->xxs[sub->sid].flg & XMP_SAMPLE_16BIT ? " (16 bit)" : "");
+=======
+			   mod->xxs[sub->sid].flg & XMP_SAMPLE_16BIT ? " (16 bit)" : "",
+			   xxs->flg & XMP_SAMPLE_STEREO ? " (stereo)" : "");
+>>>>>>> db7344ebf (abc)
 		}
 
 		/* Read actual sample data */
@@ -687,6 +812,10 @@ static int load_instruments(struct module_data *m, int version, HIO_HANDLE *f)
 		total_sample_size = 0;
 		for (j = 0; j < xxi->nsm; j++) {
 			struct xmp_subinstrument *sub = &xxi->sub[j];
+<<<<<<< HEAD
+=======
+			struct xmp_sample *xxs = &mod->xxs[sub->sid];
+>>>>>>> db7344ebf (abc)
 			int flags;
 
 			flags = SAMPLE_FLAG_DIFF;
@@ -700,8 +829,13 @@ static int load_instruments(struct module_data *m, int version, HIO_HANDLE *f)
 			        D_(D_INFO "  read sample: index:%d sample id:%d", j, sub->sid);
 
 #ifndef LIBXMP_CORE_PLAYER
+<<<<<<< HEAD
 				if (is_ogg_sample(f)) {
 					if (oggdec(m, f, &mod->xxs[sub->sid], xsh[j].length) < 0) {
+=======
+				if (is_ogg_sample(f, xxs)) {
+					if (oggdec(m, f, xxs, xsh[j].length) < 0) {
+>>>>>>> db7344ebf (abc)
 						return -1;
 					}
 
@@ -711,7 +845,11 @@ static int load_instruments(struct module_data *m, int version, HIO_HANDLE *f)
 				}
 #endif
 
+<<<<<<< HEAD
 				if (libxmp_load_sample(m, f, flags, &mod->xxs[sub->sid], NULL) < 0) {
+=======
+				if (libxmp_load_sample(m, f, flags, xxs, NULL) < 0) {
+>>>>>>> db7344ebf (abc)
 					return -1;
 				}
 				if (flags & SAMPLE_FLAG_ADPCM) {
@@ -745,9 +883,23 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	int i, j;
 	struct xm_file_header xfh;
 	char tracker_name[21];
+<<<<<<< HEAD
 	int len;
 	uint8 buf[80];
 
+=======
+#ifndef LIBXMP_CORE_PLAYER
+	int claims_ft2 = 0;
+	int is_mpt_old = 0;
+	int is_mpt_116 = 0;
+#endif
+	int mpt_ins_headers = 0;
+	int len;
+	uint8 buf[80];
+
+	(void)mpt_ins_headers; /* unused in LIBXMP_CORE_PLAYER */
+
+>>>>>>> db7344ebf (abc)
 	LOAD_INIT();
 
 	if (hio_read(buf, 80, 1, f) != 1) {
@@ -771,6 +923,7 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	xfh.bpm = readmem16l(buf + 78);		/* Default BPM */
 
 	/* Sanity checks */
+<<<<<<< HEAD
 	if (xfh.songlen > 256 || xfh.patterns > 256 || xfh.instruments > 255) {
 		D_(D_CRIT "Sanity check: %d %d %d", xfh.songlen, xfh.patterns, xfh.instruments);
 		return -1;
@@ -784,6 +937,30 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	if (xfh.tempo >= 32 || xfh.bpm < 32 || xfh.bpm > 255) {
 		if (memcmp("MED2XM", xfh.tracker, 6)) {
 			D_(D_CRIT "Sanity check: %d %d", xfh.tempo, xfh.bpm);
+=======
+	if (xfh.songlen > 256) {
+		D_(D_CRIT "bad song length: %d", xfh.songlen);
+		return -1;
+	}
+	if (xfh.patterns > 256) {
+		D_(D_CRIT "bad pattern count: %d", xfh.patterns);
+		return -1;
+	}
+	if (xfh.instruments > 255) {
+		D_(D_CRIT "bad instrument count: %d", xfh.instruments);
+		return -1;
+	}
+
+	if (xfh.channels > XMP_MAX_CHANNELS) {
+		D_(D_CRIT "bad channel count: %d", xfh.channels);
+		return -1;
+	}
+
+	/* FT2 and MPT allow up to 255 BPM. OpenMPT allows up to 1000 BPM. */
+	if (xfh.tempo >= 32 || xfh.bpm < 32 || xfh.bpm > 1000) {
+		if (memcmp("MED2XM", xfh.tracker, 6)) {
+			D_(D_CRIT "bad tempo or BPM: %d %d", xfh.tempo, xfh.bpm);
+>>>>>>> db7344ebf (abc)
 			return -1;
 		}
 	}
@@ -791,7 +968,11 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	/* Honor header size -- needed by BoobieSqueezer XMs */
 	len = xfh.headersz - 0x14;
 	if (len < 0 || len > 256) {
+<<<<<<< HEAD
 		D_(D_CRIT "Sanity check: %d", len);
+=======
+		D_(D_CRIT "bad XM header length: %d", len);
+>>>>>>> db7344ebf (abc)
 		return -1;
 	}
 
@@ -807,7 +988,11 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	mod->chn = xfh.channels;
 	mod->pat = xfh.patterns;
 	mod->ins = xfh.instruments;
+<<<<<<< HEAD
 	mod->rst = xfh.restart;
+=======
+	mod->rst = xfh.restart >= xfh.songlen ? 0 : xfh.restart;
+>>>>>>> db7344ebf (abc)
 	mod->spd = xfh.tempo;
 	mod->bpm = xfh.bpm;
 	mod->trk = mod->chn * mod->pat + 1;
@@ -825,9 +1010,21 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 			break;
 	}
 
+<<<<<<< HEAD
 	/* OpenMPT accurately emulates weird FT2 bugs */
 	if (!strncmp(tracker_name, "FastTracker v2.00", 17) ||
 	    !strncmp(tracker_name, "OpenMPT ", 8)) {
+=======
+	if (!strncmp(tracker_name, "FastTracker v2.00", 17)) {
+		m->quirk |= QUIRK_FT2BUGS;
+#ifndef LIBXMP_CORE_PLAYER
+		claims_ft2 = 1;
+#endif
+	} else if (!strncmp(tracker_name, "Fasttracker II clone", 20)) {
+		m->quirk |= QUIRK_FT2BUGS;
+	} else if (!strncmp(tracker_name, "OpenMPT ", 8)) {
+		/* OpenMPT accurately emulates weird FT2 bugs */
+>>>>>>> db7344ebf (abc)
 		m->quirk |= QUIRK_FT2BUGS;
 	}
 #ifndef LIBXMP_CORE_PLAYER
@@ -850,6 +1047,16 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 	if (!strncmp(tracker_name, "FastTracker v 2.00", 18)) {
 		strcpy(tracker_name, "old ModPlug Tracker");
 		m->quirk &= ~QUIRK_FT2BUGS;
+<<<<<<< HEAD
+=======
+		is_mpt_old = 1;
+	}
+
+	if (!strcmp(tracker_name, "Skale Tracker") ||
+	    !strcmp(tracker_name, "Sk@le Tracker")) {
+		/* Skale Tracker allows Dxx Byy to jump to row X. */
+		m->flow_mode |= FLOW_JUMP_NO_ROW_SET;
+>>>>>>> db7344ebf (abc)
 	}
 
 	libxmp_set_type(m, "%s XM %d.%02d", tracker_name, xfh.version >> 8, xfh.version & 0xff);
@@ -866,7 +1073,11 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 
 	/* XM 1.02/1.03 has a different patterns and instruments order */
 	if (xfh.version <= 0x0103) {
+<<<<<<< HEAD
 		if (load_instruments(m, xfh.version, f) < 0) {
+=======
+		if (load_instruments(m, xfh.version, &mpt_ins_headers, f) < 0) {
+>>>>>>> db7344ebf (abc)
 			return -1;
 		}
 		if (load_patterns(m, xfh.version, f) < 0) {
@@ -876,7 +1087,11 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 		if (load_patterns(m, xfh.version, f) < 0) {
 			return -1;
 		}
+<<<<<<< HEAD
 		if (load_instruments(m, xfh.version, f) < 0) {
+=======
+		if (load_instruments(m, xfh.version, &mpt_ins_headers, f) < 0) {
+>>>>>>> db7344ebf (abc)
 			return -1;
 		}
 	}
@@ -895,11 +1110,96 @@ static int xm_load(struct module_data *m, HIO_HANDLE * f, const int start)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_PLAYER
+	/* Load MPT properties from the end of the file. */
+	while (1) {
+		uint32 ext = hio_read32b(f);
+		uint32 sz = hio_read32l(f);
+		int known = 0;
+
+		if (hio_error(f) || sz > 0x7fffffff /* INT32_MAX */)
+			break;
+
+		switch (ext) {
+		case MAGIC4('t','e','x','t'):		/* Song comment */
+			known = 1;
+			if (m->comment != NULL)
+				break;
+			if ((int64)sz > hio_size(f))
+				break;
+
+			if ((m->comment = (char *)malloc(sz + 1)) == NULL)
+				break;
+
+			sz = hio_read(m->comment, 1, sz, f);
+			m->comment[sz] = '\0';
+
+			for (i = 0; i < (int)sz; i++) {
+				int b = m->comment[i];
+				if (b == '\r') {
+					m->comment[i] = '\n';
+				} else if ((b < 32 || b > 127) && b != '\n'
+					   && b != '\t') {
+					m->comment[i] = '.';
+				}
+			}
+			sz = 0;
+			break;
+
+		case MAGIC4('M','I','D','I'):		/* MIDI config */
+		case MAGIC4('P','N','A','M'):		/* Pattern names */
+		case MAGIC4('C','N','A','M'):		/* Channel names */
+		case MAGIC4('C','H','F','X'):		/* Channel plugins */
+		case MAGIC4('X','T','P','M'):		/* Inst. extensions */
+			known = 1;
+			/* fall-through */
+
+		default:
+			/* Plugin definition */
+			if ((ext & MAGIC4('F','X', 0, 0)) == MAGIC4('F','X', 0, 0))
+				known = 1;
+
+			break;
+		}
+
+		if(known && claims_ft2)
+			is_mpt_116 = 1;
+
+		if (sz && hio_seek(f, sz, SEEK_CUR) < 0)
+			break;
+		if (ext == MAGIC4('X','T','P','M'))
+			break;
+	}
+
+	if (claims_ft2 && mpt_ins_headers) {
+		is_mpt_116 = 1;
+	}
+
+	if (is_mpt_116) {
+		libxmp_set_type(m, "ModPlug Tracker 1.16 XM %d.%02d",
+				xfh.version >> 8, xfh.version & 0xff);
+	}
+	if (is_mpt_116 || is_mpt_old) {
+		m->quirk &= ~QUIRK_FT2BUGS;
+		m->flow_mode = FLOW_MODE_MPT_116;
+		m->mvolbase = 48;
+		m->mvol = 48;
+		libxmp_apply_mpt_preamp(m);
+	}
+#endif
+
+>>>>>>> db7344ebf (abc)
 	for (i = 0; i < mod->chn; i++) {
 		mod->xxc[i].pan = 0x80;
 	}
 
+<<<<<<< HEAD
 	m->quirk |= QUIRKS_FT2;
+=======
+	m->quirk |= QUIRKS_FT2 | QUIRK_FT2ENV;
+>>>>>>> db7344ebf (abc)
 	m->read_event_type = READ_EVENT_FT2;
 
 	return 0;

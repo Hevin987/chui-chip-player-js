@@ -13,4 +13,8 @@ URL: https://bitbucket.org/mpyne/game-music-emu/wiki/Home
 Version: @GME_VERSION@
 Cflags: -I${includedir}
 Libs: -L${libdir} -lgme
+<<<<<<< HEAD
 Libs.private: -lstdc++ @PKG_CONFIG_ZLIB@
+=======
+Libs.private: @PC_LIBS@
+>>>>>>> db7344ebf (abc)

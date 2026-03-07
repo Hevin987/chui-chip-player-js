@@ -11,7 +11,15 @@
 #include "xz_stream.h"
 #include "crc32.h"
 
+<<<<<<< HEAD
 #define xz_crc32 libxmp_crc32_A1
+=======
+static const unsigned char HEADER_MAGIC[HEADER_MAGIC_SIZE] = {
+	0xFD, '7', 'z', 'X', 'Z', 0x00
+};
+
+#define xz_crc32 libxmp_crc32_A
+>>>>>>> db7344ebf (abc)
 
 #ifdef XZ_USE_CRC64
 #	define IS_CRC64(check_type) ((check_type) == XZ_CHECK_CRC64)

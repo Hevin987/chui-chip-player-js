@@ -4,6 +4,11 @@
 #include "common.h"
 #include "hio.h"
 
+<<<<<<< HEAD
+=======
+LIBXMP_BEGIN_DECLS
+
+>>>>>>> db7344ebf (abc)
 struct format_loader {
 	const char *name;
 	int (*test)(HIO_HANDLE *, char *, const int);
@@ -20,7 +25,10 @@ extern const struct format_loader libxmp_loader_it;
 extern const struct format_loader libxmp_loader_s3m;
 
 #ifndef LIBXMP_CORE_PLAYER
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)
 extern const struct format_loader libxmp_loader_flt;
 extern const struct format_loader libxmp_loader_st;
 extern const struct format_loader libxmp_loader_stm;
@@ -34,9 +42,16 @@ extern const struct format_loader libxmp_loader_ult;
 extern const struct format_loader libxmp_loader_liq;
 extern const struct format_loader libxmp_loader_no;
 extern const struct format_loader libxmp_loader_masi;
+<<<<<<< HEAD
 extern const struct format_loader libxmp_loader_gal5;
 extern const struct format_loader libxmp_loader_gal4;
 extern const struct format_loader libxmp_loader_psm;
+=======
+extern const struct format_loader libxmp_loader_masi16;
+extern const struct format_loader libxmp_loader_muse;
+extern const struct format_loader libxmp_loader_gal5;
+extern const struct format_loader libxmp_loader_gal4;
+>>>>>>> db7344ebf (abc)
 extern const struct format_loader libxmp_loader_amf;
 extern const struct format_loader libxmp_loader_asylum;
 extern const struct format_loader libxmp_loader_gdm;
@@ -68,7 +83,11 @@ extern const struct format_loader libxmp_loader_pw;
 extern const struct format_loader libxmp_loader_hmn;
 extern const struct format_loader libxmp_loader_chip;
 extern const struct format_loader libxmp_loader_abk;
+<<<<<<< HEAD
 
+=======
+extern const struct format_loader libxmp_loader_xmf;
+>>>>>>> db7344ebf (abc)
 #if 0 /* broken / unused, yet. */
 extern const struct format_loader libxmp_loader_dmf;
 extern const struct format_loader libxmp_loader_tcb;
@@ -82,6 +101,7 @@ extern const struct format_loader libxmp_loader_alm;
 extern const struct format_loader libxmp_loader_polly;
 extern const struct format_loader libxmp_loader_stc;
 #endif
+<<<<<<< HEAD
 
 #define NUM_FORMATS 53
 #define NUM_PW_FORMATS 43
@@ -92,4 +112,26 @@ int pw_test_format(HIO_HANDLE *, char *, const int, struct xmp_test_info *);
 #endif
 #endif /* LIBXMP_CORE_PLAYER */
 
+=======
+#endif /* LIBXMP_CORE_PLAYER */
+
+#ifndef LIBXMP_CORE_PLAYER
+#define NUM_FORMATS 52
+#elif !defined(LIBXMP_CORE_DISABLE_IT)
+#define NUM_FORMATS 4
+#else
+#define NUM_FORMATS 3
+#endif
+
+#ifndef LIBXMP_NO_PROWIZARD
+#define NUM_PW_FORMATS 43
+extern const struct pw_format *const pw_formats[];
+int pw_test_format(HIO_HANDLE *, char *, const int, struct xmp_test_info *);
+#else
+#define NUM_PW_FORMATS 0
+#endif
+
+LIBXMP_END_DECLS
+
+>>>>>>> db7344ebf (abc)
 #endif /* LIBXMP_FORMAT_H */

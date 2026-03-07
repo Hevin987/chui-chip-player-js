@@ -18,7 +18,11 @@ static int vals[] = {
 	32, 32, 32, 32,		/* set 32 */
 	32, 30, 28, 26,		/* down 2 */
 	26, 29, 32, 35,		/* up 3 */
+<<<<<<< HEAD
 	35, 38, 41, 44		/* memory */
+=======
+	35, 35, 35, 35		/* should not have memory */
+>>>>>>> db7344ebf (abc)
 };
 
 TEST(test_effect_volslide)
@@ -26,7 +30,12 @@ TEST(test_effect_volslide)
 	xmp_context opaque;
 	struct context_data *ctx;
 	struct xmp_frame_info info;
+<<<<<<< HEAD
 	int i;
+=======
+	char tmp[32];
+	unsigned i;
+>>>>>>> db7344ebf (abc)
 
 	opaque = xmp_create_context();
 	ctx = (struct context_data *)opaque;
@@ -60,10 +69,18 @@ TEST(test_effect_volslide)
 	/* play it */
 	xmp_start_player(opaque, 44100, 0);
 
+<<<<<<< HEAD
 	for (i = 0; i < 16 * 4; i++) {
 		xmp_play_frame(opaque);
 		xmp_get_frame_info(opaque, &info);
 		fail_unless(info.channel_info[0].volume == vals[i], "volume slide error");
+=======
+	for (i = 0; i < ARRAY_SIZE(vals); i++) {
+		xmp_play_frame(opaque);
+		xmp_get_frame_info(opaque, &info);
+		snprintf(tmp, sizeof(tmp), "volume slide error %u", i);
+		fail_unless(info.channel_info[0].volume == vals[i], tmp);
+>>>>>>> db7344ebf (abc)
 
 	}
 

@@ -20,7 +20,11 @@ TEST(test_api_set_row)
 	create_simple_module(ctx, 1, 1);
 	libxmp_free_scan(ctx);
 	set_order(ctx, 0, 0);
+<<<<<<< HEAD
 	set_order(ctx, 1, 0xff); /* End marker. */
+=======
+	set_order(ctx, 1, XMP_MARK_END); /* End marker. */
+>>>>>>> db7344ebf (abc)
 	set_quirk(ctx, QUIRK_MARKER, READ_EVENT_IT);
 
 	libxmp_prepare_scan(ctx);
@@ -34,8 +38,19 @@ TEST(test_api_set_row)
 	xmp_play_frame(opaque);
 	fail_unless(p->row == 1, "didn't set row 1");
 
+<<<<<<< HEAD
 	ret = xmp_set_row(opaque, 64);
 	fail_unless(ret == -XMP_ERROR_INVALID, "return value error");
+=======
+	ret = xmp_set_row(opaque, -1);
+	fail_unless(ret == -XMP_ERROR_INVALID, "return value error");
+	ret = xmp_set_row(opaque, INT_MIN);
+	fail_unless(ret == -XMP_ERROR_INVALID, "return value error");
+	ret = xmp_set_row(opaque, 64);
+	fail_unless(ret == -XMP_ERROR_INVALID, "return value error");
+	ret = xmp_set_row(opaque, INT_MAX);
+	fail_unless(ret == -XMP_ERROR_INVALID, "return value error");
+>>>>>>> db7344ebf (abc)
 
 	/* Go to end marker. */
 	ret = xmp_set_position(opaque, 1);

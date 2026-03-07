@@ -3,5 +3,31 @@
 .env.*.local
 .idea/
 node_modules/
+<<<<<<< HEAD
 cmake-build-debug/
 
+=======
+dist/
+build/
+cmake-build-debug/
+*.a
+*.wasm
+*.wasm.map
+*.db
+lib*.js
+libxmp/libxmp-lite-stagedir/
+public/soundfonts/
+**/untracked/
+src/-catalog-tests/
+src/chip-core.js
+server/catalog.json
+server/directories.json
+server/ecosystem.config.js
+catalog
+public/music
+src/config/firebaseConfig.js
+libxmp/a.out.js
+libxmp/lite/Makefile.in
+*.backup/
+_ignore/
+>>>>>>> db7344ebf (abc)

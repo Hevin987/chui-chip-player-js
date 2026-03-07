@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -37,6 +41,10 @@
  * Claudio's fix: implementing effect K
  */
 
+<<<<<<< HEAD
+=======
+#include "common.h"
+>>>>>>> db7344ebf (abc)
 #include "virtual.h"
 #include "period.h"
 #include "effects.h"
@@ -44,6 +52,10 @@
 #include "mixer.h"
 #ifndef LIBXMP_CORE_PLAYER
 #include "extras.h"
+<<<<<<< HEAD
+=======
+#include "med_extras.h"
+>>>>>>> db7344ebf (abc)
 #endif
 
 /* Values for multi-retrig */
@@ -111,10 +123,22 @@ static int get_envelope(struct xmp_envelope *env, int x, int def)
 	x2 = data[idx + 2];
 	y2 = data[idx + 3];
 
+<<<<<<< HEAD
 	return x2 == x1 ? y2 : ((y2 - y1) * (x - x1) / (x2 - x1)) + y1;
 }
 
 static int update_envelope_xm(struct xmp_envelope *env, int x, int release)
+=======
+	/* Interpolation requires x1 <= x <= x2 */
+	if (x < x1 || x2 < x1) return y1;
+
+	return x2 == x1 ? y2 : ((y2 - y1) * (x - x1) / (x2 - x1)) + y1;
+}
+
+#ifndef LIBXMP_CORE_PLAYER
+
+static int update_envelope_generic(struct xmp_envelope *env, int x, int release)
+>>>>>>> db7344ebf (abc)
 {
 	int16 *data = env->data;
 	int has_loop, has_sus;
@@ -132,6 +156,12 @@ static int update_envelope_xm(struct xmp_envelope *env, int x, int release)
 	 * envelope loop end and the key is released, FT2 escapes the loop
 	 * while IT runs another iteration. (See EnvLoops.xm in the OpenMPT
 	 * test cases.)
+<<<<<<< HEAD
+=======
+	 * TODO: this is a bit suspicious, has little relation to the above
+	 * description, and had to be removed from the XM handler because it
+	 * broke a module (fade_2_grey_visage.xm). Retesting is required.
+>>>>>>> db7344ebf (abc)
 	 */
 	if (has_loop && has_sus && sus == lpe) {
 		if (!release)
@@ -139,8 +169,13 @@ static int update_envelope_xm(struct xmp_envelope *env, int x, int release)
 	}
 
 	/* If the envelope point is set to somewhere after the sustain point
+<<<<<<< HEAD
 	 * or sustain loop, enable release to prevent the envelope point to
 	 * return to the sustain point or loop start. (See Filip Skutela's
+=======
+	 * or sustain loop, enable release to prevent the envelope point from
+	 * returning to the sustain point or loop start. (See Filip Skutela's
+>>>>>>> db7344ebf (abc)
 	 * farewell_tear.xm.)
 	 */
 	if (has_loop && x > data[lpe] + 1) {
@@ -156,8 +191,76 @@ static int update_envelope_xm(struct xmp_envelope *env, int x, int release)
 		}
 	}
 
+<<<<<<< HEAD
 	/* Envelope loops */
 	if (has_loop && x >= data[lpe]) {
+=======
+	/* XM-like formats and players assume that an envelope position past the
+	 * end of the loop or sustain point should return to the loop/sustain point.
+	 * While there are some differences with sustain points, this general loop
+	 * behavior is used by DigiBooster Pro, Digitrakker, Imago Orpheus, and
+	 * Real Tracker 2.
+	 */
+	if (has_loop && x >= data[lpe]) {
+		/* FT2 and IT envelopes behave in a different way regarding
+		 * loops, sustain and release. When the sustain point is at the
+		 * end of the envelope loop end and the key is released, FT2
+		 * escapes the loop while IT runs another iteration.
+		 * (See OpenMPT EnvLoops.xm)
+		 */
+		if (!(release && has_sus && sus == lpe))
+			x = data[lps];
+	}
+
+	return x;
+}
+
+#endif
+
+static int update_envelope_xm(struct xmp_envelope *env, int x, int release)
+{
+	int16 *data = env->data;
+	int has_loop, has_sus;
+	int lpe, lps, sus;
+
+	has_loop = env->flg & XMP_ENVELOPE_LOOP;
+	has_sus = env->flg & XMP_ENVELOPE_SUS;
+
+	lps = env->lps << 1;
+	lpe = env->lpe << 1;
+	sus = env->sus << 1;
+
+	/* If the envelope point is set to somewhere after the sustain point
+	 * or sustain loop, enable release to prevent the envelope point from
+	 * returning to the sustain point or loop start. (See Filip Skutela's
+	 * farewell_tear.xm.)
+	 */
+	if (has_sus && x > data[sus] + 1) {
+		release = 1;
+	}
+
+	/* If enabled, stay at the sustain point */
+	if (has_sus && !release) {
+		if (x >= data[sus]) {
+			x = data[sus];
+		}
+	}
+
+	/* Envelope loops
+	 *
+	 * If the envelope point is set to somewhere after the sustain point
+	 * or sustain loop, the loop point is ignored to prevent the envelope
+	 * point from returning to the sustain point or loop start.
+	 * (See Filip Skutela's farewell_tear.xm or Ebony Owl Netsuke.xm.)
+	*/
+	if (has_loop && x == data[lpe]) {
+		/* FT2 and IT envelopes behave in a different way regarding
+		 * loops, sustain and release. When the sustain point is at the
+		 * end of the envelope loop end and the key is released, FT2
+		 * escapes the loop while IT runs another iteration.
+		 * (See OpenMPT EnvLoops.xm)
+		 */
+>>>>>>> db7344ebf (abc)
 		if (!(release && has_sus && sus == lpe))
 			x = data[lps];
 	}
@@ -203,8 +306,15 @@ static int update_envelope_it(struct xmp_envelope *env, int x, int release, int 
 
 #endif
 
+<<<<<<< HEAD
 static int update_envelope(struct xmp_envelope *env, int x, int release, int key_off, int it_env)
 {
+=======
+static int update_envelope(struct context_data *ctx, struct xmp_envelope *env, int x, int release, int key_off)
+{
+	struct module_data *m = &ctx->m;
+
+>>>>>>> db7344ebf (abc)
 	if (x < 0xffff)	{	/* increment tick */
 		x++;
 	}
@@ -217,6 +327,7 @@ static int update_envelope(struct xmp_envelope *env, int x, int release, int key
 		return x;
 	}
 
+<<<<<<< HEAD
 #ifndef LIBXMP_CORE_DISABLE_IT
 	return it_env ?
 		update_envelope_it(env, x, release, key_off) :
@@ -224,6 +335,20 @@ static int update_envelope(struct xmp_envelope *env, int x, int release, int key
 #else
 	return update_envelope_xm(env, x, release);
 #endif
+=======
+	(void) m; /* unused in xmp-lite with IT disabled */
+
+	return
+#ifndef LIBXMP_CORE_DISABLE_IT
+		IS_PLAYER_MODE_IT() ?
+		update_envelope_it(env, x, release, key_off) :
+#endif
+#ifndef LIBXMP_CORE_PLAYER
+		!HAS_QUIRK(QUIRK_FT2ENV) ?
+		update_envelope_generic(env, x, release) :
+#endif
+		update_envelope_xm(env, x, release);
+>>>>>>> db7344ebf (abc)
 }
 
 
@@ -248,6 +373,221 @@ static int check_envelope_fade(struct xmp_envelope *env, int x)
 }
 
 
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_DISABLE_IT
+
+/* Impulse Tracker's filter effects are implemented using its MIDI macros.
+ * Any module can customize these and they are parameterized using various
+ * player and mixer values, which requires parsing them here instead of in
+ * the loader. Since they're MIDI macros, they can contain actual MIDI junk
+ * that needs to be skipped, and one macro may have multiple IT commands. */
+
+struct midi_stream
+{
+	const char *pos;
+	int buffer;
+	int param;
+};
+
+static int midi_nibble(struct context_data *ctx, struct channel_data *xc,
+		       int chn, struct midi_stream *in)
+{
+	struct xmp_instrument *xxi;
+	struct mixer_voice *vi;
+	int voc, val, byte = -1;
+	if (in->buffer >= 0) {
+		val = in->buffer;
+		in->buffer = -1;
+		return val;
+	}
+
+	while (*in->pos) {
+		val = *(in->pos)++;
+		if (val >= '0' && val <= '9') return val - '0';
+		if (val >= 'A' && val <= 'F') return val - 'A' + 10;
+		switch (val) {
+		case 'z':			/* Macro parameter */
+			byte = in->param;
+			break;
+		case 'n':			/* Host key */
+			byte = xc->key & 0x7f;
+			break;
+		case 'h':			/* Host channel */
+			byte = chn;
+			break;
+		case 'o':			/* Offset effect memory */
+			/* Intentionally not clamped, see ZxxSecrets.it */
+			byte = xc->offset.memory;
+			break;
+		case 'm':			/* Voice reverse flag */
+			voc = libxmp_virt_mapchannel(ctx, chn);
+			vi = (voc >= 0) ? &ctx->p.virt.voice_array[voc] : NULL;
+			byte = vi ? !!(vi->flags & VOICE_REVERSE) : 0;
+			break;
+		case 'v':			/* Note velocity */
+			xxi = libxmp_get_instrument(ctx, xc->ins);
+			byte = ((uint32)ctx->p.gvol *
+				(uint32)xc->volume *
+				(uint32)xc->mastervol *
+				(uint32)xc->gvl *
+				(uint32)(xxi ? xxi->vol : 0x40)) >> 24UL;
+			CLAMP(byte, 1, 127);
+			break;
+		case 'u':			/* Computed velocity */
+			byte = xc->macro.finalvol >> 3;
+			CLAMP(byte, 1, 127);
+			break;
+		case 'x':			/* Note panning */
+			byte = xc->macro.notepan >> 1;
+			CLAMP(byte, 0, 127);
+			break;
+		case 'y':			/* Computed panning */
+			byte = xc->info_finalpan >> 1;
+			CLAMP(byte, 0, 127);
+			break;
+		case 'a':			/* Ins MIDI Bank hi */
+		case 'b':			/* Ins MIDI Bank lo */
+		case 'p':			/* Ins MIDI Program */
+		case 's':			/* MPT: SysEx checksum */
+			byte = 0;
+			break;
+		case 'c':			/* Ins MIDI Channel */
+			return 0;
+		}
+
+		/* Byte output */
+		if (byte >= 0) {
+			in->buffer = byte & 0xf;
+			return (byte >> 4) & 0xf;
+		}
+	}
+	return -1;
+}
+
+static int midi_byte(struct context_data *ctx, struct channel_data *xc,
+		     int chn, struct midi_stream *in)
+{
+	int a = midi_nibble(ctx, xc, chn, in);
+	int b = midi_nibble(ctx, xc, chn, in);
+	return (a >= 0 && b >= 0) ? (a << 4) | b : -1;
+}
+
+static void apply_midi_macro_effect(struct channel_data *xc, int type, int val)
+{
+	switch (type) {
+	case 0:			/* Filter cutoff */
+		xc->filter.cutoff = val << 1;
+		break;
+	case 1:			/* Filter resonance */
+		xc->filter.resonance = val << 1;
+		break;
+	}
+}
+
+static void execute_midi_macro(struct context_data *ctx, struct channel_data *xc,
+			       int chn, struct midi_macro *midi, int param)
+{
+	struct midi_stream in;
+	int byte, cmd, val;
+
+	in.pos = midi->data;
+	in.buffer = -1;
+	in.param = param;
+
+	while (*in.pos) {
+		/* Very simple MIDI 1.0 parser--most bytes can just be ignored
+		 * (or passed through, if libxmp gets MIDI output). All bytes
+		 * with bit 7 are statuses which interrupt unfinished messages
+		 * ("Data Types: Status Bytes") or are real time messages.
+		 * This holds even for SysEx messages, which end at ANY non-
+		 * real time status ("System Common Messages: EOX").
+		 *
+		 * IT intercepts internal "messages" that begin with F0 F0,
+		 * which in MIDI is a useless zero-length SysEx followed by
+		 * a second SysEx. They are four bytes long including F0 F0,
+		 * and shouldn't be passed through. OpenMPT also uses F0 F1.
+		 */
+		cmd = -1;
+		byte = midi_byte(ctx, xc, chn, &in);
+		if (byte == 0xf0) {
+			byte = midi_byte(ctx, xc, chn, &in);
+			if (byte == 0xf0 || byte == 0xf1)
+				cmd = byte & 0xf;
+		}
+		if (cmd < 0) {
+			if (byte == 0xfa || byte == 0xfc || byte == 0xff) {
+				/* These real time statuses can appear anywhere
+				 * (even in SysEx) and reset the channel filter
+				 * params. See: OpenMPT ZxxSecrets.it */
+				apply_midi_macro_effect(xc, 0, 127);
+				apply_midi_macro_effect(xc, 1, 0);
+			}
+			continue;
+		}
+		cmd = midi_byte(ctx, xc, chn, &in) | (cmd << 8);
+		val = midi_byte(ctx, xc, chn, &in);
+		if (cmd < 0 || cmd >= 0x80 || val < 0 || val >= 0x80) {
+			continue;
+		}
+		apply_midi_macro_effect(xc, cmd, val);
+	}
+}
+
+/* This needs to occur before all process_* functions:
+ * - It modifies the filter parameters, used by process_frequency.
+ * - process_volume and process_pan apply slide effects, which the
+ *   filter parameters expect to occur after macro effect parsing. */
+static void update_midi_macro(struct context_data *ctx, int chn)
+{
+	struct player_data *p = &ctx->p;
+	struct module_data *m = &ctx->m;
+	struct channel_data *xc = &p->xc_data[chn];
+	struct midi_macro_data *midicfg = m->midi;
+	struct midi_macro *macro;
+	int val;
+
+	if (TEST(MIDI_MACRO) && HAS_QUIRK(QUIRK_FILTER)) {
+		if (xc->macro.slide > 0) {
+			xc->macro.val += xc->macro.slide;
+			if (xc->macro.val > xc->macro.target) {
+				xc->macro.val = xc->macro.target;
+				xc->macro.slide = 0;
+			}
+		} else if (xc->macro.slide < 0) {
+			xc->macro.val += xc->macro.slide;
+			if (xc->macro.val < xc->macro.target) {
+				xc->macro.val = xc->macro.target;
+				xc->macro.slide = 0;
+			}
+		} else if (p->frame) {
+			/* Execute non-smooth macros on frame 0 only */
+			return;
+		}
+
+		val = (int)xc->macro.val;
+		if (val >= 0x80) {
+			if (midicfg) {
+				macro = &midicfg->fixed[val - 0x80];
+				execute_midi_macro(ctx, xc, chn, macro, val);
+			} else if (val < 0x90) {
+				/* Default fixed macro: set resonance */
+				apply_midi_macro_effect(xc, 1, (val - 0x80) << 3);
+			}
+		} else if (midicfg) {
+			macro = &midicfg->param[xc->macro.active];
+			execute_midi_macro(ctx, xc, chn, macro, val);
+		} else if (xc->macro.active == 0) {
+			/* Default parameterized macro 0: set filter cutoff */
+			apply_midi_macro_effect(xc, 0, val);
+		}
+	}
+}
+
+#endif /* LIBXMP_CORE_DISABLE_IT */
+
+
+>>>>>>> db7344ebf (abc)
 #ifndef LIBXMP_CORE_PLAYER
 
 /* From http://www.un4seen.com/forum/?topic=7554.0
@@ -270,6 +610,7 @@ static const int invloop_table[] = {
 static void update_invloop(struct context_data *ctx, struct channel_data *xc)
 {
 	struct xmp_sample *xxs = libxmp_get_sample(ctx, xc->smp);
+<<<<<<< HEAD
 	int len;
 
 	xc->invloop.count += invloop_table[xc->invloop.speed];
@@ -277,6 +618,32 @@ static void update_invloop(struct context_data *ctx, struct channel_data *xc)
 	if (xxs != NULL && (xxs->flg & XMP_SAMPLE_LOOP) && xc->invloop.count >= 128) {
 		xc->invloop.count = 0;
 		len = xxs->lpe - xxs->lps;
+=======
+	struct module_data *m = &ctx->m;
+	int lps = 0, len = -1;
+
+	/* If an instrument number is present, reset the position. */
+	if (ctx->p.frame == 0 && TEST(NEW_INS)) {
+		xc->invloop.pos = 0;
+	}
+
+	xc->invloop.count += invloop_table[xc->invloop.speed];
+
+	if (xxs != NULL) {
+		if (xxs->flg & XMP_SAMPLE_LOOP) {
+			lps = xxs->lps;
+			len = xxs->lpe - lps;
+		} else if (xxs->flg & XMP_SAMPLE_SLOOP) {
+			/* Some formats that support invert loop use sustain
+			 * loops instead (Digital Symphony). */
+			lps = m->xtra[xc->smp].sus;
+			len = m->xtra[xc->smp].sue - lps;
+		}
+	}
+
+	if (len >= 0 && xc->invloop.count >= 128) {
+		xc->invloop.count = 0;
+>>>>>>> db7344ebf (abc)
 
 		if (++xc->invloop.pos > len) {
 			xc->invloop.pos = 0;
@@ -287,7 +654,11 @@ static void update_invloop(struct context_data *ctx, struct channel_data *xc)
 		}
 
 		if (~xxs->flg & XMP_SAMPLE_16BIT) {
+<<<<<<< HEAD
 			xxs->data[xxs->lps + xc->invloop.pos] ^= 0xff;
+=======
+			xxs->data[lps + xc->invloop.pos] ^= 0xff;
+>>>>>>> db7344ebf (abc)
 		}
 	}
 }
@@ -445,11 +816,18 @@ static void reset_channels(struct context_data *ctx)
 	}
 }
 
+<<<<<<< HEAD
 static int check_delay(struct context_data *ctx, struct xmp_event *e, int chn)
 {
 	struct player_data *p = &ctx->p;
 	struct channel_data *xc = &p->xc_data[chn];
 	struct module_data *m = &ctx->m;
+=======
+static int check_delay(struct context_data *ctx, const struct xmp_event *e, int chn)
+{
+	struct player_data *p = &ctx->p;
+	struct channel_data *xc = &p->xc_data[chn];
+>>>>>>> db7344ebf (abc)
 
 	/* Tempo affects delay and must be computed first */
 	if ((e->fxt == FX_SPEED && e->fxp < 0x20) || e->fxt == FX_S3M_SPEED) {
@@ -472,6 +850,22 @@ static int check_delay(struct context_data *ctx, struct xmp_event *e, int chn)
 		xc->delay = LSN(e->f2p) + 1;
 		goto do_delay;
 	}
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_PLAYER
+	/* MED retrigger: reset retrigger so it doesn't continue during the delay. */
+	if (e->fxt == FX_MED_RETRIG && MSN(e->fxp)) {
+		RESET(RETRIG);
+		xc->delay = MSN(e->fxp) + 1;
+		goto do_delay;
+	}
+	if (e->f2t == FX_MED_RETRIG && MSN(e->f2p)) {
+		RESET(RETRIG);
+		xc->delay = MSN(e->fxp) + 1;
+		goto do_delay;
+	}
+#endif
+>>>>>>> db7344ebf (abc)
 
 	return 0;
 
@@ -482,6 +876,7 @@ static int check_delay(struct context_data *ctx, struct xmp_event *e, int chn)
 		xc->delayed_ins = e->ins;
 	}
 
+<<<<<<< HEAD
 	if (HAS_QUIRK(QUIRK_RTDELAY)) {
 		if (e->vol == 0 && e->f2t == 0 && e->ins == 0 && e->note != XMP_KEY_OFF)
 			xc->delayed_event.vol = xc->volume + 1;
@@ -491,6 +886,8 @@ static int check_delay(struct context_data *ctx, struct xmp_event *e, int chn)
 			xc->delayed_event.ins = xc->old_ins;
 	}
 
+=======
+>>>>>>> db7344ebf (abc)
 	return 1;
 }
 
@@ -501,6 +898,7 @@ static inline void read_row(struct context_data *ctx, int pat, int row)
 	struct xmp_module *mod = &m->mod;
 	struct player_data *p = &ctx->p;
 	struct flow_control *f = &p->flow;
+<<<<<<< HEAD
 	struct xmp_event ev;
 
 	for (chn = 0; chn < mod->chn; chn++) {
@@ -531,16 +929,43 @@ static inline void read_row(struct context_data *ctx, int pat, int row)
 		}
 
 		if (check_delay(ctx, &ev, chn) == 0) {
+=======
+	struct xmp_event *event;
+	struct xmp_event tmp;
+
+	for (chn = 0; chn < mod->chn; chn++) {
+		struct channel_data *xc = &p->xc_data[chn];
+		const int num_rows = mod->xxt[TRACK_NUM(pat, chn)]->rows;
+		if (row < num_rows) {
+			event = &EVENT(pat, chn, row);
+		} else {
+			memset(&tmp, 0, sizeof(tmp));
+			event = &tmp;
+		}
+
+		if (IS_PLAYER_MODE_FT2()) {
+			/* Reset Kxx, even if delayed (ft2_kxx.xm). */
+			xc->keyoff = 0;
+			/* Reset tremor, even if delayed (ft2_tremor_delay.xm). */
+			RESET(TREMOR);
+		}
+
+		if (check_delay(ctx, event, chn) == 0) {
+>>>>>>> db7344ebf (abc)
 			/* rowdelay_set bit 1 is set only in the first tick of the row
 			 * event if the delay causes the tick count resets to 0. We test
 			 * it to read row events only in the start of the row. (see the
 			 * OpenMPT test case FineVolColSlide.it)
 			 */
 			if (!f->rowdelay_set || ((f->rowdelay_set & ROWDELAY_FIRST_FRAME) && f->rowdelay > 0)) {
+<<<<<<< HEAD
 				libxmp_read_event(ctx, &ev, chn);
 #ifndef LIBXMP_CORE_PLAYER
 				libxmp_med_hold_hack(ctx, pat, chn, row);
 #endif
+=======
+				libxmp_read_event(ctx, event, chn);
+>>>>>>> db7344ebf (abc)
 			}
 		} else {
 			if (IS_PLAYER_MODE_IT()) {
@@ -577,6 +1002,7 @@ static int tremor_ft2(struct context_data *ctx, int chn, int finalvol)
 	struct player_data *p = &ctx->p;
 	struct channel_data *xc = &p->xc_data[chn];
 
+<<<<<<< HEAD
 	if (xc->tremor.count & 0x80) {
 		if (TEST(TREMOR) && p->frame != 0) {
 			xc->tremor.count &= ~0x20;
@@ -594,6 +1020,23 @@ static int tremor_ft2(struct context_data *ctx, int chn, int finalvol)
 		if ((xc->tremor.count & 0xe0) == 0x80) {
 			finalvol = 0;
 		}
+=======
+	if (TEST(TREMOR) && p->frame != 0) {
+		xc->tremor.count &= ~TREMOR_SUPPRESS;
+		if (xc->tremor.count == 0) {
+			/* end of down cycle, set up counter for up  */
+			xc->tremor.count = xc->tremor.up | TREMOR_ON;
+		} else if (xc->tremor.count == TREMOR_ON) {
+			/* end of up cycle, set up counter for down */
+			xc->tremor.count = xc->tremor.down;
+		} else {
+			xc->tremor.count--;
+		}
+	}
+
+	if ((xc->tremor.count & (TREMOR_ON | TREMOR_SUPPRESS)) == 0) {
+		finalvol = 0;
+>>>>>>> db7344ebf (abc)
 	}
 
 	return finalvol;
@@ -607,15 +1050,24 @@ static int tremor_s3m(struct context_data *ctx, int chn, int finalvol)
 	if (TEST(TREMOR)) {
 		if (xc->tremor.count == 0) {
 			/* end of down cycle, set up counter for up  */
+<<<<<<< HEAD
 			xc->tremor.count = xc->tremor.up | 0x80;
 		} else if (xc->tremor.count == 0x80) {
+=======
+			xc->tremor.count = xc->tremor.up | TREMOR_ON;
+		} else if (xc->tremor.count == TREMOR_ON) {
+>>>>>>> db7344ebf (abc)
 			/* end of up cycle, set up counter for down */
 			xc->tremor.count = xc->tremor.down;
 		}
 
 		xc->tremor.count--;
 
+<<<<<<< HEAD
 		if (~xc->tremor.count & 0x80) {
+=======
+		if (~xc->tremor.count & TREMOR_ON) {
+>>>>>>> db7344ebf (abc)
 			finalvol = 0;
 		}
 	}
@@ -623,11 +1075,54 @@ static int tremor_s3m(struct context_data *ctx, int chn, int finalvol)
 	return finalvol;
 }
 
+<<<<<<< HEAD
+=======
+/* Handle delayed keyoff effects. This should only be performed once on
+ * the tick where Kxx activates (ft2_note_off_fade.xm).
+ */
+static void delayed_keyoff(struct context_data *ctx, int chn)
+{
+	struct player_data *p = &ctx->p;
+	struct module_data *m = &ctx->m;
+	struct channel_data *xc = &p->xc_data[chn];
+	struct xmp_instrument *instrument;
+
+	instrument = libxmp_get_instrument(ctx, xc->ins);
+
+	switch (m->read_event_type) {
+	case READ_EVENT_FT2:
+		/* Ignore if frame>=speed (ft2_kxx.xm). */
+		if (p->frame >= p->speed) {
+			break;
+		}
+		/* See read_event_ft2 for more notes on keyoff. */
+		if (instrument->aei.flg & XMP_ENVELOPE_ON) {
+			SET_NOTE(NOTE_RELEASE);
+		} else {
+			xc->volume = 0;
+		}
+		SET_NOTE(NOTE_FADEOUT);
+		break;
+
+	default:
+		/* TODO: compatibility for old behavior (see process_volume)
+		 * until keyoff can be tested everywhere else.
+		 * Orpheus: keyoff clears the note, xx>speed works with delay.
+		 * RT2: keyoff clears the note, xx>speed acts like 0. */
+		SET_NOTE(NOTE_RELEASE);
+	}
+}
+
+>>>>>>> db7344ebf (abc)
 /*
  * Update channel data
  */
 
+<<<<<<< HEAD
 #define DOENV_RELEASE ((TEST_NOTE(NOTE_RELEASE) || act == VIRT_ACTION_OFF))
+=======
+#define DOENV_RELEASE ((TEST_NOTE(NOTE_ENV_RELEASE) || act == VIRT_ACTION_OFF))
+>>>>>>> db7344ebf (abc)
 
 static void process_volume(struct context_data *ctx, int chn, int act)
 {
@@ -651,27 +1146,47 @@ static void process_volume(struct context_data *ctx, int chn, int act)
 		/* If IT, only apply fadeout on note release if we don't
 		 * have envelope, or if we have envelope loop
 		 */
+<<<<<<< HEAD
 		if (TEST_NOTE(NOTE_RELEASE) || act == VIRT_ACTION_OFF) {
+=======
+		if (TEST_NOTE(NOTE_ENV_RELEASE) || act == VIRT_ACTION_OFF) {
+>>>>>>> db7344ebf (abc)
 			if ((~instrument->aei.flg & XMP_ENVELOPE_ON) ||
 			    (instrument->aei.flg & XMP_ENVELOPE_LOOP)) {
 				fade = 1;
 			}
 		}
+<<<<<<< HEAD
 	} else {
 		if (~instrument->aei.flg & XMP_ENVELOPE_ON) {
 			if (TEST_NOTE(NOTE_RELEASE)) {
+=======
+	} else if (!IS_PLAYER_MODE_FT2()) {
+		/* TODO: FT2 doesn't do this. check other formats. */
+		if (~instrument->aei.flg & XMP_ENVELOPE_ON) {
+			if (TEST_NOTE(NOTE_ENV_RELEASE)) {
+>>>>>>> db7344ebf (abc)
 				xc->fadeout = 0;
 			}
 		}
 
+<<<<<<< HEAD
 		if (TEST_NOTE(NOTE_RELEASE) || act == VIRT_ACTION_OFF) {
+=======
+		if (TEST_NOTE(NOTE_ENV_RELEASE) || act == VIRT_ACTION_OFF) {
+>>>>>>> db7344ebf (abc)
 			fade = 1;
 		}
 	}
 
 	if (!TEST_PER(VENV_PAUSE)) {
+<<<<<<< HEAD
 		xc->v_idx = update_envelope(&instrument->aei, xc->v_idx,
 			DOENV_RELEASE, TEST(KEY_OFF), IS_PLAYER_MODE_IT());
+=======
+		xc->v_idx = update_envelope(ctx, &instrument->aei, xc->v_idx,
+			DOENV_RELEASE, TEST(KEY_OFF));
+>>>>>>> db7344ebf (abc)
 	}
 
 	vol_envelope = get_envelope(&instrument->aei, xc->v_idx, 64);
@@ -768,6 +1283,12 @@ static void process_volume(struct context_data *ctx, int chn, int act)
 	} else {
 		finalvol = tremor_s3m(ctx, chn, finalvol);
 	}
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_DISABLE_IT
+	xc->macro.finalvol = finalvol;
+#endif
+>>>>>>> db7344ebf (abc)
 
 	if (chn < m->mod.chn) {
 		finalvol = finalvol * p->master_vol / 100;
@@ -806,8 +1327,13 @@ static void process_frequency(struct context_data *ctx, int chn, int act)
 	instrument = libxmp_get_instrument(ctx, xc->ins);
 
 	if (!TEST_PER(FENV_PAUSE)) {
+<<<<<<< HEAD
 		xc->f_idx = update_envelope(&instrument->fei, xc->f_idx,
 			DOENV_RELEASE, TEST(KEY_OFF), IS_PLAYER_MODE_IT());
+=======
+		xc->f_idx = update_envelope(ctx, &instrument->fei, xc->f_idx,
+			DOENV_RELEASE, TEST(KEY_OFF));
+>>>>>>> db7344ebf (abc)
 	}
 	frq_envelope = get_envelope(&instrument->fei, xc->f_idx, 0);
 
@@ -955,9 +1481,15 @@ static void process_frequency(struct context_data *ctx, int chn, int act)
 	xc->info_period = MIN(final_period * 4096, INT_MAX);
 
 	if (IS_PERIOD_MODRNG()) {
+<<<<<<< HEAD
 		CLAMP(xc->info_period,
 			libxmp_note_to_period(ctx, MAX_NOTE_MOD, xc->finetune, 0) * 4096,
 			libxmp_note_to_period(ctx, MIN_NOTE_MOD, xc->finetune, 0) * 4096);
+=======
+		const double min_period = libxmp_note_to_period(ctx, MAX_NOTE_MOD, xc->finetune, 0) * 4096;
+		const double max_period = libxmp_note_to_period(ctx, MIN_NOTE_MOD, xc->finetune, 0) * 4096;
+		CLAMP(xc->info_period, min_period, max_period);
+>>>>>>> db7344ebf (abc)
 	} else if (xc->info_period < (1 << 12)) {
 		xc->info_period = (1 << 12);
 	}
@@ -983,18 +1515,34 @@ static void process_frequency(struct context_data *ctx, int chn, int act)
 
 	if (cutoff > 0xff) {
 		cutoff = 0xff;
+<<<<<<< HEAD
 	} else if (cutoff < 0xff) {
+=======
+	}
+	/* IT: cutoff 127 + resonance 0 turns off the filter, but this
+	 * is only applied when playing a new note without toneporta.
+	 * All other combinations take effect immediately.
+	 * See OpenMPT filter-reset.it, filter-reset-carry.it */
+	if (cutoff < 0xfe || resonance > 0 || xc->filter.can_disable) {
+>>>>>>> db7344ebf (abc)
 		int a0, b0, b1;
 		libxmp_filter_setup(s->freq, cutoff, resonance, &a0, &b0, &b1);
 		libxmp_virt_seteffect(ctx, chn, DSP_EFFECT_FILTER_A0, a0);
 		libxmp_virt_seteffect(ctx, chn, DSP_EFFECT_FILTER_B0, b0);
 		libxmp_virt_seteffect(ctx, chn, DSP_EFFECT_FILTER_B1, b1);
 		libxmp_virt_seteffect(ctx, chn, DSP_EFFECT_RESONANCE, resonance);
+<<<<<<< HEAD
 	}
 
 	/* Always set cutoff */
 	libxmp_virt_seteffect(ctx, chn, DSP_EFFECT_CUTOFF, cutoff);
 
+=======
+		libxmp_virt_seteffect(ctx, chn, DSP_EFFECT_CUTOFF, cutoff);
+		xc->filter.can_disable = 0;
+	}
+
+>>>>>>> db7344ebf (abc)
 #endif
 }
 
@@ -1012,8 +1560,13 @@ static void process_pan(struct context_data *ctx, int chn, int act)
 	instrument = libxmp_get_instrument(ctx, xc->ins);
 
 	if (!TEST_PER(PENV_PAUSE)) {
+<<<<<<< HEAD
 		xc->p_idx = update_envelope(&instrument->pei, xc->p_idx,
 			DOENV_RELEASE, TEST(KEY_OFF), IS_PLAYER_MODE_IT());
+=======
+		xc->p_idx = update_envelope(ctx, &instrument->pei, xc->p_idx,
+			DOENV_RELEASE, TEST(KEY_OFF));
+>>>>>>> db7344ebf (abc)
 	}
 	pan_envelope = get_envelope(&instrument->pei, xc->p_idx, 32);
 
@@ -1024,6 +1577,10 @@ static void process_pan(struct context_data *ctx, int chn, int act)
 			libxmp_lfo_update(&xc->panbrello.lfo);
 		}
 	}
+<<<<<<< HEAD
+=======
+	xc->macro.notepan = xc->pan.val + panbrello + 0x80;
+>>>>>>> db7344ebf (abc)
 #endif
 
 	channel_pan = xc->pan.val;
@@ -1211,10 +1768,18 @@ static void update_frequency(struct context_data *ctx, int chn)
 	case PERIOD_LINEAR:
 		CLAMP(xc->period, MIN_PERIOD_L, MAX_PERIOD_L);
 		break;
+<<<<<<< HEAD
 	case PERIOD_MODRNG:
 		CLAMP(xc->period,
 			libxmp_note_to_period(ctx, MAX_NOTE_MOD, xc->finetune, 0),
 			libxmp_note_to_period(ctx, MIN_NOTE_MOD, xc->finetune, 0));
+=======
+	case PERIOD_MODRNG: {
+		const double min_period = libxmp_note_to_period(ctx, MAX_NOTE_MOD, xc->finetune, 0);
+		const double max_period = libxmp_note_to_period(ctx, MIN_NOTE_MOD, xc->finetune, 0);
+		CLAMP(xc->period, min_period, max_period);
+		}
+>>>>>>> db7344ebf (abc)
 		break;
 	}
 
@@ -1273,6 +1838,14 @@ static void play_channel(struct context_data *ctx, int chn)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_DISABLE_IT
+	/* IT MIDI macros need to update regardless of the current voice state. */
+	update_midi_macro(ctx, chn);
+#endif
+
+>>>>>>> db7344ebf (abc)
 	act = libxmp_virt_cstat(ctx, chn);
 	if (act == VIRT_INVALID) {
 		/* We need this to keep processing global volume slides */
@@ -1304,13 +1877,24 @@ static void play_channel(struct context_data *ctx, int chn)
 			if (xc->retrig.type < 0x10) {
 				/* don't retrig on cut */
 				libxmp_virt_voicepos(ctx, chn, 0);
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_PLAYER
+				/* Retrigger increases hold counter */
+				libxmp_med_hold_retrigger(ctx, xc);
+#endif
+>>>>>>> db7344ebf (abc)
 			} else {
 				SET_NOTE(NOTE_END);
 			}
 			xc->volume += rval[xc->retrig.type].s;
 			xc->volume *= rval[xc->retrig.type].m;
 			xc->volume /= rval[xc->retrig.type].d;
+<<<<<<< HEAD
 			xc->retrig.count = LSN(xc->retrig.val);
+=======
+			xc->retrig.count = xc->retrig.val;
+>>>>>>> db7344ebf (abc)
 
 			if (xc->retrig.limit > 0) {
 				/* Limit the number of retriggers. */
@@ -1324,10 +1908,17 @@ static void play_channel(struct context_data *ctx, int chn)
 	/* Do keyoff */
 	if (xc->keyoff) {
 		if (--xc->keyoff == 0)
+<<<<<<< HEAD
 			SET_NOTE(NOTE_RELEASE);
 	}
 
 	libxmp_virt_release(ctx, chn, TEST_NOTE(NOTE_RELEASE));
+=======
+			delayed_keyoff(ctx, chn);
+	}
+
+	libxmp_virt_release(ctx, chn, TEST_NOTE(NOTE_SAMPLE_RELEASE));
+>>>>>>> db7344ebf (abc)
 
 	update_volume(ctx, chn);
 	update_frequency(ctx, chn);
@@ -1338,13 +1929,21 @@ static void play_channel(struct context_data *ctx, int chn)
 	process_pan(ctx, chn, act);
 
 #ifndef LIBXMP_CORE_PLAYER
+<<<<<<< HEAD
 	if (HAS_QUIRK(QUIRK_PROTRACK) && xc->ins < mod->ins) {
+=======
+	if (HAS_QUIRK(QUIRK_PROTRACK | QUIRK_INVLOOP) && xc->ins < mod->ins) {
+>>>>>>> db7344ebf (abc)
 		update_invloop(ctx, xc);
 	}
 #endif
 
 	if (TEST_NOTE(NOTE_SUSEXIT)) {
+<<<<<<< HEAD
 		SET_NOTE(NOTE_RELEASE);
+=======
+		SET_NOTE(NOTE_ENV_RELEASE);
+>>>>>>> db7344ebf (abc)
 	}
 
 	xc->info_position = libxmp_virt_getvoicepos(ctx, chn);
@@ -1375,12 +1974,17 @@ static void inject_event(struct context_data *ctx)
  * Sequencing
  */
 
+<<<<<<< HEAD
 static void next_order(struct context_data *ctx)
+=======
+static void next_order(struct context_data *ctx, int last_ord)
+>>>>>>> db7344ebf (abc)
 {
 	struct player_data *p = &ctx->p;
 	struct flow_control *f = &p->flow;
 	struct module_data *m = &ctx->m;
 	struct xmp_module *mod = &m->mod;
+<<<<<<< HEAD
 	int mark;
 
 	do {
@@ -1388,6 +1992,18 @@ static void next_order(struct context_data *ctx)
 
 		/* Restart module */
 		mark = HAS_QUIRK(QUIRK_MARKER) && mod->xxo[p->ord] == 0xff;
+=======
+	int reset_gvol = 0;
+	int mark;
+	int i;
+
+	do {
+		p->ord++;
+
+		/* Restart module */
+		mark = HAS_QUIRK(QUIRK_MARKER) && p->ord < mod->len &&
+		       mod->xxo[p->ord] == XMP_MARK_END;
+>>>>>>> db7344ebf (abc)
 		if (p->ord >= mod->len || mark) {
 			if (mod->rst > mod->len ||
 			    mod->xxo[mod->rst] >= mod->pat ||
@@ -1400,12 +2016,30 @@ static void next_order(struct context_data *ctx)
 					p->ord = m->seq_data[p->sequence].entry_point;
 				}
 			}
+<<<<<<< HEAD
 
 			p->gvol = m->xxo_info[p->ord].gvl;
 		}
 	} while (mod->xxo[p->ord] >= mod->pat);
 
 	p->current_time = m->xxo_info[p->ord].time;
+=======
+			/* This might be a marker, so delay updating global
+			 * volume until an actual pattern is found */
+			reset_gvol = 1;
+			/* Module restart should always reset the play time. */
+			last_ord = -1;
+		}
+	} while (mod->xxo[p->ord] >= mod->pat);
+
+	if (reset_gvol)
+		p->gvol = m->xxo_info[p->ord].gvl;
+
+	/* Bxx+Dxx within same position, Archimedes line jump,
+	 * etc. should not reset time tracking. */
+	if (last_ord != p->ord)
+		p->current_time = m->xxo_info[p->ord].time;
+>>>>>>> db7344ebf (abc)
 
 	f->num_rows = mod->xxp[mod->xxo[p->ord]]->rows;
 	if (f->jumpline >= f->num_rows)
@@ -1416,6 +2050,20 @@ static void next_order(struct context_data *ctx)
 	p->pos = p->ord;
 	p->frame = 0;
 
+<<<<<<< HEAD
+=======
+	/* Scream Tracker 3, Imago Orpheus: position change resets loop vars.
+	 * For some reason the pattern jump effect does not do this in IMF. */
+	if (HAS_FLOW_MODE(FLOW_LOOP_PATTERN_RESET)) {
+		f->loop_start = -1;
+		f->loop_count = 0;
+		for (i = 0; i < mod->chn; i++) {
+			f->loop[i].start = 0;
+			f->loop[i].count = 0;
+		}
+	}
+
+>>>>>>> db7344ebf (abc)
 #ifndef LIBXMP_CORE_PLAYER
 	/* Reset persistent effects at new pattern */
 	if (HAS_QUIRK(QUIRK_PERPAT)) {
@@ -1431,19 +2079,35 @@ static void next_row(struct context_data *ctx)
 {
 	struct player_data *p = &ctx->p;
 	struct flow_control *f = &p->flow;
+<<<<<<< HEAD
 
 	p->frame = 0;
 	f->delay = 0;
 
 	if (f->pbreak) {
 		f->pbreak = 0;
+=======
+	int last_ord = p->ord;
+
+	p->frame = 0;
+	f->delay = 0;
+	f->loop_param = -1;
+
+	if (f->pbreak) {
+		f->pbreak = 0;
+		f->loop_dest = -1;
+>>>>>>> db7344ebf (abc)
 
 		if (f->jump != -1) {
 			p->ord = f->jump - 1;
 			f->jump = -1;
 		}
 
+<<<<<<< HEAD
 		next_order(ctx);
+=======
+		next_order(ctx, last_ord);
+>>>>>>> db7344ebf (abc)
 	} else {
 		if (f->rowdelay == 0) {
 			p->row++;
@@ -1452,14 +2116,24 @@ static void next_row(struct context_data *ctx)
 			f->rowdelay--;
 		}
 
+<<<<<<< HEAD
 		if (f->loop_chn) {
 			p->row = f->loop[f->loop_chn - 1].start;
 			f->loop_chn = 0;
+=======
+		if (f->loop_dest >= 0) {
+			p->row = f->loop_dest;
+			f->loop_dest = -1;
+>>>>>>> db7344ebf (abc)
 		}
 
 		/* check end of pattern */
 		if (p->row >= f->num_rows) {
+<<<<<<< HEAD
 			next_order(ctx);
+=======
+			next_order(ctx, last_ord);
+>>>>>>> db7344ebf (abc)
 		}
 	}
 }
@@ -1487,6 +2161,21 @@ void libxmp_player_set_fadeout(struct context_data *ctx, int chn)
 
 #endif
 
+<<<<<<< HEAD
+=======
+/* Get frame time for calculation of the current playback time
+ * based on the most recent scan. This value should be used for
+ * playback time calculation ONLY. */
+double libxmp_get_frame_time(struct context_data *ctx)
+{
+	struct player_data *p = &ctx->p;
+	struct module_data *m = &ctx->m;
+	if (p->bpm == 0)
+		return 0.0;
+	return p->scan_time_factor * m->rrate / p->bpm;
+}
+
+>>>>>>> db7344ebf (abc)
 static void update_from_ord_info(struct context_data *ctx)
 {
 	struct player_data *p = &ctx->p;
@@ -1498,13 +2187,44 @@ static void update_from_ord_info(struct context_data *ctx)
 	p->bpm = oinfo->bpm;
 	p->gvol = oinfo->gvl;
 	p->current_time = oinfo->time;
+<<<<<<< HEAD
 	p->frame_time = m->time_factor * m->rrate / p->bpm;
+=======
+>>>>>>> db7344ebf (abc)
 
 #ifndef LIBXMP_CORE_PLAYER
 	p->st26_speed = oinfo->st26_speed;
 #endif
 }
 
+<<<<<<< HEAD
+=======
+void libxmp_reset_flow(struct context_data *ctx)
+{
+	struct flow_control *f = &ctx->p.flow;
+	f->jumpline = 0;
+	f->jump = -1;
+	f->pbreak = 0;
+	f->loop_dest = -1;
+	f->loop_param = -1;
+	f->loop_start = -1;
+	f->loop_count = 0;
+	f->loop_active_num = 0;
+	f->delay = 0;
+	f->rowdelay = 0;
+	f->rowdelay_set = 0;
+	f->force_reposition = 0;
+
+	if (f->loop) {
+		int i;
+		for (i = 0; i < ctx->m.mod.chn; i++) {
+			f->loop[i].start = 0;
+			f->loop[i].count = 0;
+		}
+	}
+}
+
+>>>>>>> db7344ebf (abc)
 int xmp_start_player(xmp_context opaque, int rate, int format)
 {
 	struct context_data *ctx = (struct context_data *)opaque;
@@ -1528,6 +2248,10 @@ int xmp_start_player(xmp_context opaque, int rate, int format)
 	if (libxmp_mixer_on(ctx, rate, format, m->c4rate) < 0)
 		return -XMP_ERROR_INTERNAL;
 
+<<<<<<< HEAD
+=======
+	p->time_factor_relative = 1.0;
+>>>>>>> db7344ebf (abc)
 	p->master_vol = 100;
 	p->smix_vol = 100;
 	p->gvol = m->volbase;
@@ -1539,6 +2263,7 @@ int xmp_start_player(xmp_context opaque, int rate, int format)
 	p->sequence = 0;
 
 	/* Set default volume and mute status */
+<<<<<<< HEAD
 	for (i = 0; i < mod->chn; i++) {
 		if (mod->xxc[i].flg & XMP_CHANNEL_MUTE)
 			p->channel_mute[i] = 1;
@@ -1546,6 +2271,14 @@ int xmp_start_player(xmp_context opaque, int rate, int format)
 	}
 	for (i = mod->chn; i < XMP_MAX_CHANNELS; i++) {
 		p->channel_mute[i] = 0;
+=======
+	for (i = 0; i < XMP_MAX_CHANNELS; i++) {
+		if (i < mod->chn && (mod->xxc[i].flg & XMP_CHANNEL_MUTE)) {
+			p->channel_mute[i] = 1;
+		} else {
+			p->channel_mute[i] = 0;
+		}
+>>>>>>> db7344ebf (abc)
 		p->channel_vol[i] = 100;
 	}
 
@@ -1579,12 +2312,16 @@ int xmp_start_player(xmp_context opaque, int rate, int format)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	f->delay = 0;
 	f->jumpline = 0;
 	f->jump = -1;
 	f->loop_chn = 0;
 	f->pbreak = 0;
 	f->rowdelay_set = 0;
+=======
+	libxmp_reset_flow(ctx);
+>>>>>>> db7344ebf (abc)
 
 	f->loop = (struct pattern_loop *) calloc(p->virt.virt_channels, sizeof(struct pattern_loop));
 	if (f->loop == NULL) {
@@ -1601,11 +2338,22 @@ int xmp_start_player(xmp_context opaque, int rate, int format)
 	/* Reset our buffer pointers */
 	xmp_play_buffer(opaque, NULL, 0, 0);
 
+<<<<<<< HEAD
 #ifndef LIBXMP_CORE_PLAYER
 	for (i = 0; i < p->virt.virt_channels; i++) {
 		struct channel_data *xc = &p->xc_data[i];
 		if (libxmp_new_channel_extras(ctx, xc) < 0)
 			goto err2;
+=======
+#ifndef LIBXMP_CORE_DISABLE_IT
+	for (i = 0; i < p->virt.virt_channels; i++) {
+		struct channel_data *xc = &p->xc_data[i];
+		xc->filter.cutoff = 0xff;
+#ifndef LIBXMP_CORE_PLAYER
+		if (libxmp_new_channel_extras(ctx, xc) < 0)
+			goto err2;
+#endif
+>>>>>>> db7344ebf (abc)
 	}
 #endif
 	reset_channels(ctx);
@@ -1650,7 +2398,10 @@ int xmp_play_frame(xmp_context opaque)
 	struct module_data *m = &ctx->m;
 	struct xmp_module *mod = &m->mod;
 	struct flow_control *f = &p->flow;
+<<<<<<< HEAD
 	struct ord_data *oinfo = &m->xxo_info[p->ord];
+=======
+>>>>>>> db7344ebf (abc)
 	int i;
 
 	if (ctx->state < XMP_STATE_PLAYING)
@@ -1660,13 +2411,23 @@ int xmp_play_frame(xmp_context opaque)
 		return -XMP_END;
 	}
 
+<<<<<<< HEAD
 	if (HAS_QUIRK(QUIRK_MARKER) && mod->xxo[p->ord] == 0xff) {
+=======
+	if (HAS_QUIRK(QUIRK_MARKER) && mod->xxo[p->ord] == XMP_MARK_END) {
+>>>>>>> db7344ebf (abc)
 		return -XMP_END;
 	}
 
 	/* check reposition */
+<<<<<<< HEAD
 	if (p->ord != p->pos) {
 		int start = m->seq_data[p->sequence].entry_point;
+=======
+	if (p->ord != p->pos || f->force_reposition) {
+		int start = m->seq_data[p->sequence].entry_point;
+		f->force_reposition = 0;
+>>>>>>> db7344ebf (abc)
 
 		if (p->pos == -2) {		/* set by xmp_module_stop */
 			return -XMP_END;	/* that's all folks */
@@ -1686,7 +2447,10 @@ int xmp_play_frame(xmp_context opaque)
 			f->end_point = 0;
 		}
 
+<<<<<<< HEAD
 		f->jumpline = 0;
+=======
+>>>>>>> db7344ebf (abc)
 		f->jump = -1;
 
 		p->ord = p->pos - 1;
@@ -1696,7 +2460,11 @@ int xmp_play_frame(xmp_context opaque)
 			p->ord = start - 1;
 		}
 
+<<<<<<< HEAD
 		next_order(ctx);
+=======
+		next_order(ctx, -1);
+>>>>>>> db7344ebf (abc)
 
 		update_from_ord_info(ctx);
 
@@ -1751,6 +2519,7 @@ int xmp_play_frame(xmp_context opaque)
 
 	f->rowdelay_set &= ~ROWDELAY_FIRST_FRAME;
 
+<<<<<<< HEAD
 	p->frame_time = m->time_factor * m->rrate / p->bpm;
 	//TODO(montag): current time should be ... independent of speed
 	// this is a workaround since we are injecting BPM
@@ -1758,6 +2527,9 @@ int xmp_play_frame(xmp_context opaque)
 	// time is precomputed in order_info (maybe)
 	// so injecting BPM causes it to get out of sync
 	p->current_time += m->time_factor * m->rrate / oinfo->bpm;
+=======
+	p->current_time += libxmp_get_frame_time(ctx);
+>>>>>>> db7344ebf (abc)
 
 	libxmp_mixer_softmixer(ctx);
 
@@ -1879,6 +2651,11 @@ void xmp_get_frame_info(xmp_context opaque, struct xmp_frame_info *info)
 	struct mixer_data *s = &ctx->s;
 	struct module_data *m = &ctx->m;
 	struct xmp_module *mod = &m->mod;
+<<<<<<< HEAD
+=======
+	double current_time;
+	double total_time;
+>>>>>>> db7344ebf (abc)
 	int chn, i;
 
 	if (ctx->state < XMP_STATE_LOADED)
@@ -1900,10 +2677,20 @@ void xmp_get_frame_info(xmp_context opaque, struct xmp_frame_info *info)
 		info->num_rows = 0;
 	}
 
+<<<<<<< HEAD
+=======
+	/* API still uses integers for time... */
+	current_time = p->current_time;
+	total_time = p->scan[p->sequence].time;
+	CLAMP(current_time, 0.0, (double)INT_MAX);
+	CLAMP(total_time, 0.0, (double)INT_MAX);
+
+>>>>>>> db7344ebf (abc)
 	info->row = p->row;
 	info->frame = p->frame;
 	info->speed = p->speed;
 	info->bpm = p->bpm;
+<<<<<<< HEAD
 	info->total_time = p->scan[p->sequence].time;
 	info->frame_time = p->frame_time * 1000;
 	info->time = p->current_time;
@@ -1917,6 +2704,15 @@ void xmp_get_frame_info(xmp_context opaque, struct xmp_frame_info *info)
 	if (~s->format & XMP_FORMAT_8BIT) {
 		info->buffer_size *= 2;
 	}
+=======
+	info->total_time = (int)total_time;
+	info->frame_time = (int)(libxmp_get_frame_time(ctx) * 1000.0);
+	info->time = (int)current_time;
+	info->buffer = s->buffer;
+
+	info->total_size = s->total_size;
+	info->buffer_size = s->ticksize * s->output_chn * s->sample_size;
+>>>>>>> db7344ebf (abc)
 
 	info->volume = p->gvol;
 	info->loop_count = p->loop_count;

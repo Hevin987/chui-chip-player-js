@@ -34,7 +34,11 @@
 	(cp)[1] = (value) >> 8;						\
 	(cp)[0] = (value); } while (0)
 
+<<<<<<< HEAD
 static uint8 PADDING[MD5_BLOCK_LENGTH] = {
+=======
+static const uint8 PADDING[MD5_BLOCK_LENGTH] = {
+>>>>>>> db7344ebf (abc)
 	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0

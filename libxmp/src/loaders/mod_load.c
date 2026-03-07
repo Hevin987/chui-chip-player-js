@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -32,13 +36,27 @@
  * - Atari Octalyser CD61 and CD81
  * - Digital Tracker FA04, FA06 and FA08
  * - TakeTracker TDZ1, TDZ2, TDZ3, and TDZ4
+<<<<<<< HEAD
  * - (unknown) NSMS, LARD
+=======
+ * - Software Visions DMF (ModEdit M.K. with first 2108 bytes flipped)
+ * - (unknown) NSMS, LARD
+ *
+ * The 'lite' version only recognizes Protracker M.K. and
+ * Fasttracker ?CHN and ??CH formats.
+>>>>>>> db7344ebf (abc)
  */
 
 #include <ctype.h>
 #include "loader.h"
 #include "mod.h"
+<<<<<<< HEAD
 
+=======
+#include "../path.h"
+
+#ifndef LIBXMP_CORE_PLAYER
+>>>>>>> db7344ebf (abc)
 struct mod_magic {
 	const char *magic;
 	int flag;
@@ -58,6 +76,10 @@ struct mod_magic {
 #define TRACKER_MODSGRAVE	9
 #define TRACKER_SCREAMTRACKER3	10
 #define TRACKER_OPENMPT		11
+<<<<<<< HEAD
+=======
+#define TRACKER_SOFTWAREVISIONS	12
+>>>>>>> db7344ebf (abc)
 #define TRACKER_UNKNOWN_CONV	95
 #define TRACKER_CONVERTEDST	96
 #define TRACKER_CONVERTED	97
@@ -82,19 +104,63 @@ const struct mod_magic mod_magic[] = {
 	{"FA04", 1, TRACKER_DIGITALTRACKER, 4},	/* Atari Falcon */
 	{"FA06", 1, TRACKER_DIGITALTRACKER, 6},	/* Atari Falcon */
 	{"FA08", 1, TRACKER_DIGITALTRACKER, 8},	/* Atari Falcon */
+<<<<<<< HEAD
+=======
+	{".M.K", 1, TRACKER_SOFTWAREVISIONS, 4},/* Software Visions DMF */
+>>>>>>> db7344ebf (abc)
 	{"LARD", 1, TRACKER_UNKNOWN, 4},	/* in judgement_day_gvine.mod */
 	{"NSMS", 1, TRACKER_UNKNOWN, 4},	/* in Kingdom.mod */
 };
 
+<<<<<<< HEAD
+=======
+/* Returns non-zero if the given tracker ONLY supports VBlank timing. This
+ * should be used only when the tracker is known for sure, e.g. magic match. */
+static int tracker_is_vblank(int id)
+{
+	switch (id) {
+	case TRACKER_NOISETRACKER:
+	case TRACKER_SOUNDTRACKER:
+		return 1;
+	default:
+		return 0;
+	}
+}
+#endif /* LIBXMP_CORE_PLAYER */
+
+>>>>>>> db7344ebf (abc)
 static int mod_test(HIO_HANDLE *, char *, const int);
 static int mod_load(struct module_data *, HIO_HANDLE *, const int);
 
 const struct format_loader libxmp_loader_mod = {
+<<<<<<< HEAD
 	"Amiga Protracker/Compatible",
+=======
+	#ifdef LIBXMP_CORE_PLAYER
+	"Protracker",
+	#else
+	"Amiga Protracker/Compatible",
+	#endif
+>>>>>>> db7344ebf (abc)
 	mod_test,
 	mod_load
 };
 
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_PLAYER
+static void flip_word_bytes(uint8 *buf, size_t bytes)
+{
+	size_t i;
+	uint8 t;
+	for (i = 0; i < bytes; i += 2) {
+		t = buf[i];
+		buf[i] = buf[i + 1];
+		buf[i + 1] = t;
+	}
+}
+
+>>>>>>> db7344ebf (abc)
 static int validate_pattern(uint8 *buf)
 {
 	int i, j;
@@ -111,16 +177,29 @@ static int validate_pattern(uint8 *buf)
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> db7344ebf (abc)
 
 static int mod_test(HIO_HANDLE * f, char *t, const int start)
 {
 	int i;
 	char buf[4];
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_PLAYER
+>>>>>>> db7344ebf (abc)
 	uint8 pat_buf[1024];
 	int smp_size, num_pat;
 	long size;
 	int count;
 	int detected;
+<<<<<<< HEAD
+=======
+	int id;
+#endif
+>>>>>>> db7344ebf (abc)
 
 	hio_seek(f, start + 1080, SEEK_SET);
 	if (hio_read(buf, 1, 4, f) < 4) {
@@ -141,6 +220,13 @@ static int mod_test(HIO_HANDLE * f, char *t, const int start)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef LIBXMP_CORE_PLAYER
+	if (memcmp(buf, "M.K.", 4))
+		return -1;
+#else
+>>>>>>> db7344ebf (abc)
 	for (i = 0; i < ARRAY_SIZE(mod_magic); i++) {
 		if (!memcmp(buf, mod_magic[i].magic, 4))
 			break;
@@ -150,6 +236,11 @@ static int mod_test(HIO_HANDLE * f, char *t, const int start)
 	}
 
 	detected = mod_magic[i].flag;
+<<<<<<< HEAD
+=======
+	id = mod_magic[i].id;
+	smp_size = 0;
+>>>>>>> db7344ebf (abc)
 
 	/*
 	 * Sanity check to prevent loading NoiseRunner and other module
@@ -160,6 +251,7 @@ static int mod_test(HIO_HANDLE * f, char *t, const int start)
 	for (i = 0; i < 31; i++) {
 		uint8 x;
 
+<<<<<<< HEAD
 		hio_seek(f, 22, SEEK_CUR);	/* Instrument name */
 
 		/* OpenMPT can create mods with large samples */
@@ -173,6 +265,24 @@ static int mod_test(HIO_HANDLE * f, char *t, const int start)
 			return -1;
 		hio_read16b(f);	/* loop start */
 		hio_read16b(f);	/* loop size */
+=======
+		hio_read(pat_buf, 1, 30, f);
+		if (id == TRACKER_SOFTWAREVISIONS) {
+			flip_word_bytes(pat_buf + 22, 8);
+		}
+
+		/* hio_seek(f, 22, SEEK_CUR);	 Instrument name */
+		smp_size += readmem16b(pat_buf + 22) << 1; /* sample size */
+
+		/* Chris Spiegel tells me that sandman.mod has 0x20 in finetune */
+		x = pat_buf[24];
+		if (x & 0xf0 && x != 0x20)	/* test finetune */
+			return -1;
+		if (pat_buf[25] > 0x40)		/* test volume */
+			return -1;
+		/* hio_read16b(f);		 loop start */
+		/* hio_read16b(f);		 loop size */
+>>>>>>> db7344ebf (abc)
 	}
 
 	/* The following checks are only relevant for filtering out atypical
@@ -191,6 +301,7 @@ static int mod_test(HIO_HANDLE * f, char *t, const int start)
 
 	/* get file size */
 	size = hio_size(f);
+<<<<<<< HEAD
 	smp_size = 0;
 	hio_seek(f, start + 20, SEEK_SET);
 
@@ -200,6 +311,8 @@ static int mod_test(HIO_HANDLE * f, char *t, const int start)
 		smp_size += 2 * hio_read16b(f);	/* Length in 16-bit words */
 		hio_seek(f, 6, SEEK_CUR);
 	}
+=======
+>>>>>>> db7344ebf (abc)
 
 	/* get number of patterns */
 	num_pat = 0;
@@ -235,6 +348,10 @@ static int mod_test(HIO_HANDLE * f, char *t, const int start)
 	if (count > 2) {
 		return -1;
 	}
+<<<<<<< HEAD
+=======
+#endif /* LIBXMP_CORE_PLAYER */
+>>>>>>> db7344ebf (abc)
 
 found:
 	hio_seek(f, start + 0, SEEK_SET);
@@ -244,7 +361,12 @@ found:
 }
 
 
+<<<<<<< HEAD
 static int is_st_ins(char *s)
+=======
+#ifndef LIBXMP_CORE_PLAYER
+static int is_st_ins(const char *s)
+>>>>>>> db7344ebf (abc)
 {
 	if (s[0] != 's' && s[0] != 'S')
 		return 0;
@@ -265,6 +387,11 @@ static int get_tracker_id(struct module_data *m, struct mod_header *mh, int id)
 	int has_vol_in_empty_ins = 0;
 	int i;
 
+<<<<<<< HEAD
+=======
+	D_(D_INFO "attempting initial tracker ID via header details");
+
+>>>>>>> db7344ebf (abc)
 	/* Check if has instruments with loop size 0 */
 	for (i = 0; i < 31; i++) {
 		if (mh->ins[i].loop_size == 0) {
@@ -286,8 +413,15 @@ static int get_tracker_id(struct module_data *m, struct mod_header *mh, int id)
 	 */
 	if (mh->restart == mod->pat) {
 		if (mod->chn == 4) {
+<<<<<<< HEAD
 			id = TRACKER_SOUNDTRACKER;
 		} else {
+=======
+			D_(D_INFO "restart=#pat and 4ch -> Soundtracker");
+			id = TRACKER_SOUNDTRACKER;
+		} else {
+			D_(D_INFO "restart=#pat and !4ch -> unknown");
+>>>>>>> db7344ebf (abc)
 			id = TRACKER_UNKNOWN;
 		}
 	} else if (mh->restart == 0x78) {
@@ -295,36 +429,71 @@ static int get_tracker_id(struct module_data *m, struct mod_header *mh, int id)
 			/* Can't trust this for Noisetracker, MOD.Data City Remix
 			 * has Protracker effects and Noisetracker restart byte
 			 */
+<<<<<<< HEAD
 			id = TRACKER_PROBABLY_NOISETRACKER;
 		} else {
+=======
+			D_(D_INFO "restart=78 and 4ch -> maybe Noisetracker");
+			id = TRACKER_PROBABLY_NOISETRACKER;
+		} else {
+			D_(D_INFO "restart=78 and !4ch -> unknown");
+>>>>>>> db7344ebf (abc)
 			id = TRACKER_UNKNOWN;
 		}
 		return id;
 	} else if (mh->restart < 0x7f) {
 		if (mod->chn == 4 && !has_vol_in_empty_ins) {
+<<<<<<< HEAD
 			id = TRACKER_NOISETRACKER;
 		} else {
+=======
+			D_(D_INFO "restart<7f and 4ch and empty ins are "
+			   "volume 0 -> Noisetracker");
+			id = TRACKER_NOISETRACKER;
+		} else {
+			D_(D_INFO "restart<7f and not Noisetracker -> unknown");
+>>>>>>> db7344ebf (abc)
 			id = TRACKER_UNKNOWN; /* ? */
 		}
 		mod->rst = mh->restart;
 	} else if (mh->restart == 0x7f) {
 		if (mod->chn == 4) {
 			if (has_loop_0) {
+<<<<<<< HEAD
 				id = TRACKER_CLONE;
 			}
 		} else {
+=======
+				D_(D_INFO "restart=7f and 4ch and 0-size loop -> clone");
+				id = TRACKER_CLONE;
+			}
+		} else {
+			D_(D_INFO "restart=7f and !4ch -> Scream Tracker");
+>>>>>>> db7344ebf (abc)
 			id = TRACKER_SCREAMTRACKER3;
 		}
 		return id;
 	} else if (mh->restart > 0x7f) {
+<<<<<<< HEAD
+=======
+		D_(D_INFO "restart>7f -> unknown");
+>>>>>>> db7344ebf (abc)
 		id = TRACKER_UNKNOWN; /* ? */
 		return id;
 	}
 
 	if (!has_loop_0) { /* All loops are size 2 or greater */
+<<<<<<< HEAD
 
 		for (i = 0; i < 31; i++) {
 			if (mh->ins[i].size == 1 && mh->ins[i].volume == 0) {
+=======
+		D_(D_INFO "no instrument 0-length loops...");
+
+		for (i = 0; i < 31; i++) {
+			if (mh->ins[i].size == 1 && mh->ins[i].volume == 0) {
+				D_(D_INFO "...and length 2 with 0 volume -> converted");
+>>>>>>> db7344ebf (abc)
 				return TRACKER_CONVERTED;
 			}
 		}
@@ -334,6 +503,10 @@ static int get_tracker_id(struct module_data *m, struct mod_header *mh, int id)
 				break;
 		}
 		if (i == 31) {	/* No st- instruments */
+<<<<<<< HEAD
+=======
+			D_(D_INFO "...and no ST- instruments...");
+>>>>>>> db7344ebf (abc)
 			for (i = 0; i < 31; i++) {
 				if (mh->ins[i].size != 0
 				    || mh->ins[i].loop_size != 1) {
@@ -343,14 +516,25 @@ static int get_tracker_id(struct module_data *m, struct mod_header *mh, int id)
 				switch (mod->chn) {
 				case 4:
 					if (has_vol_in_empty_ins) {
+<<<<<<< HEAD
 						id = TRACKER_OPENMPT;
 					} else {
+=======
+						D_(D_INFO "...and 4ch, vol in empty -> OpenMPT");
+						id = TRACKER_OPENMPT;
+					} else {
+						D_(D_INFO "...and 4ch -> Noisetracker");
+>>>>>>> db7344ebf (abc)
 						id = TRACKER_NOISETRACKER;
 						/* or Octalyser */
 					}
 					break;
 				case 6:
 				case 8:
+<<<<<<< HEAD
+=======
+					D_(D_INFO "..and 6ch or 8ch -> Octalyser");
+>>>>>>> db7344ebf (abc)
 					id = TRACKER_OCTALYSER;
 					break;
 				default:
@@ -359,22 +543,43 @@ static int get_tracker_id(struct module_data *m, struct mod_header *mh, int id)
 				return id;
 			}
 
+<<<<<<< HEAD
 			if (mod->chn == 4) {
 				id = TRACKER_PROTRACKER;
 			} else if (mod->chn == 6 || mod->chn == 8) {
 				/* FastTracker 1.01? */
 				id = TRACKER_FASTTRACKER;
 			} else {
+=======
+			D_(D_INFO "...and no empty...");
+			if (mod->chn == 4) {
+				D_(D_INFO "...and 4ch -> Protracker");
+				id = TRACKER_PROTRACKER;
+			} else if (mod->chn == 6 || mod->chn == 8) {
+				/* FastTracker 1.01? */
+				D_(D_INFO "...and 6ch or 8ch -> Fast Tracker");
+				id = TRACKER_FASTTRACKER;
+			} else {
+				D_(D_INFO "...and %dch -> unknown", mod->chn);
+>>>>>>> db7344ebf (abc)
 				id = TRACKER_UNKNOWN;
 			}
 		}
 	} else { /* Has loops with size 0 */
+<<<<<<< HEAD
+=======
+		D_(D_INFO "instrument with 0-length loop...");
+>>>>>>> db7344ebf (abc)
 		for (i = 15; i < 31; i++) {
 			/* Is the name or size set? */
 			if (mh->ins[i].name[0] || mh->ins[i].size > 0)
 				break;
 		}
 		if (i == 31 && is_st_ins((char *)mh->ins[14].name)) {
+<<<<<<< HEAD
+=======
+			D_(D_INFO "...and <=15 instruments and ST-* -> converted ST");
+>>>>>>> db7344ebf (abc)
 			return TRACKER_CONVERTEDST;
 		}
 
@@ -384,23 +589,41 @@ static int get_tracker_id(struct module_data *m, struct mod_header *mh, int id)
 				break;
 		}
 		if (i < 31) {
+<<<<<<< HEAD
+=======
+			D_(D_INFO "...and >15 instruments and ST-* -> converted");
+>>>>>>> db7344ebf (abc)
 			return TRACKER_UNKNOWN_CONV;
 		}
 
 		if (mod->chn == 4 || mod->chn == 6 || mod->chn == 8) {
+<<<<<<< HEAD
 			return TRACKER_FASTTRACKER;
 		}
 
 		id = TRACKER_UNKNOWN;	/* ??!? */
+=======
+			D_(D_INFO "...and >15 instruments and 4ch/6ch/8ch -> Fast Tracker");
+			return TRACKER_FASTTRACKER;
+		}
+
+		D_(D_INFO "...and >15 instruments and %dch -> unknown", mod->chn);
+		id = TRACKER_UNKNOWN;	/* ?! */
+>>>>>>> db7344ebf (abc)
 	}
 
 	return id;
 }
+<<<<<<< HEAD
+=======
+#endif /* LIBXMP_CORE_PLAYER */
+>>>>>>> db7344ebf (abc)
 
 static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
 {
     struct xmp_module *mod = &m->mod;
     int i, j, k;
+<<<<<<< HEAD
     int smp_size, ptsong = 0;
     struct xmp_event *event;
     struct mod_header mh;
@@ -412,12 +635,33 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
     int out_of_range = 0;
     int maybe_wow = 1;
     uint8 *patbuf;
+=======
+    struct xmp_event *event;
+    struct mod_header mh;
+    char magic[8];
+    uint8 *patbuf;
+#ifndef LIBXMP_CORE_PLAYER
+    uint8 pat_high_fxx[256];
+    const char *tracker = "";
+    int detected = 0;
+    int tracker_id = TRACKER_PROTRACKER;
+    int out_of_range = 0;
+    int maybe_wow = 1;
+    int smp_size, ptsong = 0;
+    int needs_timing_detection = 0;
+    int samerow_fxx = 0;		/* speed + BPM set on same row */
+    int high_fxx = 0;			/* high Fxx is used anywhere */
+    int invert_loop = 0;		/* EFx found anywhere in module */
+#endif
+    int ptkloop = 0;			/* Protracker loop */
+>>>>>>> db7344ebf (abc)
 
     LOAD_INIT();
 
     mod->ins = 31;
     mod->smp = mod->ins;
     mod->chn = 0;
+<<<<<<< HEAD
     smp_size = 0;
     /*pat_size = 0;*/
 
@@ -432,6 +676,91 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	mh.ins[i].loop_start = hio_read16b(f);	/* Loop start in 16-bit words */
 	mh.ins[i].loop_size = hio_read16b(f);	/* Loop size in 16-bit words */
 
+=======
+#ifndef LIBXMP_CORE_PLAYER
+    smp_size = 0;
+#else
+    m->quirk |= QUIRK_PROTRACK;
+#endif
+    m->period_type = PERIOD_MODRNG;
+
+    if ((patbuf = (uint8 *) malloc(1084)) == NULL) {
+	return -1;
+    }
+    if (hio_read(patbuf, 1, 1084, f) < 1084) {
+	D_(D_CRIT "read error in MOD header");
+	free(patbuf);
+	return -1;
+    }
+    memset(magic, 0, sizeof(magic));
+    memcpy(magic, patbuf + 1080, 4);
+
+#ifndef LIBXMP_CORE_PLAYER
+    for (i = 0; i < ARRAY_SIZE(mod_magic); i++) {
+	if (!(strncmp (magic, mod_magic[i].magic, 4))) {
+	    mod->chn = mod_magic[i].ch;
+	    tracker_id = mod_magic[i].id;
+	    detected = mod_magic[i].flag;
+	    D_(D_INFO "magic match %4.4s -> %d", magic, tracker_id);
+	    break;
+	}
+    }
+
+    /* Enable timing detection for M.K. and M!K! modules. */
+    if (tracker_id == TRACKER_PROTRACKER)
+	needs_timing_detection = 1;
+
+    /* Digital Tracker MODs have an extra four bytes after the magic.
+     * These are always 00h 40h 00h 00h and can probably be ignored. */
+    if (tracker_id == TRACKER_DIGITALTRACKER) {
+	hio_read32b(f);
+    }
+#endif
+
+    if (mod->chn == 0) {
+	#ifdef LIBXMP_CORE_PLAYER
+	if (!memcmp(magic, "M.K.", 4)) {
+		mod->chn = 4;
+	} else
+	#endif
+	if (!strncmp(magic + 2, "CH", 2) &&
+	    isdigit((unsigned char)magic[0]) && isdigit((unsigned char)magic[1])) {
+	    mod->chn = (*magic - '0') * 10 + magic[1] - '0';
+	} else if (!strncmp(magic + 1, "CHN", 3) && isdigit((unsigned char)*magic)) {
+	    mod->chn = *magic - '0';
+	} else {
+	    free(patbuf);
+	    return -1;
+	}
+#ifndef LIBXMP_CORE_PLAYER
+	D_(D_INFO "#CHN or ##CH signature -> FastTracker or TakeTracker");
+	tracker_id = mod->chn & 1 ? TRACKER_TAKETRACKER : TRACKER_FASTTRACKER2;
+	detected = 1;
+#endif
+    }
+
+#ifndef LIBXMP_CORE_PLAYER
+    /* For unknown reasons, the first 2108 bytes of Software Visions DMF MODs
+     * (ModEdit M.K. used in Apocalypse Abyss and Software Visions Catalog)
+     * are word-flipped to little endian. */
+    if (tracker_id == TRACKER_SOFTWAREVISIONS) {
+	flip_word_bytes(patbuf, 1084);
+    }
+#endif
+
+    memcpy(mh.name, patbuf, 20);
+    for (i = 0; i < 31; i++) {
+	const uint8 *pos = patbuf + 20 + i * 30;
+
+	memcpy(mh.ins[i].name, pos, 22);		/* Instrument name */
+	mh.ins[i].size = readmem16b(pos + 22);		/* Length in 16-bit words */
+	mh.ins[i].finetune = pos[24];			/* Finetune (signed nibble) */
+	mh.ins[i].volume = pos[25];			/* Linear playback volume */
+	mh.ins[i].loop_start = readmem16b(pos + 26);	/* Loop start in 16-bit words */
+	mh.ins[i].loop_size = readmem16b(pos + 28);	/* Loop size in 16-bit words */
+
+#ifndef LIBXMP_CORE_PLAYER
+>>>>>>> db7344ebf (abc)
 	/* Mod's Grave WOW files are converted from 669s and have default
 	 * finetune and volume.
 	 */
@@ -439,6 +768,7 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	    maybe_wow = 0;
 
 	smp_size += 2 * mh.ins[i].size;
+<<<<<<< HEAD
     }
     mh.len = hio_read8(f);
     mh.restart = hio_read8(f);
@@ -476,16 +806,44 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	tracker_id = mod->chn & 1 ? TRACKER_TAKETRACKER : TRACKER_FASTTRACKER2;
 	detected = 1;
     }
+=======
+#endif
+    }
+    mh.len = patbuf[950];
+    mh.restart = patbuf[951];
+    memcpy(mh.order, patbuf + 952, 128);
+    free(patbuf);
+
+#ifndef LIBXMP_CORE_PLAYER
+    /* Mod's Grave WOW files always have a 0 restart byte; 6692WOW implements
+     * 669 repeating by inserting a pattern jump and ignores this byte.
+     */
+    if (mh.restart != 0) {
+	maybe_wow = 0;
+    }
+#endif
+>>>>>>> db7344ebf (abc)
 
     strncpy(mod->name, (char *) mh.name, 20);
 
     mod->len = mh.len;
+<<<<<<< HEAD
     /* mod->rst = mh.restart; */
 
     if (mod->rst >= mod->len)
 	mod->rst = 0;
     memcpy(mod->xxo, mh.order, 128);
 
+=======
+    memcpy(mod->xxo, mh.order, 128);
+
+    if (mh.restart < 0x7f && mh.restart != 0x78 && (int)mh.restart < mod->len) {
+	/* TODO: an older version of this code was commented out 23+ years ago
+	 * and adding this may have rebroke something. */
+	mod->rst = mh.restart;
+    }
+
+>>>>>>> db7344ebf (abc)
     for (i = 0; i < 128; i++) {
 	/* This fixes dragnet.mod (garbage in the order list) */
 	if (mod->xxo[i] > 0x7f)
@@ -495,8 +853,11 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
     }
     mod->pat++;
 
+<<<<<<< HEAD
     /*pat_size = 256 * mod->chn * mod->pat;*/
 
+=======
+>>>>>>> db7344ebf (abc)
     if (libxmp_init_instrument(m) < 0)
 	return -1;
 
@@ -508,10 +869,21 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	if (libxmp_alloc_subinstrument(mod, i, 1) < 0)
 	    return -1;
 
+<<<<<<< HEAD
 	if (mh.ins[i].size >= 0x8000) {
 	    tracker_id = TRACKER_OPENMPT;
 	    detected = 1;
 	}
+=======
+#ifndef LIBXMP_CORE_PLAYER
+	if (mh.ins[i].size >= 0x8000) {
+	    D_(D_INFO "sample %d >64k length -> OpenMPT", i);
+	    tracker_id = TRACKER_OPENMPT;
+	    needs_timing_detection = 0;
+	    detected = 1;
+	}
+#endif
+>>>>>>> db7344ebf (abc)
 
 	xxi = &mod->xxi[i];
 	sub = &xxi->sub[0];
@@ -527,7 +899,11 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		XMP_SAMPLE_LOOP : 0;
 	sub->fin = (int8)(mh.ins[i].finetune << 4);
 	sub->vol = mh.ins[i].volume;
+<<<<<<< HEAD
 	sub->pan = 0x80;
+=======
+	sub->pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 	sub->sid = i;
 	libxmp_instrument_name(mod, i, mh.ins[i].name, 22);
 
@@ -536,6 +912,10 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	}
     }
 
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_PLAYER
+>>>>>>> db7344ebf (abc)
     /* Experimental tracker-detection routine */
 
     if (detected)
@@ -552,6 +932,10 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
      */
 
     if (0x43c + mod->pat * 4 * mod->chn * 0x40 + smp_size < m->size) {
+<<<<<<< HEAD
+=======
+	char idbuffer[4];
+>>>>>>> db7344ebf (abc)
 	int pos = hio_tell(f);
 	int num_read;
         if (pos < 0) {
@@ -562,7 +946,14 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	hio_seek(f, start + pos, SEEK_SET);
 
 	if (num_read == 4 && !memcmp(idbuffer, "FLEX", 4)) {
+<<<<<<< HEAD
 	    tracker_id = TRACKER_FLEXTRAX;
+=======
+	    D_(D_INFO "FlexTrax FLEX data detected -> FlexTrax");
+	    tracker_id = TRACKER_FLEXTRAX;
+	    needs_timing_detection = 0;
+	    detected = 1;
+>>>>>>> db7344ebf (abc)
 	    goto skip_test;
 	}
     }
@@ -586,14 +977,28 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
     if (!strncmp(magic, "M.K.", 4) && maybe_wow &&
 		(0x43c + mod->pat * 32 * 0x40 + smp_size) == (m->size & ~1)) {
+<<<<<<< HEAD
 	mod->chn = 8;
 	tracker_id = TRACKER_MODSGRAVE;
+=======
+	D_(D_INFO "file is M.K. with Mod's Grave characteristics -> Mod's Grave");
+	mod->chn = 8;
+	tracker_id = TRACKER_MODSGRAVE;
+	needs_timing_detection = 0;
+	detected = 1;
+>>>>>>> db7344ebf (abc)
     } else {
 	/* Test for Protracker song files */
 	ptsong = !strncmp((char *)magic, "M.K.", 4) &&
 		 (0x43c + mod->pat * 0x400 == m->size);
 	if (ptsong) {
+<<<<<<< HEAD
 		tracker_id = TRACKER_PROTRACKER;
+=======
+		D_(D_INFO "file is Protracker song length M.K. -> Protracker");
+		tracker_id = TRACKER_PROTRACKER;
+		detected = 1;
+>>>>>>> db7344ebf (abc)
 		goto skip_test;
 	} else {
 	/* something else */
@@ -602,6 +1007,11 @@ static int mod_load(struct module_data *m, HIO_HANDLE *f, const int start)
     }
 
 skip_test:
+<<<<<<< HEAD
+=======
+    D_(D_INFO "initial tracker ID: %d%s", tracker_id, detected ? " (locked in)" : "");
+#endif
+>>>>>>> db7344ebf (abc)
 
     if (mod->chn >= XMP_MAX_CHANNELS) {
         return -1;
@@ -609,12 +1019,15 @@ skip_test:
 
     mod->trk = mod->chn * mod->pat;
 
+<<<<<<< HEAD
     /* Digital Tracker MODs have an extra four bytes after the magic.
      * These are always 00h 40h 00h 00h and can probably be ignored. */
     if (tracker_id == TRACKER_DIGITALTRACKER) {
 	hio_read32b(f);
     }
 
+=======
+>>>>>>> db7344ebf (abc)
     for (i = 0; i < mod->ins; i++) {
 	D_(D_INFO "[%2X] %-22.22s %04x %04x %04x %c V%02x %+d %c",
 		i, mod->xxi[i].name,
@@ -636,21 +1049,48 @@ skip_test:
 	return -1;
     }
 
+<<<<<<< HEAD
     for (i = 0; i < mod->pat; i++) {
 	uint8 *mod_event;
+=======
+#ifndef LIBXMP_CORE_PLAYER
+    memset(pat_high_fxx, 0, sizeof(pat_high_fxx));
+#endif
+
+    for (i = 0; i < mod->pat; i++) {
+	uint8 *mod_event;
+	int patlen = 64 * 4 * mod->chn;
+>>>>>>> db7344ebf (abc)
 
 	if (libxmp_alloc_pattern_tracks(mod, i, 64) < 0) {
 	    free(patbuf);
 	    return -1;
 	}
 
+<<<<<<< HEAD
 	if (hio_read(patbuf, 64 * 4 * mod->chn, 1, f) < 1) {
+=======
+	if (hio_read(patbuf, 1, patlen, f) < patlen) {
+>>>>>>> db7344ebf (abc)
 	    free(patbuf);
 	    return -1;
 	}
 
+<<<<<<< HEAD
 	mod_event = patbuf;
 	for (j = 0; j < 64; j++) {
+=======
+#ifndef LIBXMP_CORE_PLAYER
+	/* First pattern of Software Visions DMF is word flipped (see above). */
+	if (tracker_id == TRACKER_SOFTWAREVISIONS && i == 0) {
+		flip_word_bytes(patbuf, patlen); /* should be 1024 */
+	}
+
+	mod_event = patbuf;
+	for (j = 0; j < 64; j++) {
+	    int speed_row = 0;
+	    int bpm_row = 0;
+>>>>>>> db7344ebf (abc)
 	    for (k = 0; k < mod->chn; k++) {
 		int period;
 
@@ -665,15 +1105,47 @@ skip_test:
 		    unsigned char fxp = LSN(mod_event[3]);
 
 		    if ((fxt > 0x06 && fxt < 0x0a) || (fxt == 0x0e && fxp > 1)) {
+<<<<<<< HEAD
 			tracker_id = TRACKER_UNKNOWN;
 		    }
 		}
 		mod_event += 4;
 	    }
+=======
+			D_(D_INFO "non-Noisetracker effect -> unknown");
+			tracker_id = TRACKER_UNKNOWN;
+		    }
+		}
+		/* Needs CIA/VBlank detection? */
+		if (LSN(mod_event[2]) == 0x0f) {
+		    if (mod_event[3] >= 0x20) {
+			pat_high_fxx[i] = mod_event[3];
+			m->compare_vblank = 1;
+			high_fxx = 1;
+			bpm_row = 1;
+		    } else {
+			speed_row = 1;
+		    }
+		}
+		/* Usage of effect EFx is typically Protracker invert loop. */
+		if (LSN(mod_event[2]) == 0xe && MSN(mod_event[3]) == 0xf) {
+		    invert_loop = 1;
+		}
+		mod_event += 4;
+	    }
+	    if (bpm_row && speed_row) {
+		samerow_fxx = 1;
+	    }
+>>>>>>> db7344ebf (abc)
 	}
 
 	if (out_of_range) {
 	    if (tracker_id == TRACKER_UNKNOWN && mh.restart == 0x7f) {
+<<<<<<< HEAD
+=======
+		D_(D_INFO "unknown tracker w/ restart 0x7f and out-of-range "
+		   "notes are present -> Scream Tracker");
+>>>>>>> db7344ebf (abc)
 		tracker_id = TRACKER_SCREAMTRACKER3;
 	    }
 
@@ -683,15 +1155,36 @@ skip_test:
 		tracker_id == TRACKER_PROBABLY_NOISETRACKER ||
 		tracker_id == TRACKER_SOUNDTRACKER) {   /* note > B-3 */
 
+<<<<<<< HEAD
 		tracker_id = TRACKER_UNKNOWN;
 	    }
 	}
+=======
+		D_(D_INFO "maybe-Amiga with out-of-range note -> unknown");
+		tracker_id = TRACKER_UNKNOWN;
+	    }
+	} else if (invert_loop && !detected &&
+	    (tracker_id == TRACKER_NOISETRACKER ||
+	     tracker_id == TRACKER_PROBABLY_NOISETRACKER)) {
+	    /* Switch Noisetracker to Protracker to disable event filtering. */
+	    D_(D_INFO "effect EFx is present in suspected Noisetracker -> "
+	       "more likely Protracker");
+	    tracker_id = TRACKER_PROTRACKER;
+	}
+#endif
+>>>>>>> db7344ebf (abc)
 
 	mod_event = patbuf;
 	for (j = 0; j < 64; j++) {
 	    for (k = 0; k < mod->chn; k++) {
 		event = &EVENT(i, k, j);
+<<<<<<< HEAD
 
+=======
+#ifdef LIBXMP_CORE_PLAYER
+		libxmp_decode_protracker_event(event, mod_event);
+#else
+>>>>>>> db7344ebf (abc)
 		switch (tracker_id) {
 		case TRACKER_PROBABLY_NOISETRACKER:
 		case TRACKER_NOISETRACKER:
@@ -700,12 +1193,91 @@ skip_test:
 		default:
 		    libxmp_decode_protracker_event(event, mod_event);
 		}
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> db7344ebf (abc)
 		mod_event += 4;
 	    }
 	}
     }
     free(patbuf);
 
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_PLAYER
+    /* VBlank detection routine.
+     * Despite VBlank being dependent on the tracker used, VBlank detection
+     * is complex and uses heuristics mostly independent from tracker ID.
+     * See also: the scan.c comparison code enabled by m->compare_vblank
+     */
+    if (!needs_timing_detection) {
+	/* Noisetracker and some other trackers do not support CIA timing. The
+	 * only known MOD in the wild that relies on this is muppenkorva.mod
+	 * by Glue Master (loaded by the His Master's Noise loader).
+	 */
+	if (tracker_is_vblank(tracker_id)) {
+	    m->quirk |= QUIRK_NOBPM;
+	}
+	m->compare_vblank = 0;
+
+    } else if (samerow_fxx) {
+	/* If low Fxx and high Fxx are on the same row, there's a high chance
+	 * this is from a CIA-based tracker. There are some exceptions.
+	 */
+	if (tracker_id == TRACKER_NOISETRACKER ||
+	    tracker_id == TRACKER_PROBABLY_NOISETRACKER ||
+	    tracker_id == TRACKER_SOUNDTRACKER) {
+
+	    D_(D_INFO "low Fxx and high Fxx on the same line, but tracker ID "
+	       "selected a VBlank-only tracker -> unknown");
+	    tracker_id = TRACKER_UNKNOWN;
+	}
+	m->compare_vblank = 0;
+
+    } else if (high_fxx && mod->len >= 8) {
+	/* Test for high Fxx at the end only--this is typically VBlank,
+	 * and is used to add silence to the end of modules.
+	 *
+	 * Exception: if the final high Fxx is F7D, this module is either CIA
+	 * or is VBlank that was modified to play as CIA, so do nothing.
+	 *
+	 * TODO: MPT resets modules on the end loop, so some of the very long
+	 * silent sections in modules affected by this probably expect CIA. It
+	 * should eventually be possible to detect those.
+	 */
+	const int threshold = mod->len - 2;
+
+	for (i = 0; i < threshold; i++) {
+	    if (pat_high_fxx[mod->xxo[i]])
+		break;
+	}
+	if (i == threshold) {
+	    for (i = mod->len - 1; i >= threshold; i--) {
+		uint8 fxx = pat_high_fxx[mod->xxo[i]];
+		if (fxx == 0x00)
+		    continue;
+		if (fxx == 0x7d)
+		    break;
+
+		m->compare_vblank = 0;
+		m->quirk |= QUIRK_NOBPM;
+		break;
+	    }
+	}
+    }
+
+    if (invert_loop && !detected && !out_of_range) {
+	/* If EFx was detected and NO notes were out-of-range,
+	 * that's a strong indicator of a Protracker origin. */
+	D_(D_INFO "effect EFx and no out-of-range notes -> Protracker or OpenMPT");
+	if (tracker_id != TRACKER_OPENMPT) {
+	    tracker_id = TRACKER_PROTRACKER;
+	}
+	detected = 1;
+    }
+
+>>>>>>> db7344ebf (abc)
     switch (tracker_id) {
     case TRACKER_PROTRACKER:
 	tracker = "Protracker";
@@ -714,11 +1286,17 @@ skip_test:
     case TRACKER_PROBABLY_NOISETRACKER:
     case TRACKER_NOISETRACKER:
 	tracker = "Noisetracker";
+<<<<<<< HEAD
 	m->quirk |= QUIRK_NOBPM;
 	break;
     case TRACKER_SOUNDTRACKER:
 	tracker = "Soundtracker";
 	m->quirk |= QUIRK_NOBPM;
+=======
+	break;
+    case TRACKER_SOUNDTRACKER:
+	tracker = "Soundtracker";
+>>>>>>> db7344ebf (abc)
 	break;
     case TRACKER_FASTTRACKER:
     case TRACKER_FASTTRACKER2:
@@ -731,9 +1309,20 @@ skip_test:
 	break;
     case TRACKER_OCTALYSER:
 	tracker = "Octalyser";
+<<<<<<< HEAD
 	break;
     case TRACKER_DIGITALTRACKER:
 	tracker = "Digital Tracker";
+=======
+	if (detected) {
+		m->flow_mode = FLOW_MODE_OCTALYSER;
+	}
+	/* TODO: hexadecimal pattern break parameter. */
+	break;
+    case TRACKER_DIGITALTRACKER:
+	tracker = "Digital Tracker";
+	m->flow_mode = FLOW_MODE_DTM_2015;
+>>>>>>> db7344ebf (abc)
 	break;
     case TRACKER_FLEXTRAX:
 	tracker = "Flextrax";
@@ -745,6 +1334,12 @@ skip_test:
 	tracker = "Scream Tracker";
 	m->period_type = PERIOD_AMIGA;
 	break;
+<<<<<<< HEAD
+=======
+    case TRACKER_SOFTWAREVISIONS: /* ModEdit variant */
+	tracker = "Software Visions DMF";
+	break;
+>>>>>>> db7344ebf (abc)
     case TRACKER_CONVERTEDST:
     case TRACKER_CONVERTED:
 	tracker = "Converted";
@@ -769,12 +1364,24 @@ skip_test:
 	m->period_type = PERIOD_AMIGA;
     }
 
+<<<<<<< HEAD
     if (tracker_id == TRACKER_MODSGRAVE) {
+=======
+    if (tracker_id == TRACKER_MODSGRAVE || tracker_id == TRACKER_SOFTWAREVISIONS) {
+>>>>>>> db7344ebf (abc)
 	snprintf(mod->type, XMP_NAME_SIZE, "%s", tracker);
     } else {
 	snprintf(mod->type, XMP_NAME_SIZE, "%s %s", tracker, magic);
     }
 
+<<<<<<< HEAD
+=======
+    D_(D_INFO "final tracker ID: %d", tracker_id);
+#else
+    libxmp_set_type(m, (mod->chn == 4) ? "Protracker" : "Fasttracker");
+#endif
+
+>>>>>>> db7344ebf (abc)
     MODULE_INFO();
 
     /* Load samples */
@@ -789,6 +1396,7 @@ skip_test:
 
 	flags = (ptkloop && mod->xxs[i].lps == 0) ? SAMPLE_FLAG_FULLREP : 0;
 
+<<<<<<< HEAD
 	if (ptsong) {
 	    HIO_HANDLE *s;
 	    char sn[XMP_MAXPATH];
@@ -810,6 +1418,35 @@ skip_test:
 		}
 		hio_close(s);
 	    }
+=======
+#ifdef LIBXMP_CORE_PLAYER
+	if (libxmp_load_sample(m, f, flags, &mod->xxs[i], NULL) < 0)
+		return -1;
+#else
+	if (ptsong) {
+	    HIO_HANDLE *s;
+	    struct libxmp_path sp;
+	    char tmpname[32];
+	    const char *instname = mod->xxi[i].name;
+
+	    if (libxmp_copy_name_for_fopen(tmpname, instname, 32) != 0)
+		continue;
+
+	    libxmp_path_init(&sp);
+	    if (libxmp_find_instrument_file(m, &sp, tmpname) != 0)
+		continue;
+
+	    s = hio_open(sp.path, "rb");
+	    libxmp_path_free(&sp);
+	    if (s == NULL)
+		continue;
+
+	    if (libxmp_load_sample(m, s, flags, &mod->xxs[i], NULL) < 0) {
+		hio_close(s);
+		return -1;
+	    }
+	    hio_close(s);
+>>>>>>> db7344ebf (abc)
 	} else {
 	    uint8 buf[5];
 	    long pos;
@@ -829,8 +1466,22 @@ skip_test:
 	    if (libxmp_load_sample(m, f, flags, &mod->xxs[i], NULL) < 0)
 		return -1;
 	}
+<<<<<<< HEAD
     }
 
+=======
+#endif
+    }
+
+    #ifdef LIBXMP_CORE_PLAYER
+    if (mod->chn > 4) {
+	m->quirk &= ~QUIRK_PROTRACK;
+	m->quirk |= QUIRKS_FT2;
+	m->read_event_type = READ_EVENT_FT2;
+	m->period_type = PERIOD_AMIGA;
+    }
+    #else
+>>>>>>> db7344ebf (abc)
     if (tracker_id == TRACKER_PROTRACKER || tracker_id == TRACKER_OPENMPT) {
 	m->quirk |= QUIRK_PROTRACK;
     } else if (tracker_id == TRACKER_SCREAMTRACKER3) {
@@ -839,10 +1490,18 @@ skip_test:
 	m->read_event_type = READ_EVENT_ST3;
     } else if (tracker_id == TRACKER_FASTTRACKER || tracker_id == TRACKER_FASTTRACKER2 || tracker_id == TRACKER_TAKETRACKER || tracker_id == TRACKER_MODSGRAVE || mod->chn > 4) {
 	m->c4rate = C4_NTSC_RATE;
+<<<<<<< HEAD
 	m->quirk |= QUIRKS_FT2 | QUIRK_FTMOD;
 	m->read_event_type = READ_EVENT_FT2;
 	m->period_type = PERIOD_AMIGA;
     }
+=======
+	m->quirk |= QUIRKS_FT2;
+	m->read_event_type = READ_EVENT_FT2;
+	m->period_type = PERIOD_AMIGA;
+    }
+    #endif
+>>>>>>> db7344ebf (abc)
 
     return 0;
 }

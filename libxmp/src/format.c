@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2024 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,7 +25,10 @@
  */
 
 #include "format.h"
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)
 #ifndef LIBXMP_NO_PROWIZARD
 #include "loaders/prowizard/prowiz.h"
 #endif
@@ -29,10 +36,20 @@
 const struct format_loader *const format_loaders[NUM_FORMATS + 2] = {
 	&libxmp_loader_xm,
 	&libxmp_loader_mod,
+<<<<<<< HEAD
 	&libxmp_loader_flt,
 	&libxmp_loader_st,
 	&libxmp_loader_it,
 	&libxmp_loader_s3m,
+=======
+#ifndef LIBXMP_CORE_DISABLE_IT
+	&libxmp_loader_it,
+#endif
+	&libxmp_loader_s3m,
+#ifndef LIBXMP_CORE_PLAYER
+	&libxmp_loader_flt,
+	&libxmp_loader_st,
+>>>>>>> db7344ebf (abc)
 	&libxmp_loader_stm,
 	&libxmp_loader_stx,
 	&libxmp_loader_mtm,
@@ -44,9 +61,16 @@ const struct format_loader *const format_loaders[NUM_FORMATS + 2] = {
 	&libxmp_loader_liq,
 	&libxmp_loader_no,
 	&libxmp_loader_masi,
+<<<<<<< HEAD
 	&libxmp_loader_gal5,
 	&libxmp_loader_gal4,
 	&libxmp_loader_psm,
+=======
+	&libxmp_loader_masi16,
+	&libxmp_loader_muse,
+	&libxmp_loader_gal5,
+	&libxmp_loader_gal4,
+>>>>>>> db7344ebf (abc)
 	&libxmp_loader_amf,
 	&libxmp_loader_asylum,
 	&libxmp_loader_gdm,
@@ -88,10 +112,19 @@ const struct format_loader *const format_loaders[NUM_FORMATS + 2] = {
 	/* &libxmp_loader_alm, */
 	/* &libxmp_loader_polly, */
 	/* &libxmp_loader_stc, */
+<<<<<<< HEAD
 #ifndef LIBXMP_NO_PROWIZARD
 	&libxmp_loader_pw,
 #endif
 	NULL
+=======
+	&libxmp_loader_xmf,
+#ifndef LIBXMP_NO_PROWIZARD
+	&libxmp_loader_pw,
+#endif
+#endif /* LIBXMP_CORE_PLAYER */
+	NULL /* list terminator */
+>>>>>>> db7344ebf (abc)
 };
 
 static const char *_farray[NUM_FORMATS + NUM_PW_FORMATS + 1] = { NULL };

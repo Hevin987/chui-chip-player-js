@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 // Game_Music_Emu $vers. http://www.slack.net/~ant/
 
 #include "Kss_Scc_Apu.h"
 
 /* Copyright (C) 2006-2008 Shay Green. This module is free software; you
+=======
+// Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
+
+#include "Kss_Scc_Apu.h"
+
+/* Copyright (C) 2006 Shay Green. This module is free software; you
+>>>>>>> db7344ebf (abc)
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version. This
@@ -17,6 +25,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 // Tones above this frequency are treated as disabled tone at half volume.
 // Power of two is more efficient (avoids division).
+<<<<<<< HEAD
 int const inaudible_freq = 16384;
 
 int const wave_size = 0x20;
@@ -48,6 +57,11 @@ Scc_Apu::Scc_Apu()
 	volume( 1.0 );
 	reset();
 }
+=======
+static unsigned const inaudible_freq = 16384;
+
+static int const wave_size = 0x20;
+>>>>>>> db7344ebf (abc)
 
 void Scc_Apu::run_until( blip_time_t end_time )
 {
@@ -58,6 +72,7 @@ void Scc_Apu::run_until( blip_time_t end_time )
 		Blip_Buffer* const output = osc.output;
 		if ( !output )
 			continue;
+<<<<<<< HEAD
 
 		blip_time_t period = (regs [0xA0 + index * 2 + 1] & 0x0F) * 0x100 +
 				regs [0xA0 + index * 2] + 1;
@@ -80,6 +95,30 @@ void Scc_Apu::run_until( blip_time_t end_time )
 			{
 				osc.last_amp += delta;
 				output->set_modified();
+=======
+		output->set_modified();
+
+		blip_time_t period = (regs [0x80 + index * 2 + 1] & 0x0F) * 0x100 +
+				regs [0x80 + index * 2] + 1;
+		int volume = 0;
+		if ( regs [0x8F] & (1 << index) )
+		{
+			blip_time_t inaudible_period = (uint32_t) (output->clock_rate() +
+					inaudible_freq * 32) / (inaudible_freq * 16);
+			if ( period > inaudible_period )
+				volume = (regs [0x8A + index] & 0x0F) * (amp_range / 256 / 15);
+		}
+
+		int8_t const* wave = (int8_t*) regs + index * wave_size;
+		if ( index == osc_count - 1 )
+			wave -= wave_size; // last two oscs share wave
+		{
+			int amp = wave [osc.phase] * volume;
+			int delta = amp - osc.last_amp;
+			if ( delta )
+			{
+				osc.last_amp = amp;
+>>>>>>> db7344ebf (abc)
 				synth.offset( last_time, delta, output );
 			}
 		}
@@ -87,6 +126,7 @@ void Scc_Apu::run_until( blip_time_t end_time )
 		blip_time_t time = last_time + osc.delay;
 		if ( time < end_time )
 		{
+<<<<<<< HEAD
 			int phase = osc.phase;
 			if ( !volume )
 			{
@@ -107,16 +147,47 @@ void Scc_Apu::run_until( blip_time_t end_time )
 					{
 						last_wave += delta;
 						synth.offset_inline( time, delta * volume, output );
+=======
+			if ( !volume )
+			{
+				// maintain phase
+				int32_t count = (end_time - time + period - 1) / period;
+				osc.phase = (osc.phase + count) & (wave_size - 1);
+				time += count * period;
+			}
+			else
+			{
+
+				int phase = osc.phase;
+				int last_wave = wave [phase];
+				phase = (phase + 1) & (wave_size - 1); // pre-advance for optimal inner loop
+
+				do
+				{
+					int amp = wave [phase];
+					phase = (phase + 1) & (wave_size - 1);
+					int delta = amp - last_wave;
+					if ( delta )
+					{
+						last_wave = amp;
+						synth.offset( time, delta * volume, output );
+>>>>>>> db7344ebf (abc)
 					}
 					time += period;
 				}
 				while ( time < end_time );
 
+<<<<<<< HEAD
 				osc.last_amp = last_wave * volume;
 				output->set_modified();
 				phase--; // undo pre-advance
 			}
 			osc.phase = phase & (wave_size - 1);
+=======
+				osc.phase = phase = (phase - 1) & (wave_size - 1); // undo pre-advance
+				osc.last_amp = wave [phase] * volume;
+			}
+>>>>>>> db7344ebf (abc)
 		}
 		osc.delay = time - end_time;
 	}

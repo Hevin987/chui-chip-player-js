@@ -1,7 +1,11 @@
 #include <xmp.h>
 #include <math.h>
 
+<<<<<<< HEAD
 #if defined(_MSC_VER) || defined(__WATCOMC__)
+=======
+#if defined(_WIN32) || defined(__WATCOMC__)
+>>>>>>> db7344ebf (abc)
 #include <io.h>
 #else
 #include <unistd.h>
@@ -10,6 +14,13 @@
 #include "../src/common.h"
 #include "../src/md5.h"
 
+<<<<<<< HEAD
+=======
+#ifdef _WIN32
+#define unlink _unlink
+#endif
+
+>>>>>>> db7344ebf (abc)
 #define TMP_FILE ".test"
 
 #define TEST_FUNC(x) int _test_func_##x(void)
@@ -30,7 +41,17 @@
 	if (!(x)) { printf("at %s:%d: %s: " FAIL_MSG, __FILE__, __LINE__, y); exit(1); } \
 } while (0)
 
+<<<<<<< HEAD
 static inline int is_big_endian() {
+=======
+/* Sample indices for test.xm and test.it */
+#define TEST_XM_SAMPLE_8BIT_MONO	1
+#define TEST_XM_SAMPLE_16BIT_MONO	2
+#define TEST_XM_SAMPLE_8BIT_STEREO	3
+#define TEST_XM_SAMPLE_16BIT_STEREO	4
+
+static inline int is_big_endian(void) {
+>>>>>>> db7344ebf (abc)
 	uint16 w = 0x00ff;
 	return (*(char *)&w == 0x00);
 }
@@ -75,12 +96,26 @@ void read_file_to_memory(const char *, void **, long *);
 void compare_mixer_data(const char *, const char *);
 void compare_mixer_data_loops(const char *, const char *, int);
 void compare_mixer_data_no_rv(const char *, const char *);
+<<<<<<< HEAD
+=======
+void compare_mixer_data_player_mode(const char *, const char *, int);
+void compare_mixer_samples(const char *, const char *, int, int, int, int, int);
+void compare_mixer_samples_ext(struct context_data *, const char *, int, int);
+void compare_med_synth_data(const char *, const char *);
+>>>>>>> db7344ebf (abc)
 void convert_endian(unsigned char *, int);
 void create_simple_module(struct context_data *, int, int);
 void set_order(struct context_data *, int, int);
 void set_instrument_volume(struct context_data *, int, int, int);
+<<<<<<< HEAD
 void set_instrument_nna(struct context_data *, int, int, int, int, int);
 void set_instrument_envelope(struct context_data *, int, int, int, int);
+=======
+void set_instrument_panning(struct context_data *, int, int, int);
+void set_instrument_nna(struct context_data *, int, int, int, int, int);
+void set_instrument_envelope(struct context_data *, int, int, int, int);
+void set_instrument_envelope_loop(struct context_data *, int, int, int);
+>>>>>>> db7344ebf (abc)
 void set_instrument_envelope_sus(struct context_data *, int, int);
 void set_instrument_fadeout(struct context_data *, int, int);
 void set_period_type(struct context_data *, int);

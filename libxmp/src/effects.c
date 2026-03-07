@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -53,6 +57,17 @@
 	} \
 } while (0)
 
+<<<<<<< HEAD
+=======
+#define EFFECT_MEMORY_GET(p, m) do { \
+	if (HAS_QUIRK(QUIRK_ST3BUGS)) { \
+		(p) = xc->vol.memory; \
+	} else { \
+		(p) = (m); \
+	} \
+} while(0)
+
+>>>>>>> db7344ebf (abc)
 #define EFFECT_MEMORY_SETONLY(p, m) do { \
 	EFFECT_MEMORY__((p), (m)); \
 	if (HAS_QUIRK(QUIRK_ST3BUGS)) { \
@@ -98,7 +113,11 @@ static void do_toneporta(struct context_data *ctx,
 }
 
 void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int chn,
+<<<<<<< HEAD
 		struct xmp_event *e, int fnum)
+=======
+		const struct xmp_event *e, int fnum)
+>>>>>>> db7344ebf (abc)
 {
 	struct player_data *p = &ctx->p;
 	struct module_data *m = &ctx->m;
@@ -173,6 +192,7 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 				goto fx_f_porta_up;
 			case 0xe:
 				fxp &= 0x0f;
+<<<<<<< HEAD
 				fxp |= 0x10;
 				goto fx_xf_porta;
 			}
@@ -190,6 +210,26 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		break;
 	case FX_PORTA_DN:	/* Portamento down */
 		EFFECT_MEMORY(fxp, xc->freq.memory);
+=======
+				goto fx_xf_porta_up;
+			}
+		}
+
+		if (fxp != 0) {
+			SET(PITCHBEND);
+			xc->freq.slide = -fxp;
+			if (HAS_QUIRK(QUIRK_UNISLD))
+				xc->porta.memory = fxp;
+		}
+		break;
+	case FX_PORTA_DN:	/* Portamento down */
+		/* FT2 has separate up and down memory. */
+		if (HAS_QUIRK(QUIRK_FT2BUGS)) {
+			EFFECT_MEMORY(fxp, xc->freq.down_memory);
+		} else {
+			EFFECT_MEMORY(fxp, xc->freq.memory);
+		}
+>>>>>>> db7344ebf (abc)
 
 		if (HAS_QUIRK(QUIRK_FINEFX)
 		    && (fnum == 0 || !HAS_QUIRK(QUIRK_ITVPOR))) {
@@ -199,6 +239,7 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 				goto fx_f_porta_dn;
 			case 0xe:
 				fxp &= 0x0f;
+<<<<<<< HEAD
 				fxp |= 0x20;
 				goto fx_xf_porta;
 			}
@@ -212,6 +253,17 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 				xc->porta.memory = fxp;
 		} else if (xc->freq.slide < 0) {
 			xc->freq.slide *= -1;
+=======
+				goto fx_xf_porta_dn;
+			}
+		}
+
+		if (fxp != 0) {
+			SET(PITCHBEND);
+			xc->freq.slide = fxp;
+			if (HAS_QUIRK(QUIRK_UNISLD))
+				xc->porta.memory = fxp;
+>>>>>>> db7344ebf (abc)
 		}
 		break;
 	case FX_TONEPORTA:	/* Tone portamento */
@@ -220,7 +272,11 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		if (fxp != 0) {
 			if (HAS_QUIRK(QUIRK_UNISLD)) /* IT compatible Gxx off */
 				xc->freq.memory = fxp;
+<<<<<<< HEAD
 			xc->porta.slide = fxp;
+=======
+			xc->porta.slide += fxp;
+>>>>>>> db7344ebf (abc)
 		}
 
 		if (HAS_QUIRK(QUIRK_IGSTPOR)) {
@@ -250,6 +306,11 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		break;
 
 	case FX_TONE_VSLIDE:	/* Toneporta + vol slide */
+<<<<<<< HEAD
+=======
+		EFFECT_MEMORY_GET(l, xc->porta.memory);
+		xc->porta.slide += l;
+>>>>>>> db7344ebf (abc)
 		if (!IS_VALID_INSTRUMENT(xc->ins))
 			break;
 		do_toneporta(ctx, xc, note);
@@ -270,6 +331,7 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 			break;
 		}
 	    fx_setpan:
+<<<<<<< HEAD
 		/* From OpenMPT PanOff.xm:
 		 * "Another chapter of weird FT2 bugs: Note-Off + Note Delay
 		 *  + Volume Column Panning = Panning effect is ignored."
@@ -287,6 +349,20 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		break;
 	case FX_OFFSET:		/* Set sample offset */
 		EFFECT_MEMORY(fxp, xc->offset.memory);
+=======
+		xc->pan.val = fxp;
+		xc->pan.surround = 0;
+		xc->rpv = 0;	/* storlek_20: set pan overrides random pan */
+		break;
+	case FX_OFFSET:		/* Set sample offset */
+		if (HAS_QUIRK(QUIRK_FT2BUGS)) {
+			/* FT2: only set memory when offset activates, see
+			 * read_event_ft2 (ft2_offset_memory.xm). */
+			fxp = fxp ? fxp : xc->offset.memory;
+		} else {
+			EFFECT_MEMORY(fxp, xc->offset.memory);
+		}
+>>>>>>> db7344ebf (abc)
 		SET(OFFSET);
 		if (note) {
 			xc->offset.val &= xc->offset.val & ~0xffff;
@@ -325,8 +401,11 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 				goto fx_volslide;
 		}
 
+<<<<<<< HEAD
 		SET(VOL_SLIDE);
 
+=======
+>>>>>>> db7344ebf (abc)
 		/* Skaven's 2nd reality (S3M) has volslide parameter D7 => pri
 		 * down. Other trackers only compute volumes if the other
 		 * parameter is 0, Fall from sky.xm has 2C => do nothing.
@@ -334,11 +413,25 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		 * of Sounds.xm
 		 */
 		if (fxp) {
+<<<<<<< HEAD
+=======
+			SET(VOL_SLIDE);
+>>>>>>> db7344ebf (abc)
 			xc->vol.memory = fxp;
 			h = MSN(fxp);
 			l = LSN(fxp);
 			if (fxp) {
+<<<<<<< HEAD
 				if (HAS_QUIRK(QUIRK_VOLPDN)) {
+=======
+				/* Imago Orpheus uses (x - y).
+				 * TODO: a less hacky way of detecting this
+				 * (READ_EVENT_ORPHEUS or quirk) would be nice.
+				 * (test_effect_finefx_imf) */
+				if (m->flow_mode == FLOW_MODE_ORPHEUS) {
+					xc->vol.slide = h - l;
+				} else if (HAS_QUIRK(QUIRK_VOLPDN)) {
+>>>>>>> db7344ebf (abc)
 					xc->vol.slide = l ? -l : h;
 				} else {
 					xc->vol.slide = h ? h : -l;
@@ -358,19 +451,29 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 			}
 		}
 		break;
+<<<<<<< HEAD
 	case FX_VOLSLIDE_2:	/* Secondary volume slide */
 		SET(VOL_SLIDE_2);
 		if (fxp) {
+=======
+	case FX_VOLSLIDE_2:	/* Secondary volume slide (no memory) */
+		if (fxp) {
+			SET(VOL_SLIDE_2);
+>>>>>>> db7344ebf (abc)
 			h = MSN(fxp);
 			l = LSN(fxp);
 			xc->vol.slide2 = h ? h : -l;
 		}
 		break;
 	case FX_JUMP:		/* Order jump */
+<<<<<<< HEAD
 		p->flow.pbreak = 1;
 		p->flow.jump = fxp;
 		/* effect B resets effect D in lower channels */
 		p->flow.jumpline = 0;
+=======
+		libxmp_process_pattern_jump(ctx, f, fxp);
+>>>>>>> db7344ebf (abc)
 		break;
 	case FX_VOLSET:		/* Volume set */
 		SET(NEW_VOL);
@@ -380,8 +483,12 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		}
 		break;
 	case FX_BREAK:		/* Pattern break */
+<<<<<<< HEAD
 		p->flow.pbreak = 1;
 		p->flow.jumpline = 10 * MSN(fxp) + LSN(fxp);
+=======
+		libxmp_process_pattern_break(ctx, f, 10 * MSN(fxp) + LSN(fxp));
+>>>>>>> db7344ebf (abc)
 		break;
 	case FX_EXTENDED:	/* Extended effect */
 		EFFECT_MEMORY_S3M(fxp);
@@ -416,6 +523,7 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 			}
 			break;
 		case EX_PATTERN_LOOP:	/* Loop pattern */
+<<<<<<< HEAD
 			if (fxp == 0) {
 				/* mark start of loop */
 				f->loop[chn].start = p->row;
@@ -437,6 +545,9 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 					f->loop_chn = ++chn;
 				}
 			}
+=======
+			libxmp_process_pattern_loop(ctx, f, chn, p->row, fxp);
+>>>>>>> db7344ebf (abc)
 			break;
 		case EX_TREMOLO_WF:	/* Set tremolo waveform */
 			libxmp_lfo_set_waveform(&xc->tremolo.lfo, fxp & 3);
@@ -445,11 +556,22 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 			fxp <<= 4;
 			goto fx_setpan;
 		case EX_RETRIG:		/* Retrig note */
+<<<<<<< HEAD
 			SET(RETRIG);
 			xc->retrig.val = fxp;
 			xc->retrig.count = LSN(xc->retrig.val) + 1;
 			xc->retrig.type = 0;
 			xc->retrig.limit = 0;
+=======
+#ifndef LIBXMP_CORE_PLAYER
+		    fx_retrig:
+#endif
+			SET(RETRIG);
+			xc->retrig.val = fxp;
+			xc->retrig.count = fxp + 1;
+			xc->retrig.type = 0;
+			xc->retrig.limit = HAS_QUIRK(QUIRK_RTONCE) ? 1 : 0;
+>>>>>>> db7344ebf (abc)
 			break;
 		case EX_F_VSLIDE_UP:	/* Fine volume slide up */
 			EFFECT_MEMORY(fxp, xc->fine_vol.up_memory);
@@ -540,7 +662,10 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		if (fxp < min_bpm)
 			fxp = min_bpm;
 		p->bpm = fxp;
+<<<<<<< HEAD
 		p->frame_time = m->time_factor * m->rrate / p->bpm;
+=======
+>>>>>>> db7344ebf (abc)
 		break;
 	}
 
@@ -559,7 +684,10 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 				fxp = XMP_MIN_BPM;
 			p->bpm = fxp;
 		}
+<<<<<<< HEAD
 		p->frame_time = m->time_factor * m->rrate / p->bpm;
+=======
+>>>>>>> db7344ebf (abc)
 		break;
 	case FX_IT_ROWDELAY:
 		if (!f->rowdelay_set) {
@@ -594,11 +722,15 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		xc->vol.fslide2 = -fxp;
 		break;
 	case FX_IT_BREAK:	/* Pattern break with hex parameter */
+<<<<<<< HEAD
 		if (!f->loop_chn)
 		{
 			p->flow.pbreak = 1;
 			p->flow.jumpline = fxp;
 		}
+=======
+		libxmp_process_pattern_break(ctx, f, fxp);
+>>>>>>> db7344ebf (abc)
 		break;
 
 #endif
@@ -694,11 +826,19 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 	case FX_MULTI_RETRIG:	/* Multi retrig */
 		EFFECT_MEMORY_S3M(fxp);
 		if (fxp) {
+<<<<<<< HEAD
 			xc->retrig.val = fxp;
 			xc->retrig.type = MSN(xc->retrig.val);
 		}
 		if (note) {
 			xc->retrig.count = LSN(xc->retrig.val) + 1;
+=======
+			xc->retrig.val = LSN(fxp);
+			xc->retrig.type = MSN(fxp);
+		}
+		if (note) {
+			xc->retrig.count = xc->retrig.val + 1;
+>>>>>>> db7344ebf (abc)
 		}
 		xc->retrig.limit = 0;
 		SET(RETRIG);
@@ -707,9 +847,13 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		EFFECT_MEMORY(fxp, xc->tremor.memory);
 		xc->tremor.up = MSN(fxp);
 		xc->tremor.down = LSN(fxp);
+<<<<<<< HEAD
 		if (IS_PLAYER_MODE_FT2()) {
 			xc->tremor.count |= 0x80;
 		} else {
+=======
+		if (!IS_PLAYER_MODE_FT2()) {
+>>>>>>> db7344ebf (abc)
 			if (xc->tremor.up == 0) {
 				xc->tremor.up++;
 			}
@@ -720,6 +864,7 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		SET(TREMOR);
 		break;
 	case FX_XF_PORTA:	/* Extra fine portamento */
+<<<<<<< HEAD
 	      fx_xf_porta:
 		SET(FINE_BEND);
 		switch (MSN(fxp)) {
@@ -728,12 +873,34 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 			break;
 		case 2:
 			xc->freq.fslide = 0.25 * LSN(fxp);
+=======
+		h = MSN(fxp);
+		fxp &= 0x0f;
+		switch (h) {
+		case XX_XF_PORTA_UP:	/* Extra fine portamento up */
+			EFFECT_MEMORY(fxp, xc->fine_porta.xf_up_memory);
+		      fx_xf_porta_up:
+			SET(FINE_BEND);
+			xc->freq.fslide = -0.25 * fxp;
+			break;
+		case XX_XF_PORTA_DN:	/* Extra fine portamento down */
+			EFFECT_MEMORY(fxp, xc->fine_porta.xf_down_memory);
+		      fx_xf_porta_dn:
+			SET(FINE_BEND);
+			xc->freq.fslide = 0.25 * fxp;
+>>>>>>> db7344ebf (abc)
 			break;
 		}
 		break;
 	case FX_SURROUND:
 		xc->pan.surround = fxp;
 		break;
+<<<<<<< HEAD
+=======
+	case FX_REVERSE:	/* Play forward/backward */
+		libxmp_virt_reverse(ctx, chn, fxp);
+		break;
+>>>>>>> db7344ebf (abc)
 
 #ifndef LIBXMP_CORE_DISABLE_IT
 	case FX_TRK_VOL:	/* Track volume setting */
@@ -827,13 +994,35 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		}
 		break;
 	case FX_FLT_CUTOFF:
+<<<<<<< HEAD
 		if (fxp < 0xfe || xc->filter.resonance > 0) {
 			xc->filter.cutoff = fxp;
 		}
+=======
+		xc->filter.cutoff = fxp;
+>>>>>>> db7344ebf (abc)
 		break;
 	case FX_FLT_RESN:
 		xc->filter.resonance = fxp;
 		break;
+<<<<<<< HEAD
+=======
+	case FX_MACRO_SET:
+		xc->macro.active = LSN(fxp);
+		break;
+	case FX_MACRO:
+		SET(MIDI_MACRO);
+		xc->macro.val = fxp;
+		xc->macro.slide = 0;
+		break;
+	case FX_MACROSMOOTH:
+		if (ctx->p.speed && xc->macro.val < 0x80) {
+			SET(MIDI_MACRO);
+			xc->macro.target = fxp;
+			xc->macro.slide = ((float)fxp - xc->macro.val) / ctx->p.speed;
+		}
+		break;
+>>>>>>> db7344ebf (abc)
 	case FX_PANBRELLO:	/* Panbrello */
 		SET(PANBRELLO);
 		SET_LFO_NOTZERO(&xc->panbrello.lfo, LSN(fxp) << 4, MSN(fxp));
@@ -939,6 +1128,23 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 			xc->vol.fslide = h ? h : -l;
 		}
 		break;
+<<<<<<< HEAD
+=======
+	case FX_IMF_FPORTA_DN:	/* IMF 1/16th precision fine slide down */
+		EFFECT_MEMORY(fxp, xc->freq.memory);
+		if (fxp != 0) {
+			SET(FINE_BEND);
+			xc->freq.fslide = 0.0625 * fxp;
+		}
+		break;
+	case FX_IMF_FPORTA_UP:	/* IMF 1/16th precision fine slide up */
+		EFFECT_MEMORY(fxp, xc->freq.memory);
+		if (fxp != 0) {
+			SET(FINE_BEND);
+			xc->freq.fslide = -0.0625 * fxp;
+		}
+		break;
+>>>>>>> db7344ebf (abc)
 	case FX_NSLIDE_DN:
 	case FX_NSLIDE_UP:
 	case FX_NSLIDE_R_DN:
@@ -1026,6 +1232,17 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		SET(VIBRATO);
 		SET_LFO_NOTZERO(&xc->vibrato.lfo, LSN(fxp) << 3, MSN(fxp));
 		break;
+<<<<<<< HEAD
+=======
+	case FX_MED_RETRIG:	/* MED 1Fxy delay x, then retrig every y */
+		/* initial delay is computed at frame loop */
+		SET(RETRIG);
+		xc->retrig.val = LSN(fxp);
+		xc->retrig.count = LSN(fxp) + 1;
+		xc->retrig.type = 0;
+		xc->retrig.limit = 0;
+		break;
+>>>>>>> db7344ebf (abc)
 	case FX_SPEED_CP:	/* Set speed and ... */
 		if (fxp) {
 			p->speed = fxp;
@@ -1074,6 +1291,25 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 
 	/* ULT effects */
 
+<<<<<<< HEAD
+=======
+	case FX_ULT_TEMPO:	/* ULT tempo */
+		/* Has unusual semantics and is hard to split into multiple
+		 * effects, due to ULT's two effects lanes per channel:
+		 *
+		 * 00:    reset both speed and BPM to the default 6/125.
+		 * 01-2f: set speed
+		 * 30-ff: set BPM (CIA compatible)
+		 */
+		if (fxp == 0) {
+			p->speed = 6;
+			p->st26_speed = 0;
+			fxp = 125;
+		} else if (fxp < 0x30) {
+			goto fx_s3m_speed;
+		}
+		goto fx_s3m_bpm;
+>>>>>>> db7344ebf (abc)
 	case FX_ULT_TPORTA:	/* ULT tone portamento */
 		/* Like normal persistent tone portamento, except:
 		 *
@@ -1092,11 +1328,26 @@ void libxmp_process_fx(struct context_data *ctx, struct channel_data *xc, int ch
 		if (fxp == 0)
 			RESET_PER(TONEPORTA);
 		break;
+<<<<<<< HEAD
+=======
+
+	/* Archimedes (!Tracker, Digital Symphony, et al.) effects */
+
+	case FX_LINE_JUMP:	/* !Tracker and Digital Symphony "Line Jump" */
+		libxmp_process_line_jump(ctx, f, p->ord, fxp);
+		break;
+	case FX_RETRIG:		/* Retrigger with extended range */
+		goto fx_retrig;
+>>>>>>> db7344ebf (abc)
 #endif
 
 	default:
 #ifndef LIBXMP_CORE_PLAYER
+<<<<<<< HEAD
 		libxmp_extras_process_fx(ctx, xc, chn, note, fxt, fxp, fnum);
+=======
+		libxmp_extras_process_fx(ctx, xc, chn, note, e->ins, fxt, fxp, fnum);
+>>>>>>> db7344ebf (abc)
 #endif
 		break;
 	}

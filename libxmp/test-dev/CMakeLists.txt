@@ -15,6 +15,7 @@ set(DEVTEST_SRC
     main.c
     simple_module.c
     compare_mixer_data.c
+<<<<<<< HEAD
     ../src/md5.c
     ../src/far_extras.c
     ../src/filetype.c
@@ -24,6 +25,22 @@ set(DEVTEST_SRC
     ../src/period.c
     ../src/memio.c
     ../src/dataio.c
+=======
+    compare_med_synth_data.c
+    read_event_common.c
+    ../src/md5.c
+    ../src/far_extras.c
+    ../src/filetype.c
+    ../src/flow.c
+    ../src/hio.c
+    ../src/lfo.c
+    ../src/load_helpers.c
+    ../src/path.c
+    ../src/period.c
+    ../src/memio.c
+    ../src/dataio.c
+    ../src/rng.c
+>>>>>>> db7344ebf (abc)
     ../src/scan.c
     ../src/loaders/itsex.c
     ../src/loaders/sample.c

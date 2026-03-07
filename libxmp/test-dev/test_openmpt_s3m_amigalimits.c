@@ -1,7 +1,11 @@
 #include "test.h"
 
 /*
+<<<<<<< HEAD
  If “Force Amiga Limits” is enabled, the limits should also be enfored on the
+=======
+ If “Force Amiga Limits” is enabled, the limits should also be enforced on the
+>>>>>>> db7344ebf (abc)
  stored period, not only on the computed period.
 */
 

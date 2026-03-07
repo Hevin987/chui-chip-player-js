@@ -28,7 +28,11 @@
 #include <sys/wait.h>
 #endif
 #include "test.h"
+<<<<<<< HEAD
 #include "../src/list.h"
+=======
+#include "list.h"
+>>>>>>> db7344ebf (abc)
 
 
 struct test {
@@ -50,11 +54,19 @@ static int num_tests = 0;
 
 #define add_test(x) _add_test(#x, _test_func_##x)
 
+<<<<<<< HEAD
 void _add_test(const char *name, int (*func)(void))
 {
 	struct test *t;
 
 	t = malloc(sizeof (struct test));
+=======
+static void _add_test(const char *name, int (*func)(void))
+{
+	struct test *t;
+
+	t = (struct test *) malloc(sizeof(struct test));
+>>>>>>> db7344ebf (abc)
 	if (t == NULL)
 		return;
 	t->name = name;
@@ -65,7 +77,11 @@ void _add_test(const char *name, int (*func)(void))
 
 #ifdef FORK_TEST
 
+<<<<<<< HEAD
 void init_colors()
+=======
+static void init_colors(void)
+>>>>>>> db7344ebf (abc)
 {
 	if (isatty(STDOUT_FILENO)) {
 		color_fail = "\x1b[1;31m";
@@ -75,7 +91,11 @@ void init_colors()
 	}
 }
 
+<<<<<<< HEAD
 int run_tests()
+=======
+static int run_tests(void)
+>>>>>>> db7344ebf (abc)
 {
 	struct list_head *tmp;
 	int total, fail;
@@ -121,7 +141,11 @@ int run_tests()
 
 #else
 
+<<<<<<< HEAD
 int run_test(int num)
+=======
+static int run_test(int num)
+>>>>>>> db7344ebf (abc)
 {
 	struct list_head *tmp;
 	int i;

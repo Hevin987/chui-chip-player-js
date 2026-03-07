@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 CFLAGS += -DHAVE_ALLOCA_H -DHAVE_FNMATCH -DHAVE_MKSTEMP -DHAVE_UMASK -DLIBXMP_CORE_PLAYER -DLIBXMP_NO_PROWIZARD -DLIBXMP_NO_DEPACKERS
+=======
+!ifeq DISABLE_IT 1
+CFLAGS += -DLIBXMP_CORE_DISABLE_IT
+!endif
+CFLAGS += -DLIBXMP_CORE_PLAYER -DHAVE_FNMATCH -DHAVE_MKSTEMP -DHAVE_UMASK
+>>>>>>> db7344ebf (abc)
 #CFLAGS += -DDEBUG
 CFLAGS += -I"include/libxmp-lite"
 
 DLLFLAGS=-bd -DBUILDING_DLL
+<<<<<<< HEAD
 STATICFLAGS=-DBUILDING_STATIC
 
 DLLNAME=libxmp.dll
@@ -11,6 +19,24 @@ EXPNAME=libxmp.exp
 MAPNAME=xmp-lite.map
 LIBNAME=libxmp.lib
 LIBSTATIC=xmp_static.lib
+=======
+STATICFLAGS=-DLIBXMP_STATIC
+
+!ifeq TARGET_OS2 yes
+DLLNAME=libxmplt.dll
+LIBNAME=libxmplt.lib
+!else
+DLLNAME=libxmp-lite.dll
+LIBNAME=libxmp-lite.lib
+!endif
+LNKFILE=libxmplt.lnk
+EXPNAME=xmp-lite.exp
+# Note: not libxmp.map...
+MAPNAME=xmp-lite.map
+LIBSTATIC=xmplite_static.lib
+LBCFILE=libxmplt.lbc
+
+>>>>>>> db7344ebf (abc)
 TESTNAME=libxmp-test.exe
 
 !ifeq target static
@@ -42,12 +68,21 @@ test/test.obj: test/test.c
 	$(CC) $(CFLAGS) -fo=$^@ $<
 
 # rely on symbol name, not ordinal: -irn switch of wlib is default, but -inn is not.
+<<<<<<< HEAD
 $(DLLNAME) $(LIBNAME) $(EXPNAME): $(OBJS)
 	wlink NAM $(DLLNAME) SYSTEM $(SYSTEM_DLL) INITINSTANCE TERMINSTANCE OP QUIET FIL {$(OBJS)} OP IMPF=$(EXPNAME) OP MAP=$(MAPNAME)
 	wlib -q -b -n -c -pa -s -t -zld -ii -io -inn $(LIBNAME) +$(DLLNAME)
 
 $(LIBSTATIC): $(OBJS)
 	wlib -q -b -n -c -pa -s -t -zld -ii -io $@ $(OBJS)
+=======
+$(DLLNAME) $(LIBNAME) $(EXPNAME): $(OBJS) $(LNKFILE)
+	wlink @$(LNKFILE)
+	wlib -q -b -n -c -pa -s -t -zld -ii -io -inn $(LIBNAME) +$(DLLNAME)
+
+$(LIBSTATIC): $(OBJS) $(LBCFILE)
+	wlib -q -b -n -c -pa -s -t -zld -ii -io $@ @$(LBCFILE)
+>>>>>>> db7344ebf (abc)
 
 test/$(TESTNAME): $(BLD_LIB) $(TEST_OBJS)
 	wlink NAM test/$(TESTNAME) SYSTEM $(SYSTEM) OP QUIET LIBR {$(BLD_LIB)} FIL {$(TEST_OBJS)}
@@ -57,14 +92,28 @@ check-build: test/$(TESTNAME) .symbolic
 	$(CMD_CP) $(DLLNAME) test
 !endif
 
+<<<<<<< HEAD
 check: check-build .symbolic
 	cd test & $(TESTNAME)
+=======
+!ifdef __UNIX__
+check: check-build .symbolic
+	cd test && ./$(TESTNAME)
+!else
+check: check-build .symbolic
+	cd test & $(TESTNAME)
+!endif
+>>>>>>> db7344ebf (abc)
 
 clean: .symbolic
 	rm -f $(OBJS)
 	rm -f $(TEST_OBJS)
 
 distclean: clean .symbolic
+<<<<<<< HEAD
+=======
+	rm -f *.err *.lnk *.lbc
+>>>>>>> db7344ebf (abc)
 	rm -f $(DLLNAME) $(EXPNAME) $(MAPNAME) $(LIBNAME) $(LIBSTATIC) test/$(DLLNAME) test/$(TESTNAME)
 
 !ifdef __UNIX__
@@ -72,3 +121,12 @@ CMD_CP=cp
 !else
 CMD_CP=copy
 !endif
+<<<<<<< HEAD
+=======
+
+$(LBCFILE):
+	@echo Creating wlib commands file: $@
+	@%create $@
+	@for %i in ($(OBJS)) do @%append $@ +%i
+
+>>>>>>> db7344ebf (abc)

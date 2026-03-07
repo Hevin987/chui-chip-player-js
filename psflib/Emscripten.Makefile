@@ -4,7 +4,11 @@ CFLAGS = -c -g4 -s USE_ZLIB=1
 OBJS = psflib.o psf2fs.o 
 
 
+<<<<<<< HEAD
 OPTS = -O2
+=======
+OPTS = -O2 
+>>>>>>> db7344ebf (abc)
 
 all: libpsflib.a
 

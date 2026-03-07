@@ -14,6 +14,7 @@
 class Data_Reader {
 public:
 	virtual ~Data_Reader() { }
+<<<<<<< HEAD
 	
 	static const char eof_error []; // returned by read() when request goes beyond end
 	
@@ -29,6 +30,23 @@ public:
 	// Read and discard count bytes
 	virtual blargg_err_t skip( long count );
 	
+=======
+
+	static const char eof_error []; // returned by read() when request goes beyond end
+
+	// Read at most count bytes and return number actually read, or <= 0 if error
+	virtual long read_avail( void*, long n ) = 0;
+
+	// Read exactly count bytes and return error if they couldn't be read
+	virtual blargg_err_t read( void*, long count );
+
+	// Number of bytes remaining until end of file
+	virtual long remain() const = 0;
+
+	// Read and discard count bytes
+	virtual blargg_err_t skip( long count );
+
+>>>>>>> db7344ebf (abc)
 public:
 	Data_Reader() { }
 	typedef blargg_err_t error_t; // deprecated
@@ -43,6 +61,7 @@ class File_Reader : public Data_Reader {
 public:
 	// Size of file
 	virtual long size() const = 0;
+<<<<<<< HEAD
 	
 	// Current position in file
 	virtual long tell() const = 0;
@@ -50,6 +69,15 @@ public:
 	// Go to new position
 	virtual blargg_err_t seek( long ) = 0;
 	
+=======
+
+	// Current position in file
+	virtual long tell() const = 0;
+
+	// Go to new position
+	virtual blargg_err_t seek( long ) = 0;
+
+>>>>>>> db7344ebf (abc)
 	long remain() const;
 	blargg_err_t skip( long n );
 };
@@ -59,7 +87,11 @@ class Std_File_Reader : public File_Reader {
 public:
 	blargg_err_t open( const char* path );
 	void close();
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 public:
 	Std_File_Reader();
 	~Std_File_Reader();
@@ -134,8 +166,12 @@ private:
 // Invokes callback function to read data. Size of data must be specified in advance.
 class Callback_Reader : public Data_Reader {
 public:
+<<<<<<< HEAD
 /*	typedef const char* (*callback_t)( void* data, void* out, int count );*/
 	typedef const char* (*callback_t)( void* data, void* out, long count );
+=======
+	typedef const char* (*callback_t)( void* data, void* out, int count );
+>>>>>>> db7344ebf (abc)
 	Callback_Reader( callback_t, long size, void* data = 0 );
 public:
 	long read_avail( void*, long );

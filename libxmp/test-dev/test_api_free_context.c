@@ -6,7 +6,11 @@ TEST(test_api_free_context)
 	int state, ret;
 
 	ctx = xmp_create_context();
+<<<<<<< HEAD
 	fail_unless(ctx != 0, "returned NULL");
+=======
+	fail_unless(ctx != NULL, "returned NULL");
+>>>>>>> db7344ebf (abc)
 
 	state = xmp_get_player(ctx, XMP_PLAYER_STATE);
 	fail_unless(state == XMP_STATE_UNLOADED, "state error");

@@ -2,6 +2,14 @@
 #pragma error_messages (off,E_EMPTY_TRANSLATION_UNIT)
 #endif
 
+<<<<<<< HEAD
+=======
+#include "common.h"
+#include "tempfile.h"
+
+#if !(defined(LIBXMP_NO_PROWIZARD) && defined(LIBXMP_NO_DEPACKERS))
+
+>>>>>>> db7344ebf (abc)
 #ifndef HAVE_MKSTEMP
 
 /*
@@ -37,6 +45,7 @@
  * SUCH DAMAGE.
  */
 
+<<<<<<< HEAD
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -48,11 +57,30 @@
 #endif
 
 #if defined(_MSC_VER) || defined(__WATCOMC__)
+=======
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#include <io.h>
+#include <process.h>
+#elif defined(__WATCOMC__)
+>>>>>>> db7344ebf (abc)
 #include <io.h>
 #else
 #include <unistd.h>
 #endif
 
+<<<<<<< HEAD
+=======
+#include <fcntl.h>
+#include <errno.h>
+
+#ifdef _WIN32
+#define open _open
+#endif
+>>>>>>> db7344ebf (abc)
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
@@ -61,12 +89,20 @@ int mkstemp(char *pattern)
 {
 	int start, i;
 #ifdef _WIN32
+<<<<<<< HEAD
 	int   val;
 #else
 	pid_t val;
 #endif
 
 	val = getpid();
+=======
+	int val = GetCurrentProcessId();
+#else
+	pid_t val = getpid();
+#endif
+
+>>>>>>> db7344ebf (abc)
 	start = strlen(pattern) - 1;
 
 	while (pattern[start] == 'X') {
@@ -96,3 +132,8 @@ int mkstemp(char *pattern)
 }
 
 #endif
+<<<<<<< HEAD
+=======
+
+#endif
+>>>>>>> db7344ebf (abc)

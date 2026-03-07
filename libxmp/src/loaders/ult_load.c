@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -95,6 +99,37 @@ struct ult_event {
 };
 
 
+<<<<<<< HEAD
+=======
+static void ult_translate_effect(uint8 *fxt, uint8 *fxp)
+{
+    switch (*fxt) {
+    case 0x03:			/* Tone portamento */
+	*fxt = FX_ULT_TPORTA;
+	break;
+    case 0x05:			/* 'Special' effect */
+    case 0x06:			/* Reserved */
+	*fxt = *fxp = 0;
+	break;
+    case 0x0b:			/* Pan */
+	*fxt = FX_SETPAN;
+	*fxp <<= 4;
+	break;
+    case 0x09:			/* Sample offset */
+/* TODO: fine sample offset (requires new effect or 2 more effect lanes) */
+	*fxp <<= 2;
+	break;
+    case 0x0f:			/* Speed/BPM */
+	/* 00:    default speed (6)/BPM (125)
+	 * 01-2f: set speed
+	 * 30-ff: set BPM
+	 */
+	*fxt = FX_ULT_TEMPO;
+	break;
+    }
+}
+
+>>>>>>> db7344ebf (abc)
 static int ult_load(struct module_data *m, HIO_HANDLE *f, const int start)
 {
     struct xmp_module *mod = &m->mod;
@@ -124,7 +159,24 @@ static int ult_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
     MODULE_INFO();
 
+<<<<<<< HEAD
     hio_seek(f, ufh.msgsize * 32, SEEK_CUR);
+=======
+    if (ufh.msgsize > 0) {
+	if ((m->comment = (char *)malloc(ufh.msgsize * 33)) != NULL) {
+	    char *pos = m->comment;
+	    for (i = 0; i < (int)ufh.msgsize; i++) {
+		if (hio_read(pos, 1, 32, f) < 32)
+		    return -1;
+		pos[32] = '\n';
+		pos += 33;
+	    }
+	    *(--pos) = '\0';
+	} else {
+	    hio_seek(f, ufh.msgsize * 32, SEEK_CUR);
+	}
+    }
+>>>>>>> db7344ebf (abc)
 
     mod->ins = mod->smp = hio_read8(f);
     /* mod->flg |= XXM_FLG_LINEAR; */
@@ -213,7 +265,11 @@ static int ult_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 /* TODO: Add logarithmic volume support */
 	mod->xxi[i].sub[0].vol = uih.volume;
+<<<<<<< HEAD
 	mod->xxi[i].sub[0].pan = 0x80;
+=======
+	mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 	mod->xxi[i].sub[0].sid = i;
 
 	libxmp_instrument_name(mod, i, uih.name, 24);
@@ -308,6 +364,7 @@ static int ult_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		event->fxp = ue.fxp;
 		event->f2p = ue.f2p;
 
+<<<<<<< HEAD
 		switch (event->fxt) {
 		case 0x03:		/* Tone portamento */
 		    event->fxt = FX_ULT_TPORTA;
@@ -344,6 +401,10 @@ static int ult_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		    break;
 		}
 
+=======
+		ult_translate_effect(&event->fxt, &event->fxp);
+		ult_translate_effect(&event->f2t, &event->f2p);
+>>>>>>> db7344ebf (abc)
 	    }
 	}
     }

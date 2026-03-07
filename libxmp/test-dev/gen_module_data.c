@@ -1,6 +1,15 @@
 #include "../include/xmp.h"
 #include "test.h"
 
+<<<<<<< HEAD
+=======
+void new_event(struct context_data *ctx, int pat, int row, int chn,
+		int note, int ins, int vol, int fxt, int fxp, int f2t, int f2p)
+{
+	// nop to shut up linker
+}
+
+>>>>>>> db7344ebf (abc)
 int main(int argc, char *argv[])
 {
 	xmp_context opaque;

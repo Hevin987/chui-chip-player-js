@@ -65,7 +65,11 @@ static int depack_pp10(HIO_HANDLE *in, FILE *out)
 		}
 	}
 
+<<<<<<< HEAD
 	len = hio_read8(in);			/* pattern table lenght */
+=======
+	len = hio_read8(in);			/* pattern table length */
+>>>>>>> db7344ebf (abc)
 	write8(out, len);
 
 	c1 = hio_read8(in);			/* Noisetracker byte */

@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2024 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -66,13 +70,22 @@ static void convert_7bit_to_8bit(uint8 *p, int l)
 static void convert_vidc_to_linear(uint8 *p, int l)
 {
 	int i;
+<<<<<<< HEAD
+=======
+	int8 amp;
+>>>>>>> db7344ebf (abc)
 	uint8 x;
 
 	for (i = 0; i < l; i++) {
 		x = p[i];
+<<<<<<< HEAD
 		p[i] = vdic_table[x >> 1];
 		if (x & 0x01)
 			p[i] *= -1;
+=======
+		amp = vdic_table[x >> 1];
+		p[i] = (uint8)((x & 0x01) ? -amp : amp);
+>>>>>>> db7344ebf (abc)
 	}
 }
 
@@ -96,6 +109,7 @@ static void adpcm4_decoder(uint8 *inp, uint8 *outp, char *tab, int len)
 #endif
 
 /* Convert differential to absolute sample data */
+<<<<<<< HEAD
 static void convert_delta(uint8 *p, int l, int r)
 {
 	uint16 *w = (uint16 *)p;
@@ -110,6 +124,29 @@ static void convert_delta(uint8 *p, int l, int r)
 		for (; l--;) {
 			absval = *p + absval;
 			*p++ = (uint8) absval;
+=======
+static void convert_delta(uint8 *p, int frames, int is_16bit, int channels)
+{
+	uint16 *w = (uint16 *)p;
+	uint16 absval;
+	int chn, i;
+
+	if (is_16bit) {
+		for (chn = 0; chn < channels; chn++) {
+			absval = 0;
+			for (i = 0; i < frames; i++) {
+				absval = *w + absval;
+				*w++ = absval;
+			}
+		}
+	} else {
+		for (chn = 0; chn < channels; chn++) {
+			absval = 0;
+			for (i = 0; i < frames; i++) {
+				absval = *p + absval;
+				*p++ = (uint8) absval;
+			}
+>>>>>>> db7344ebf (abc)
 		}
 	}
 }
@@ -124,7 +161,11 @@ static void convert_signal(uint8 *p, int l, int r)
 			*w += 0x8000;
 	} else {
 		for (; l--; p++)
+<<<<<<< HEAD
 			*p += (char)0x80;	/* cast needed by MSVC++ */
+=======
+			*p += (unsigned char)0x80;
+>>>>>>> db7344ebf (abc)
 	}
 }
 
@@ -142,6 +183,7 @@ static void convert_endian(uint8 *p, int l)
 	}
 }
 
+<<<<<<< HEAD
 #if 0
 /* Downmix stereo samples to mono */
 static void convert_stereo_to_mono(uint8 *p, int l, int r)
@@ -159,10 +201,46 @@ static void convert_stereo_to_mono(uint8 *p, int l, int r)
 	}
 }
 #endif
+=======
+/* Convert non-interleaved stereo to interleaved stereo.
+ * Due to tracker quirks this should be done after delta decoding, etc. */
+static void convert_stereo_interleaved(void * LIBXMP_RESTRICT _out,
+ const void *in, int frames, int is_16bit)
+{
+	int i;
+
+	if (is_16bit) {
+		const int16 *in_l = (const int16 *)in;
+		const int16 *in_r = in_l + frames;
+		int16 *out = (int16 *)_out;
+
+		for (i = 0; i < frames; i++) {
+			*(out++) = *(in_l++);
+			*(out++) = *(in_r++);
+		}
+	} else {
+		const uint8 *in_l = (const uint8 *)in;
+		const uint8 *in_r = in_l + frames;
+		uint8 *out = (uint8 *)_out;
+
+		for (i = 0; i < frames; i++) {
+			*(out++) = *(in_l++);
+			*(out++) = *(in_r++);
+		}
+	}
+}
+>>>>>>> db7344ebf (abc)
 
 
 int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct xmp_sample *xxs, const void *buffer)
 {
+<<<<<<< HEAD
+=======
+	unsigned char *tmp = NULL;
+	unsigned char *dest;
+	int channels = 1;
+	int framelen;
+>>>>>>> db7344ebf (abc)
 	int bytelen, extralen, i;
 
 #ifndef LIBXMP_CORE_PLAYER
@@ -191,10 +269,37 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 		return 0;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Patches with samples
+	 * Allocate extra sample for interpolation.
+	 */
+	bytelen = xxs->len;
+	framelen = 1;
+	extralen = 4;
+
+	if (xxs->flg & XMP_SAMPLE_16BIT) {
+		bytelen *= 2;
+		extralen *= 2;
+		framelen *= 2;
+	}
+	if (xxs->flg & XMP_SAMPLE_STEREO) {
+		bytelen *= 2;
+		extralen *= 2;
+		framelen *= 2;
+		channels = 2;
+	}
+
+>>>>>>> db7344ebf (abc)
 	/* If this sample starts at or after EOF, skip it entirely.
 	 */
 	if (~flags & SAMPLE_FLAG_NOLOAD) {
 		long file_pos, file_len;
+<<<<<<< HEAD
+=======
+		long remaining = 0;
+		long over = 0;
+>>>>>>> db7344ebf (abc)
 		if (!f) {
 			return 0;
 		}
@@ -205,10 +310,44 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 			return 0;
 		}
 		/* If this sample goes past EOF, truncate it. */
+<<<<<<< HEAD
 		if (file_pos + xxs->len > file_len && (~flags & SAMPLE_FLAG_ADPCM)) {
 			D_(D_WARN "sample would extend %ld bytes past EOF; truncating to %ld",
 				file_pos + xxs->len - file_len, file_len - file_pos);
 			xxs->len = file_len - file_pos;
+=======
+		remaining = file_len - file_pos;
+#ifndef LIBXMP_CORE_PLAYER
+		if (flags & SAMPLE_FLAG_ADPCM) {
+			long bound = 16 + ((bytelen + 1) >> 1);
+			if (remaining < 16) {
+				D_(D_WARN "ignoring truncated ADPCM sample");
+				return 0;
+			}
+			if (bound > remaining) {
+				over = bound - remaining;
+				bytelen = (remaining - 16) << 1;
+			}
+		} else
+#endif
+		if (bytelen > remaining) {
+			over = bytelen - remaining;
+			bytelen = remaining;
+		}
+
+		if (over) {
+			D_(D_WARN "sample would extend %ld bytes past EOF; truncating to %ld",
+				over, remaining);
+
+			/* Trim extra bytes non-aligned to sample frame. */
+			bytelen -= bytelen & (framelen - 1);
+
+			xxs->len = bytelen;
+			if (xxs->flg & XMP_SAMPLE_16BIT)
+				xxs->len >>= 1;
+			if (xxs->flg & XMP_SAMPLE_STEREO)
+				xxs->len >>= 1;
+>>>>>>> db7344ebf (abc)
 		}
 	}
 
@@ -225,6 +364,7 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 		xxs->flg &= ~(XMP_SAMPLE_LOOP | XMP_SAMPLE_LOOP_BIDIR);
 	}
 
+<<<<<<< HEAD
 	/* Patches with samples
 	 * Allocate extra sample for interpolation.
 	 */
@@ -232,15 +372,24 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 	extralen = 4;
 
 	/* Disable birectional loop flag if sample is not looped
+=======
+	/* Disable bidirectional loop flag if sample is not looped
+>>>>>>> db7344ebf (abc)
 	 */
 	if (xxs->flg & XMP_SAMPLE_LOOP_BIDIR) {
 		if (~xxs->flg & XMP_SAMPLE_LOOP)
 			xxs->flg &= ~XMP_SAMPLE_LOOP_BIDIR;
 	}
+<<<<<<< HEAD
 
 	if (xxs->flg & XMP_SAMPLE_16BIT) {
 		bytelen *= 2;
 		extralen *= 2;
+=======
+	if (xxs->flg & XMP_SAMPLE_SLOOP_BIDIR) {
+		if (~xxs->flg & XMP_SAMPLE_SLOOP)
+			xxs->flg &= ~XMP_SAMPLE_SLOOP_BIDIR;
+>>>>>>> db7344ebf (abc)
 	}
 
 	/* add guard bytes before the buffer for higher order interpolation */
@@ -251,9 +400,28 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 
 	*(uint32 *)xxs->data = 0;
 	xxs->data += 4;
+<<<<<<< HEAD
 
 	if (flags & SAMPLE_FLAG_NOLOAD) {
 		memcpy(xxs->data, buffer, bytelen);
+=======
+	dest = xxs->data;
+
+	/* If this is a non-interleaved stereo sample, most conversions need
+	 * to occur in an intermediate buffer prior to interleaving. Most
+	 * formats supporting stereo samples use non-interleaved stereo.
+	 */
+	if ((xxs->flg & XMP_SAMPLE_STEREO) && (~flags & SAMPLE_FLAG_INTERLEAVED)) {
+		tmp = (unsigned char *) malloc(bytelen);
+		if (!tmp)
+			goto err2;
+
+		dest = tmp;
+	}
+
+	if (flags & SAMPLE_FLAG_NOLOAD) {
+		memcpy(dest, buffer, bytelen);
+>>>>>>> db7344ebf (abc)
 	} else
 #ifndef LIBXMP_CORE_PLAYER
 	if (flags & SAMPLE_FLAG_ADPCM) {
@@ -263,6 +431,7 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 		if (hio_read(table, 1, 16, f) != 16) {
 			goto err2;
 		}
+<<<<<<< HEAD
 		if (hio_read(xxs->data + x2, 1, x2, f) != x2) {
 			goto err2;
 		}
@@ -275,12 +444,30 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 		if (x != bytelen) {
 			D_(D_WARN "short read (%d) in sample load", x - bytelen);
 			memset(xxs->data + x, 0, bytelen - x);
+=======
+		if (hio_read(dest + x2, 1, x2, f) != x2) {
+			goto err2;
+		}
+		adpcm4_decoder((uint8 *)dest + x2,
+			       (uint8 *)dest, table, bytelen);
+	} else
+#endif
+	{
+		int x = hio_read(dest, 1, bytelen, f);
+		if (x != bytelen) {
+			D_(D_WARN "short read (%d) in sample load", x - bytelen);
+			memset(dest + x, 0, bytelen - x);
+>>>>>>> db7344ebf (abc)
 		}
 	}
 
 #ifndef LIBXMP_CORE_PLAYER
 	if (flags & SAMPLE_FLAG_7BIT) {
+<<<<<<< HEAD
 		convert_7bit_to_8bit(xxs->data, xxs->len);
+=======
+		convert_7bit_to_8bit(dest, xxs->len * channels);
+>>>>>>> db7344ebf (abc)
 	}
 #endif
 
@@ -288,26 +475,42 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 	if (xxs->flg & XMP_SAMPLE_16BIT) {
 #ifdef WORDS_BIGENDIAN
 		if (~flags & SAMPLE_FLAG_BIGEND)
+<<<<<<< HEAD
 			convert_endian(xxs->data, xxs->len);
 #else
 		if (flags & SAMPLE_FLAG_BIGEND)
 			convert_endian(xxs->data, xxs->len);
+=======
+			convert_endian(dest, xxs->len * channels);
+#else
+		if (flags & SAMPLE_FLAG_BIGEND)
+			convert_endian(dest, xxs->len * channels);
+>>>>>>> db7344ebf (abc)
 #endif
 	}
 
 	/* Convert delta samples */
 	if (flags & SAMPLE_FLAG_DIFF) {
+<<<<<<< HEAD
 		convert_delta(xxs->data, xxs->len, xxs->flg & XMP_SAMPLE_16BIT);
+=======
+		convert_delta(dest, xxs->len, xxs->flg & XMP_SAMPLE_16BIT, channels);
+>>>>>>> db7344ebf (abc)
 	} else if (flags & SAMPLE_FLAG_8BDIFF) {
 		int len = xxs->len;
 		if (xxs->flg & XMP_SAMPLE_16BIT) {
 			len *= 2;
 		}
+<<<<<<< HEAD
 		convert_delta(xxs->data, len, 0);
+=======
+		convert_delta(dest, len, 0, channels);
+>>>>>>> db7344ebf (abc)
 	}
 
 	/* Convert samples to signed */
 	if (flags & SAMPLE_FLAG_UNS) {
+<<<<<<< HEAD
 		convert_signal(xxs->data, xxs->len,
 				xxs->flg & XMP_SAMPLE_16BIT);
 	}
@@ -326,6 +529,23 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 		convert_vidc_to_linear(xxs->data, xxs->len);
 	}
 #endif
+=======
+		convert_signal(dest, xxs->len * channels,
+				xxs->flg & XMP_SAMPLE_16BIT);
+	}
+
+#ifndef LIBXMP_CORE_PLAYER
+	if (flags & SAMPLE_FLAG_VIDC) {
+		convert_vidc_to_linear(dest, xxs->len * channels);
+	}
+#endif
+
+	/* Done converting individual samples; convert to interleaved. */
+	if ((xxs->flg & XMP_SAMPLE_STEREO) && (~flags & SAMPLE_FLAG_INTERLEAVED)) {
+		convert_stereo_interleaved(xxs->data, dest, xxs->len,
+					   xxs->flg & XMP_SAMPLE_16BIT);
+	}
+>>>>>>> db7344ebf (abc)
 
 	/* Check for full loop samples */
 	if (flags & SAMPLE_FLAG_FULLREP) {
@@ -334,6 +554,7 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
 	}
 
 	/* Add extra samples at end */
+<<<<<<< HEAD
 	if (xxs->flg & XMP_SAMPLE_16BIT) {
 		for (i = 0; i < 8; i++) {
 			xxs->data[bytelen + i] = xxs->data[bytelen - 2 + i];
@@ -358,6 +579,23 @@ int libxmp_load_sample(struct module_data *m, HIO_HANDLE *f, int flags, struct x
     err2:
 	libxmp_free_sample(xxs);
 #endif
+=======
+	for (i = 0; i < extralen; i++) {
+		xxs->data[bytelen + i] = xxs->data[bytelen - framelen + i];
+	}
+
+	/* Add extra samples at start */
+	for (i = -1; i >= -4; i--) {
+		xxs->data[i] = xxs->data[framelen + i];
+	}
+
+	free(tmp);
+	return 0;
+
+    err2:
+	libxmp_free_sample(xxs);
+	free(tmp);
+>>>>>>> db7344ebf (abc)
     err:
 	return -1;
 }

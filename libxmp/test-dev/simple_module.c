@@ -1,16 +1,30 @@
 /* Creates a simple module */
 
+<<<<<<< HEAD
 #include "../src/common.h"
 #include "../src/loaders/loader.h"
 
 void libxmp_load_prologue(struct context_data *);
 void libxmp_load_epilogue(struct context_data *);
 
+=======
+#include "test.h"
+#include "../src/common.h"
+#include "../src/loaders/loader.h"
+
+>>>>>>> db7344ebf (abc)
 void create_simple_module(struct context_data *ctx, int ins, int pat)
 {
 	struct module_data *m = &ctx->m;
 	struct xmp_module *mod = &m->mod;
+<<<<<<< HEAD
 	int i;
+=======
+	struct xmp_instrument *xxi;
+	struct xmp_subinstrument *sub;
+	struct xmp_sample *xxs;
+	int i, j;
+>>>>>>> db7344ebf (abc)
 
 	libxmp_load_prologue(ctx);
 
@@ -34,6 +48,7 @@ void create_simple_module(struct context_data *ctx, int ins, int pat)
 	libxmp_init_instrument(m);
 
 	for (i = 0; i < mod->ins; i++) {
+<<<<<<< HEAD
 		mod->xxi[i].nsm = 1;
 		libxmp_alloc_subinstrument(mod, i, 1);
 
@@ -47,6 +62,29 @@ void create_simple_module(struct context_data *ctx, int ins, int pat)
 		mod->xxs[i].flg = XMP_SAMPLE_LOOP;
 		mod->xxs[i].data = calloc(1, 11000);
 		mod->xxs[i].data += 4;
+=======
+		xxi = &mod->xxi[i];
+
+		/* Give each instrument two subinstruments mapped to the
+		 * same sample. By default, only the first will be used. */
+		xxi->nsm = 2;
+		libxmp_alloc_subinstrument(mod, i, 2);
+
+		for (j = 0; j < xxi->nsm; j++) {
+			sub = &xxi->sub[j];
+			sub->pan = -1;
+			sub->vol = 0x40;
+			sub->sid = i;
+		}
+
+		xxs = &mod->xxs[i];
+		xxs->len = 10000;
+		xxs->lps = 0;
+		xxs->lpe = 10000;
+		xxs->flg = XMP_SAMPLE_LOOP;
+		xxs->data = (unsigned char *) calloc(1, 11000);
+		xxs->data += 4;
+>>>>>>> db7344ebf (abc)
 	}
 
 	/* End of module creation */
@@ -94,6 +132,17 @@ void set_instrument_volume(struct context_data *ctx, int ins, int sub, int vol)
 	mod->xxi[ins].sub[sub].vol = vol;
 }
 
+<<<<<<< HEAD
+=======
+void set_instrument_panning(struct context_data *ctx, int ins, int sub, int pan)
+{
+	struct module_data *m = &ctx->m;
+	struct xmp_module *mod = &m->mod;
+
+	mod->xxi[ins].sub[sub].pan = pan;
+}
+
+>>>>>>> db7344ebf (abc)
 void set_instrument_nna(struct context_data *ctx, int ins, int sub,
 			int nna, int dct, int dca)
 {
@@ -118,6 +167,19 @@ void set_instrument_envelope(struct context_data *ctx, int ins, int node,
 	mod->xxi[ins].aei.flg |= XMP_ENVELOPE_ON;
 }
 
+<<<<<<< HEAD
+=======
+void set_instrument_envelope_loop(struct context_data *ctx, int ins, int lps, int lpe)
+{
+	struct module_data *m = &ctx->m;
+	struct xmp_module *mod = &m->mod;
+
+	mod->xxi[ins].aei.lps = lps;
+	mod->xxi[ins].aei.lpe = lpe;
+	mod->xxi[ins].aei.flg |= XMP_ENVELOPE_LOOP;
+}
+
+>>>>>>> db7344ebf (abc)
 void set_instrument_envelope_sus(struct context_data *ctx, int ins, int sus)
 {
 	struct module_data *m = &ctx->m;

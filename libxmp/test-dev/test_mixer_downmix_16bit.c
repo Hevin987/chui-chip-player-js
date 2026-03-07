@@ -7,7 +7,12 @@ TEST(test_mixer_downmix_16bit)
 	struct context_data *ctx;
 	struct xmp_frame_info info;
 	FILE *f;
+<<<<<<< HEAD
 	int i, j, val;
+=======
+	int i, j;
+	long val;
+>>>>>>> db7344ebf (abc)
 
 	f = fopen("data/downmix.data", "r");
 
@@ -24,10 +29,18 @@ TEST(test_mixer_downmix_16bit)
 		int16 *b;
 		xmp_play_frame(opaque);
 		xmp_get_frame_info(opaque, &info);
+<<<<<<< HEAD
 		b = info.buffer;
 		for (j = 0; j < info.buffer_size / 2; j++) {
 			int ret = fscanf(f, "%d", &val);
 			fail_unless(ret == 1, "read error");
+=======
+		b = (int16 *) info.buffer;
+		for (j = 0; j < info.buffer_size / 2; j++) {
+			int ret = fscanf(f, "%ld", &val);
+			fail_unless(ret == 1, "read error");
+			val >>= 16;
+>>>>>>> db7344ebf (abc)
 			fail_unless(b[j] == val, "downmix error");
 		}
 	}

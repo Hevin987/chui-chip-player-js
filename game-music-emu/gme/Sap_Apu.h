@@ -1,6 +1,10 @@
 // Atari POKEY sound chip emulator
 
+<<<<<<< HEAD
 // Game_Music_Emu $vers
+=======
+// Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
+>>>>>>> db7344ebf (abc)
 #ifndef SAP_APU_H
 #define SAP_APU_H
 
@@ -11,6 +15,7 @@ class Sap_Apu_Impl;
 
 class Sap_Apu {
 public:
+<<<<<<< HEAD
 // Basics
 
 	// Sets buffer to generate sound into, or 0 to mute
@@ -45,6 +50,21 @@ private:
 public:
 	Sap_Apu();
 	
+=======
+	static const int osc_count = 4;
+	void osc_output( int index, Blip_Buffer* );
+
+	void reset( Sap_Apu_Impl* );
+
+	static const unsigned int start_addr = 0xD200;
+	static const unsigned int end_addr   = 0xD209;
+	void write_data( blip_time_t, unsigned addr, int data );
+
+	void end_frame( blip_time_t );
+
+public:
+	Sap_Apu();
+>>>>>>> db7344ebf (abc)
 private:
 	struct osc_t
 	{
@@ -63,6 +83,7 @@ private:
 	int poly4_pos;
 	int polym_pos;
 	int control;
+<<<<<<< HEAD
 	
 	void calc_periods();
 	void run_until( blip_time_t );
@@ -70,12 +91,22 @@ private:
 	enum { poly4_len  = (1 <<  4) - 1 };
 	enum { poly9_len  = (1 <<  9) - 1 };
 	enum { poly17_len = (1 << 17) - 1 };
+=======
+
+	void calc_periods();
+	void run_until( blip_time_t );
+
+	static const unsigned int poly4_len  = (1L <<  4) - 1;
+	static const unsigned int poly9_len  = (1L <<  9) - 1;
+	static const unsigned int poly17_len = (1L << 17) - 1;
+>>>>>>> db7344ebf (abc)
 	friend class Sap_Apu_Impl;
 };
 
 // Common tables and Blip_Synth that can be shared among multiple Sap_Apu objects
 class Sap_Apu_Impl {
 public:
+<<<<<<< HEAD
 	// Set treble with synth.treble_eq()
 	Blip_Synth_Norm synth;
 	
@@ -95,6 +126,22 @@ private:
 };
 
 inline void Sap_Apu::set_output( int i, Blip_Buffer* b )
+=======
+	Blip_Synth<blip_good_quality,1> synth;
+
+	Sap_Apu_Impl();
+	void volume( double d ) { synth.volume( 1.0 / Sap_Apu::osc_count / 30 * d ); }
+
+private:
+	typedef unsigned char byte;
+	byte poly4  [Sap_Apu::poly4_len  / 8 + 1];
+	byte poly9  [Sap_Apu::poly9_len  / 8 + 1];
+	byte poly17 [Sap_Apu::poly17_len / 8 + 1];
+	friend class Sap_Apu;
+};
+
+inline void Sap_Apu::osc_output( int i, Blip_Buffer* b )
+>>>>>>> db7344ebf (abc)
 {
 	assert( (unsigned) i < osc_count );
 	oscs [i].output = b;

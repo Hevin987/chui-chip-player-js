@@ -6,6 +6,10 @@
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
+<<<<<<< HEAD
+=======
+#include <algorithm>
+>>>>>>> db7344ebf (abc)
 
 /* Copyright (C) 2005-2006 Shay Green. This module is free software; you
 can redistribute it and/or modify it under the terms of the GNU Lesser
@@ -27,6 +31,12 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 static const unsigned char gz_magic[2] = {0x1f, 0x8b}; /* gzip magic header */
 #endif /* HAVE_ZLIB_H */
 
+<<<<<<< HEAD
+=======
+using std::min;
+using std::max;
+
+>>>>>>> db7344ebf (abc)
 const char Data_Reader::eof_error [] = "Unexpected end of file";
 
 #define RETURN_VALIDITY_CHECK( cond ) \
@@ -358,21 +368,37 @@ blargg_err_t Std_File_Reader::open( const char* path )
 
 long Std_File_Reader::size() const
 {
+<<<<<<< HEAD
 #ifdef HAVE_ZLIB_H
 	if ( file_ )
 		return size_; // Set for both compressed and uncompressed modes
 #endif
+=======
+	if ( !file_ )
+		return -1L;
+#ifdef HAVE_ZLIB_H
+	return size_; // Set for both compressed and uncompressed modes
+#else
+>>>>>>> db7344ebf (abc)
 	long pos = tell();
 	fseek( (FILE*) file_, 0, SEEK_END );
 	long result = tell();
 	fseek( (FILE*) file_, pos, SEEK_SET );
 	return result;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> db7344ebf (abc)
 }
 
 long Std_File_Reader::read_avail( void* p, long s )
 {
 #ifdef HAVE_ZLIB_H
+<<<<<<< HEAD
 	if ( file_ && s > 0 && s <= UINT_MAX ) {
+=======
+	if ( file_ && s > 0 && static_cast<unsigned long>(s) <= UINT_MAX ) {
+>>>>>>> db7344ebf (abc)
 		return gzread( reinterpret_cast<gzFile>(file_),
 			p, static_cast<unsigned>(s) );
 	}
@@ -386,6 +412,7 @@ long Std_File_Reader::read_avail( void* p, long s )
 
 blargg_err_t Std_File_Reader::read( void* p, long s )
 {
+<<<<<<< HEAD
 	RETURN_VALIDITY_CHECK( s > 0 && s <= UINT_MAX );
 #ifdef HAVE_ZLIB_H
 	if ( file_ )
@@ -398,25 +425,54 @@ blargg_err_t Std_File_Reader::read( void* p, long s )
 		return "Couldn't read from GZ file";
 	}
 #endif
+=======
+	if ( !file_ )
+		return "NULL FILE pointer";
+
+	RETURN_VALIDITY_CHECK( s > 0 && static_cast<unsigned long>(s) <= UINT_MAX );
+#ifdef HAVE_ZLIB_H
+	const auto &gzfile = reinterpret_cast<gzFile>( file_ );
+	if ( s == gzread( gzfile, p, static_cast<unsigned>( s ) ) )
+		return nullptr;
+	if ( gzeof( gzfile ) )
+		return eof_error;
+	return "Couldn't read from GZ file";
+#else
+>>>>>>> db7344ebf (abc)
 	const auto &file = reinterpret_cast<FILE*>( file_ );
 	if ( s == static_cast<long>( fread( p, 1, static_cast<size_t>(s), file ) ) )
 		return 0;
 	if ( feof( file ) )
 		return eof_error;
 	return "Couldn't read from file";
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> db7344ebf (abc)
 }
 
 long Std_File_Reader::tell() const
 {
+<<<<<<< HEAD
 #ifdef HAVE_ZLIB_H
 	if ( file_ )
 		return gztell( reinterpret_cast<gzFile>( file_ ) );
 #endif
 	return ftell( reinterpret_cast<FILE*>( file_ ) );
+=======
+	if ( !file_ )
+		return -1L;
+#ifdef HAVE_ZLIB_H
+	return gztell( reinterpret_cast<gzFile>( file_ ) );
+#else
+	return ftell( reinterpret_cast<FILE*>( file_ ) );
+#endif
+>>>>>>> db7344ebf (abc)
 }
 
 blargg_err_t Std_File_Reader::seek( long n )
 {
+<<<<<<< HEAD
 #ifdef HAVE_ZLIB_H
 	if ( file_ )
 	{
@@ -427,11 +483,26 @@ blargg_err_t Std_File_Reader::seek( long n )
 		return "Error seeking in GZ file";
 	}
 #endif
+=======
+	if ( !file_ )
+		return "NULL FILE pointer";
+#ifdef HAVE_ZLIB_H
+	if ( gzseek( reinterpret_cast<gzFile>( file_ ), n, SEEK_SET ) >= 0 )
+		return nullptr;
+	if ( n > size_ )
+		return eof_error;
+	return "Error seeking in GZ file";
+#else
+>>>>>>> db7344ebf (abc)
 	if ( !fseek( reinterpret_cast<FILE*>( file_ ), n, SEEK_SET ) )
 		return nullptr;
 	if ( n > size() )
 		return eof_error;
 	return "Error seeking in file";
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> db7344ebf (abc)
 }
 
 void Std_File_Reader::close()
@@ -446,4 +517,7 @@ void Std_File_Reader::close()
 		file_ = nullptr;
 	}
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)

@@ -50,7 +50,11 @@ static int test_compress(unsigned char *b)
  * with those of the compress() routine.  See the definitions above.
  */
 
+<<<<<<< HEAD
 static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
+=======
+static int decrunch_compress(HIO_HANDLE * in, void ** out, long * outlen)
+>>>>>>> db7344ebf (abc)
 {
 	char_type *stackp;
 	code_int code;
@@ -60,6 +64,10 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 	int inbits;
 	int posbits;
 	int outpos;
+<<<<<<< HEAD
+=======
+	int outsize;
+>>>>>>> db7344ebf (abc)
 	int insize;
 	int bitmask;
 	code_int free_ent;
@@ -74,7 +82,12 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 	/*long bytes_in;*/		/* Total number of byte from input */
 	/*long bytes_out;*/		/* Total number of byte to output */
 	char_type inbuf[IBUFSIZ + 64];	/* Input buffer */
+<<<<<<< HEAD
 	char_type outbuf[OBUFSIZ + 2048];/* Output buffer */
+=======
+	char_type *outbuf;		/* Output buffer */
+	char_type *tmp;
+>>>>>>> db7344ebf (abc)
 	count_int htab[HSIZE];
 	unsigned short codetab[HSIZE];
 
@@ -104,6 +117,10 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 	oldcode = -1;
 	finchar = 0;
 	outpos = 0;
+<<<<<<< HEAD
+=======
+	outsize = OBUFSIZ;
+>>>>>>> db7344ebf (abc)
 	posbits = 3 << 3;
 
 	free_ent = ((block_mode) ? FIRST : 256);
@@ -114,6 +131,14 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 	for (code = 255; code >= 0; --code)
 		tab_suffixof(code) = (char_type) code;
 
+<<<<<<< HEAD
+=======
+	outbuf = (char_type *) malloc(outsize + 2048);
+	if (!outbuf) {
+		return -1;
+	}
+
+>>>>>>> db7344ebf (abc)
 	do {
 	      resetbuf:;
 		{
@@ -132,8 +157,15 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 		}
 
 		if (insize < sizeof(inbuf) - IBUFSIZ) {
+<<<<<<< HEAD
 			if ((rsize = hio_read(inbuf + insize, 1, IBUFSIZ, in)) < 0)
 				return -1;
+=======
+			if ((rsize = hio_read(inbuf + insize, 1, IBUFSIZ, in)) < 0) {
+				free(outbuf);
+				return -1;
+			}
+>>>>>>> db7344ebf (abc)
 
 			insize += rsize;
 		}
@@ -168,6 +200,10 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 					fprintf(stderr, "uncompress: corrupt input\n");
 					*/
 					/* abort_compress(); */
+<<<<<<< HEAD
+=======
+					free(outbuf);
+>>>>>>> db7344ebf (abc)
 					return -1;
 				}
 				outbuf[outpos++] = (char_type)(finchar = (int)(oldcode = code));
@@ -204,6 +240,10 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 						"uncompress: corrupt input\n");
 					*/
 					/* abort_compress(); */
+<<<<<<< HEAD
+=======
+					free(outbuf);
+>>>>>>> db7344ebf (abc)
 					return -1;
 				}
 
@@ -220,16 +260,24 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 
 			/* And put them out in forward order */
 
+<<<<<<< HEAD
 			if (outpos + (i = (de_stack - stackp)) >= OBUFSIZ) {
 				do {
 					if (i > OBUFSIZ - outpos)
 						i = OBUFSIZ - outpos;
+=======
+			if (outpos + (i = (de_stack - stackp)) >= outsize) {
+				do {
+					if (i > outsize - outpos)
+						i = outsize - outpos;
+>>>>>>> db7344ebf (abc)
 
 					if (i > 0) {
 						memcpy(outbuf + outpos, stackp, i);
 						outpos += i;
 					}
 
+<<<<<<< HEAD
 					if (outpos >= OBUFSIZ) {
 						if (fwrite(outbuf, 1, outpos, out) != outpos) {
 							return -1;
@@ -237,6 +285,17 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 						}
 
 						outpos = 0;
+=======
+					if (outpos >= outsize) {
+						outsize += OBUFSIZ;
+
+						tmp = (char_type *) realloc(outbuf, outsize + 2048);
+						if (!tmp) {
+							free(outbuf);
+							return -1;
+						}
+						outbuf = tmp;
+>>>>>>> db7344ebf (abc)
 					}
 					stackp += i;
 				}
@@ -259,14 +318,29 @@ static int decrunch_compress(HIO_HANDLE * in, FILE * out, long inlen)
 	}
 	while (rsize > 0);
 
+<<<<<<< HEAD
 	if (outpos > 0 && fwrite(outbuf, 1, outpos, out) != outpos)
 		return -1;
+=======
+	if ((tmp = (char_type *) realloc(outbuf, outpos)) != NULL)
+		outbuf = tmp;
+
+	*out = outbuf;
+	*outlen = outpos;
+>>>>>>> db7344ebf (abc)
 
 	return 0;
 }
 
+<<<<<<< HEAD
 struct depacker libxmp_depacker_compress = {
 	test_compress,
 	decrunch_compress,
 	NULL
+=======
+const struct depacker libxmp_depacker_compress = {
+	test_compress,
+	NULL,
+	decrunch_compress
+>>>>>>> db7344ebf (abc)
 };

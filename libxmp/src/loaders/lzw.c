@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 2021 Alice Rowan
+=======
+ * Copyright (C) 2021-2023 Alice Rowan
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,7 +28,10 @@
  * This does not handle the hacks required for ARC or UnShrink. */
 
 #include "lzw.h"
+<<<<<<< HEAD
 #include <assert.h>
+=======
+>>>>>>> db7344ebf (abc)
 
 /*#define LZW_DEBUG*/
 
@@ -350,13 +357,22 @@ int libxmp_read_lzw(void *dest, size_t dest_len, size_t max_read_len,
 
 	if (flags & LZW_FLAG_SYMQUIRKS) {
 		/* Digital Symphony LZW compressed stream size is 4 aligned. */
+<<<<<<< HEAD
 		size_t pos = bs.num_read;
 		while (pos & 3) {
+=======
+		size_t num_read = bs.num_read;
+		while (num_read & 3) {
+>>>>>>> db7344ebf (abc)
 			#ifdef LZW_DEBUG
 			printf("A: align byte\n");
 			#endif
 			hio_read8(f);
+<<<<<<< HEAD
 			pos++;
+=======
+			num_read++;
+>>>>>>> db7344ebf (abc)
 		}
 	}
 	#ifdef LZW_DEBUG
@@ -373,7 +389,11 @@ int libxmp_read_lzw(void *dest, size_t dest_len, size_t max_read_len,
  * Based on the sigma-delta unpacker from OpenMPT by Saga Musix.
  */
 int libxmp_read_sigma_delta(void *dest, size_t dest_len, size_t max_read_len,
+<<<<<<< HEAD
                             HIO_HANDLE *f)
+=======
+			    HIO_HANDLE *f)
+>>>>>>> db7344ebf (abc)
 {
 	struct bitstream bs;
 	uint8 *pos = (uint8 *)dest;

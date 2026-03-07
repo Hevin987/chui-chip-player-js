@@ -25,6 +25,16 @@
  *
  **************************************************************************/
 #include "miniz_zip.h"
+<<<<<<< HEAD
+=======
+#include "crc32.h"
+
+#ifdef __VBCC__
+#define MZ_NOTUSED(v)
+#else
+#define MZ_NOTUSED(v) (void)(v)
+#endif
+>>>>>>> db7344ebf (abc)
 
 #ifndef MINIZ_NO_ARCHIVE_APIS
 
@@ -34,6 +44,7 @@ extern "C" {
 
 #ifndef MINIZ_DISABLE_ZIP_READER_CRC32_CHECKS
 #define MZ_CRC32_INIT (0)
+<<<<<<< HEAD
 /* Karl Malbrain's compact CRC-32. See "A compact CCITT crc16 and crc32 C implementation that balances processor cache usage against speed": http://www.geocities.com/malbrain/ */
 #if 0
     static mz_ulong mz_crc32(mz_ulong crc, const mz_uint8 *ptr, size_t buf_len)
@@ -127,21 +138,39 @@ static mz_ulong mz_crc32(mz_ulong crc, const mz_uint8 *ptr, size_t buf_len)
     return ~crc32;
 }
 #endif
+=======
+static mz_ulong mz_crc32(mz_ulong crc, const mz_uint8 *ptr, size_t buf_len)
+{/* libxmp hack: */
+    return libxmp_crc32_A(ptr, buf_len, crc);
+}
+>>>>>>> db7344ebf (abc)
 #endif /* MINIZ_DISABLE_ZIP_READER_CRC32_CHECKS */
 
 static void *miniz_def_alloc_func(void *opaque, size_t items, size_t size)
 {
+<<<<<<< HEAD
     (void)opaque;
+=======
+    MZ_NOTUSED(opaque);
+>>>>>>> db7344ebf (abc)
     return MZ_MALLOC(items * size);
 }
 static void miniz_def_free_func(void *opaque, void *address)
 {
+<<<<<<< HEAD
     (void)opaque;
+=======
+    MZ_NOTUSED(opaque);
+>>>>>>> db7344ebf (abc)
     MZ_FREE(address);
 }
 static void *miniz_def_realloc_func(void *opaque, void *address, size_t items, size_t size)
 {
+<<<<<<< HEAD
     (void)opaque;
+=======
+    MZ_NOTUSED(opaque);
+>>>>>>> db7344ebf (abc)
     return MZ_REALLOC(address, items * size);
 }
 
@@ -323,7 +352,11 @@ static MZ_FORCEINLINE mz_bool mz_zip_set_error(mz_zip_archive *pZip, mz_zip_erro
 
 static mz_bool mz_zip_reader_init_internal(mz_zip_archive *pZip, mz_uint flags)
 {
+<<<<<<< HEAD
     (void)flags;
+=======
+    MZ_NOTUSED(flags);
+>>>>>>> db7344ebf (abc)
     if ((!pZip) || (pZip->m_pState) || (pZip->m_zip_mode != MZ_ZIP_MODE_INVALID))
         return mz_zip_set_error(pZip, MZ_ZIP_INVALID_PARAMETER);
 
@@ -867,7 +900,11 @@ mz_bool mz_zip_reader_is_file_a_directory(mz_zip_archive *pZip, mz_uint file_ind
     /* Most/all zip writers (hopefully) set DOS file/directory attributes in the low 16-bits, so check for the DOS directory flag and ignore the source OS ID in the created by field. */
     /* FIXME: Remove this check? Is it necessary - we already check the filename. */
     attribute_mapping_id = MZ_READ_LE16(p + MZ_ZIP_CDH_VERSION_MADE_BY_OFS) >> 8;
+<<<<<<< HEAD
     (void)attribute_mapping_id;
+=======
+    MZ_NOTUSED(attribute_mapping_id);
+>>>>>>> db7344ebf (abc)
 
     external_attr = MZ_READ_LE32(p + MZ_ZIP_CDH_EXTERNAL_ATTR_OFS);
     if ((external_attr & MZ_ZIP_DOS_DIR_ATTRIBUTE_BITFLAG) != 0)
@@ -995,6 +1032,10 @@ static mz_bool mz_zip_file_stat_internal(mz_zip_archive *pZip, mz_uint file_inde
     return MZ_TRUE;
 }
 
+<<<<<<< HEAD
+=======
+#if 0 /* not used in libxmp */
+>>>>>>> db7344ebf (abc)
 static MZ_FORCEINLINE mz_bool mz_zip_string_equal(const char *pA, const char *pB, mz_uint len, mz_uint flags)
 {
     mz_uint i;
@@ -1023,7 +1064,10 @@ static MZ_FORCEINLINE int mz_zip_filename_compare(const mz_zip_array *pCentral_d
     return (pL == pE) ? (int)(l_len - r_len) : (l - r);
 }
 
+<<<<<<< HEAD
 #if 0 /* not used in libxmp */
+=======
+>>>>>>> db7344ebf (abc)
 static mz_bool mz_zip_locate_file_binary_search(mz_zip_archive *pZip, const char *pFilename, mz_uint32 *pIndex)
 {
     mz_zip_internal_state *pState = pZip->m_pState;
@@ -1139,7 +1183,12 @@ mz_bool mz_zip_reader_locate_file_v2(mz_zip_archive *pZip, const char *pName, co
 }
 #endif /* #if 0 - not used in libxmp */
 
+<<<<<<< HEAD
 mz_bool mz_zip_reader_extract_to_mem_no_alloc(mz_zip_archive *pZip, mz_uint file_index, void *pBuf, size_t buf_size, mz_uint flags, void *pUser_read_buf, size_t user_read_buf_size)
+=======
+static
+mz_bool mz_zip_reader_extract_to_mem_no_alloc1(mz_zip_archive *pZip, mz_uint file_index, void *pBuf, size_t buf_size, mz_uint flags, void *pUser_read_buf, size_t user_read_buf_size, const mz_zip_archive_file_stat *st)
+>>>>>>> db7344ebf (abc)
 {
     int status = TINFL_STATUS_DONE;
     mz_uint64 needed_size, cur_file_ofs, comp_remaining, out_buf_ofs = 0, read_buf_size, read_buf_ofs = 0, read_buf_avail;
@@ -1152,6 +1201,12 @@ mz_bool mz_zip_reader_extract_to_mem_no_alloc(mz_zip_archive *pZip, mz_uint file
     if ((!pZip) || (!pZip->m_pState) || ((buf_size) && (!pBuf)) || ((user_read_buf_size) && (!pUser_read_buf)) || (!pZip->m_pRead))
         return mz_zip_set_error(pZip, MZ_ZIP_INVALID_PARAMETER);
 
+<<<<<<< HEAD
+=======
+    if (st) {
+        file_stat = *st;
+    } else
+>>>>>>> db7344ebf (abc)
     if (!mz_zip_reader_file_stat(pZip, file_index, &file_stat))
         return MZ_FALSE;
 
@@ -1282,6 +1337,7 @@ mz_bool mz_zip_reader_extract_to_mem_no_alloc(mz_zip_archive *pZip, mz_uint file
     return status == TINFL_STATUS_DONE;
 }
 
+<<<<<<< HEAD
 mz_bool mz_zip_reader_extract_to_mem(mz_zip_archive *pZip, mz_uint file_index, void *pBuf, size_t buf_size, mz_uint flags)
 {
     return mz_zip_reader_extract_to_mem_no_alloc(pZip, file_index, pBuf, buf_size, flags, NULL, 0);
@@ -1291,11 +1347,30 @@ void *mz_zip_reader_extract_to_heap(mz_zip_archive *pZip, mz_uint file_index, si
 {
     mz_uint64 comp_size, uncomp_size, alloc_size;
     const mz_uint8 *p = mz_zip_get_cdh(pZip, file_index);
+=======
+#if 0 /* not used in libxmp */
+mz_bool mz_zip_reader_extract_to_mem_no_alloc(mz_zip_archive *pZip, mz_uint file_index, void *pBuf, size_t buf_size, mz_uint flags, void *pUser_read_buf, size_t user_read_buf_size)
+{
+    return mz_zip_reader_extract_to_mem_no_alloc1(pZip, file_index, pBuf, buf_size, flags, pUser_read_buf, user_read_buf_size, NULL);
+}
+
+mz_bool mz_zip_reader_extract_to_mem(mz_zip_archive *pZip, mz_uint file_index, void *pBuf, size_t buf_size, mz_uint flags)
+{
+    return mz_zip_reader_extract_to_mem_no_alloc1(pZip, file_index, pBuf, buf_size, flags, NULL, 0, NULL);
+}
+#endif /* #if 0 */
+
+void *mz_zip_reader_extract_to_heap(mz_zip_archive *pZip, mz_uint file_index, size_t *pSize, mz_uint flags)
+{
+    mz_zip_archive_file_stat file_stat;
+    mz_uint64 alloc_size;
+>>>>>>> db7344ebf (abc)
     void *pBuf;
 
     if (pSize)
         *pSize = 0;
 
+<<<<<<< HEAD
     if (!p)
     {
         mz_zip_set_error(pZip, MZ_ZIP_INVALID_PARAMETER);
@@ -1306,6 +1381,12 @@ void *mz_zip_reader_extract_to_heap(mz_zip_archive *pZip, mz_uint file_index, si
     uncomp_size = MZ_READ_LE32(p + MZ_ZIP_CDH_DECOMPRESSED_SIZE_OFS);
 
     alloc_size = (flags & MZ_ZIP_FLAG_COMPRESSED_DATA) ? comp_size : uncomp_size;
+=======
+    if (!mz_zip_reader_file_stat(pZip, file_index, &file_stat))
+        return NULL;
+
+    alloc_size = (flags & MZ_ZIP_FLAG_COMPRESSED_DATA) ? file_stat.m_comp_size : file_stat.m_uncomp_size;
+>>>>>>> db7344ebf (abc)
     if (((sizeof(size_t) == sizeof(mz_uint32))) && (alloc_size > 0x7FFFFFFF))
     {
         mz_zip_set_error(pZip, MZ_ZIP_INTERNAL_ERROR);
@@ -1318,7 +1399,11 @@ void *mz_zip_reader_extract_to_heap(mz_zip_archive *pZip, mz_uint file_index, si
         return NULL;
     }
 
+<<<<<<< HEAD
     if (!mz_zip_reader_extract_to_mem(pZip, file_index, pBuf, (size_t)alloc_size, flags))
+=======
+    if (!mz_zip_reader_extract_to_mem_no_alloc1(pZip, file_index, pBuf, (size_t)alloc_size, flags, NULL, 0, &file_stat))
+>>>>>>> db7344ebf (abc)
     {
         pZip->m_pFree(pZip->m_pAlloc_opaque, pBuf);
         return NULL;
@@ -1609,7 +1694,10 @@ const char *mz_zip_get_error_string(mz_zip_error mz_err)
     return "unknown error";
 }
 #elif defined(_MSC_VER) && (_MSC_VER < 1400)
+<<<<<<< HEAD
 /* see common.h of libxmp : */
+=======
+>>>>>>> db7344ebf (abc)
 const char *mz_zip_get_error_string(mz_zip_error mz_err) {
     return "";
 }

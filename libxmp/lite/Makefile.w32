@@ -1,10 +1,20 @@
 # Makefile for Win32 using Watcom compiler.
 #
 # wmake -f Makefile.w32
+<<<<<<< HEAD
 # - builds libxmp.dll and its import lib (libxmp.lib)
 #
 # wmake -f Makefile.w32 target=static
 # - builds the static library xmp_static.lib
+=======
+# - builds libxmp-lite.dll and its import lib (libxmp-lite.lib)
+#
+# wmake -f Makefile.w32 target=static
+# - builds the static library xmplite_static.lib
+#
+# To disable Impulse Tracker support :
+#	wmake -f Makefile.w32 DISABLE_IT=1
+>>>>>>> db7344ebf (abc)
 #
 !ifndef target
 target = dll
@@ -12,7 +22,10 @@ target = dll
 
 CC = wcc386
 SYSTEM = nt
+<<<<<<< HEAD
 SYSTEM_DLL = nt_dll
+=======
+>>>>>>> db7344ebf (abc)
 
 CFLAGS = -zq -bt=nt -bm -fp5 -fpi87 -mf -oeatxh -w4 -ei -zp8
 # newer OpenWatcom versions enable W303 by default.
@@ -20,6 +33,23 @@ CFLAGS += -wcd=303
 # -5s  :  Pentium stack calling conventions.
 # -5r  :  Pentium register calling conventions.
 CFLAGS += -5s
+<<<<<<< HEAD
 CFLAGS += -I"$(%WATCOM)/h/nt"
 
 !include watcom.mif
+=======
+CFLAGS += -I"$(%WATCOM)/h/nt" -I"$(%WATCOM)/h"
+
+!include watcom.mif
+
+$(LNKFILE):
+	@echo Creating linker file: $@
+	@%create $@
+	@%append $@ SYSTEM nt_dll INITINSTANCE TERMINSTANCE
+	@%append $@ NAME $(DLLNAME)
+	@for %i in ($(OBJS)) do @%append $@ FILE %i
+	@%append $@ OPTION QUIET
+	@%append $@ OPTION IMPF=$(EXPNAME)
+	@%append $@ OPTION MAP=$(MAPNAME)
+	@%append $@ OPTION SHOWDEAD
+>>>>>>> db7344ebf (abc)

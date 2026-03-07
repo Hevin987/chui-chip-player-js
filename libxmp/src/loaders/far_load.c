@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -20,7 +24,11 @@
  * THE SOFTWARE.
  */
 
+<<<<<<< HEAD
 /* Based on the Farandole Composer format specifications by Daniel Potter.
+=======
+/* Based on the Farandole Composer format specifications by Megan Potter.
+>>>>>>> db7344ebf (abc)
  *
  * "(...) this format is for EDITING purposes (storing EVERYTHING you're
  * working on) so it may include information not completely neccessary."
@@ -54,8 +62,13 @@ struct far_header2 {
 struct far_instrument {
 	uint8 name[32];		/* Instrument name */
 	uint32 length;		/* Length of sample (up to 64Kb) */
+<<<<<<< HEAD
 	uint8 finetune;		/* Finetune (unsuported) */
 	uint8 volume;		/* Volume (unsuported?) */
+=======
+	uint8 finetune;		/* Finetune (unsupported) */
+	uint8 volume;		/* Volume (unsupported?) */
+>>>>>>> db7344ebf (abc)
 	uint32 loop_start;	/* Loop start */
 	uint32 loopend;		/* Loop end */
 	uint8 sampletype;	/* 1=16 bit sample */
@@ -360,6 +373,7 @@ static int far_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		vol  = *pos++;
 		fxb  = *pos++;
 
+<<<<<<< HEAD
 		if (note)
 		    event->note = note + 48;
 		if (event->note || ins)
@@ -367,6 +381,26 @@ static int far_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 		if (vol >= 0x01 && vol <= 0x10)
 		    event->vol = (vol - 1) * 16 + 1;
+=======
+		/* The instrument number is completely ignored if no note is
+		 * present; whatever note is playing will continue. */
+		if (note) {
+		    event->note = note + 48;
+		    event->ins = ins + 1;
+		}
+
+		if (vol >= 0x01 && vol <= 0x10) {
+		    event->vol = (vol - 1) * 16 + 1;
+		} else if (note || vol) {
+		    /* aurora.far contains note+ins without volume. Most are
+		     * after break positions, but one is played in order 16.
+		     * This is invalid and sets sets the volume to zero.
+		     * Volumes greater than 0x10 (f) also usually seem to be
+		     * treated as zero (OOB table read?).
+		     */
+		    event->vol = 1;
+		}
+>>>>>>> db7344ebf (abc)
 
 		far_translate_effect(event, MSN(fxb), LSN(fxb), vol);
 	    }
@@ -412,8 +446,13 @@ static int far_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	hio_read(fih.name, 32, 1, f);	/* Instrument name */
 	fih.length = hio_read32l(f);	/* Length of sample (up to 64Kb) */
+<<<<<<< HEAD
 	fih.finetune = hio_read8(f);	/* Finetune (unsuported) */
 	fih.volume = hio_read8(f);	/* Volume (unsuported?) */
+=======
+	fih.finetune = hio_read8(f);	/* Finetune (unsupported) */
+	fih.volume = hio_read8(f);	/* Volume (unsupported?) */
+>>>>>>> db7344ebf (abc)
 	fih.loop_start = hio_read32l(f);/* Loop start */
 	fih.loopend = hio_read32l(f);	/* Loop end */
 	fih.sampletype = hio_read8(f);	/* 1=16 bit sample */
@@ -442,6 +481,10 @@ static int far_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	mod->xxs[i].flg |= fih.loopmode ? XMP_SAMPLE_LOOP : 0;
 	mod->xxi[i].sub[0].vol = 0xff; /* fih.volume; */
+<<<<<<< HEAD
+=======
+	mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 	mod->xxi[i].sub[0].sid = i;
 
 	libxmp_instrument_name(mod, i, fih.name, 32);

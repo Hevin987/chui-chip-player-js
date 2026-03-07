@@ -18,7 +18,11 @@
 
 #define STREAM_HEADER_SIZE 12
 
+<<<<<<< HEAD
 #define HEADER_MAGIC "\3757zXZ"
+=======
+/* #define HEADER_MAGIC "\3757zXZ" */
+>>>>>>> db7344ebf (abc)
 #define HEADER_MAGIC_SIZE 6
 
 #define FOOTER_MAGIC "YZ"

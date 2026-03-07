@@ -1,6 +1,29 @@
 #ifndef LIBXMP_COMMON_H
 #define LIBXMP_COMMON_H
 
+<<<<<<< HEAD
+=======
+/* band-aid for autotools: we aren't using autoheader.
+ * See: https://github.com/libxmp/libxmp/issues/373 . */
+#ifdef AC_APPLE_UNIVERSAL_BUILD
+# undef  WORDS_BIGENDIAN
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#endif
+
+#ifdef LIBXMP_CORE_PLAYER
+#ifndef LIBXMP_NO_PROWIZARD
+#define LIBXMP_NO_PROWIZARD
+#endif
+#ifndef LIBXMP_NO_DEPACKERS
+#define LIBXMP_NO_DEPACKERS
+#endif
+#else
+#undef LIBXMP_CORE_DISABLE_IT
+#endif
+
+>>>>>>> db7344ebf (abc)
 #include <stdarg.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -28,12 +51,21 @@
 #define inline __inline
 #endif
 
+<<<<<<< HEAD
 #if defined(_MSC_VER) ||  defined(__WATCOMC__) || defined(__EMX__)
 #define XMP_MAXPATH _MAX_PATH
 #elif defined(PATH_MAX)
 #define XMP_MAXPATH  PATH_MAX
 #else
 #define XMP_MAXPATH  1024
+=======
+#if (defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))) ||\
+    (defined(_MSC_VER) && (_MSC_VER >= 1400)) || \
+    (defined(__WATCOMC__) && (__WATCOMC__ >= 1250) && !defined(__cplusplus))
+#define LIBXMP_RESTRICT __restrict
+#else
+#define LIBXMP_RESTRICT
+>>>>>>> db7344ebf (abc)
 #endif
 
 #if defined(__MORPHOS__) || defined(__AROS__) || defined(__AMIGA__) \
@@ -41,6 +73,24 @@
 #define LIBXMP_AMIGA	1
 #endif
 
+<<<<<<< HEAD
+=======
+#if defined(_MSC_VER) && defined(__has_include)
+#if __has_include(<winapifamily.h>)
+#define HAVE_WINAPIFAMILY_H 1
+#else
+#define HAVE_WINAPIFAMILY_H 0
+#endif
+#endif
+
+#if defined(HAVE_WINAPIFAMILY_H) && HAVE_WINAPIFAMILY_H
+#include <winapifamily.h>
+#define LIBXMP_UWP (!WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP))
+#else
+#define LIBXMP_UWP 0
+#endif
+
+>>>>>>> db7344ebf (abc)
 #ifdef HAVE_EXTERNAL_VISIBILITY
 #define LIBXMP_EXPORT_VERSIONED __attribute__((visibility("default"),externally_visible))
 #else
@@ -58,6 +108,11 @@
 #  include <SupportDefs.h>
 #elif defined __amigaos4__
 #  include <exec/types.h>
+<<<<<<< HEAD
+=======
+#elif defined _arch_dreamcast /* KallistiOS */
+#  include <arch/types.h>
+>>>>>>> db7344ebf (abc)
 #else
 typedef signed char int8;
 typedef signed short int int16;
@@ -65,6 +120,7 @@ typedef signed int int32;
 typedef unsigned char uint8;
 typedef unsigned short int uint16;
 typedef unsigned int uint32;
+<<<<<<< HEAD
 #endif
 
 #ifdef _MSC_VER /* MSVC6 has no long long */
@@ -73,6 +129,31 @@ typedef unsigned __int64 uint64;
 #elif !(defined(B_BEOS_VERSION) || defined(__amigaos4__))
 typedef unsigned long long uint64;
 typedef signed long long int64;
+=======
+#ifdef _MSC_VER /* MSVC6 has no long long */
+typedef signed __int64 int64;
+typedef unsigned __int64 uint64;
+#elif defined(_LP64) || defined(__LP64__)
+typedef unsigned long uint64;
+typedef signed long int64;
+#else
+typedef unsigned long long uint64;
+typedef signed long long int64;
+#endif /* [u]int64 */
+#endif
+/* just in case :  */
+typedef int tst_uint32[2 * (4 == sizeof(uint32)) - 1];
+typedef int tst_uint64[2 * (8 == sizeof(uint64)) - 1];
+
+#ifdef _MSC_VER
+#pragma warning(disable:4100) /* unreferenced formal parameter */
+#pragma warning(disable:4389) /* signed/unsigned mismatch ( <, <=, >, >= ) */
+#pragma warning(disable:4018) /* signed/unsigned mismatch ( ==, != ) */
+#pragma warning(disable:4127) /* conditional expression is constant. */
+#pragma warning(disable:4761) /* integral size mismatch in argument; conversion supplied (for MSVC6 and older.) */
+#pragma warning(disable:4244) /* conversion from 'type' to 'int', possible loss of data */
+#pragma warning(disable:4267) /* conversion from 'size_t' to 'type', possible loss of data */
+>>>>>>> db7344ebf (abc)
 #endif
 
 #ifndef LIBXMP_CORE_PLAYER
@@ -114,6 +195,10 @@ typedef signed long long int64;
 #define EVENT(a,c,r)	m->mod.xxt[TRACK_NUM((a),(c))]->event[r]
 
 #ifdef _MSC_VER
+<<<<<<< HEAD
+=======
+
+>>>>>>> db7344ebf (abc)
 #define D_CRIT "  Error: "
 #define D_WARN "Warning: "
 #define D_INFO "   Info: "
@@ -149,6 +234,7 @@ static void __inline D_(const char *text, ...) {
 #else
 
 #ifdef DEBUG
+<<<<<<< HEAD
 #define D_INFO "\x1b[33m"
 #define D_CRIT "\x1b[31m"
 #define D_WARN "\x1b[36m"
@@ -172,6 +258,45 @@ static void __inline D_(const char *text, ...) {
 #define unlink _unlink
 #define S_ISDIR(x) (((x)&_S_IFDIR) != 0)
 #endif
+=======
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#define LIBXMP_FUNC __func__
+#else
+#define LIBXMP_FUNC __FUNCTION__
+#endif
+#define D_INFO "\x1b[33m"
+#define D_CRIT "\x1b[31m"
+#define D_WARN "\x1b[36m"
+#if defined(__GNUC__) && (__GNUC__ < 3)
+#define D_(fmt, args...) do { \
+	printf("\x1b[33m%s \x1b[37m[%s:%d] " D_INFO, LIBXMP_FUNC, \
+		__FILE__, __LINE__); printf (fmt, ##args); printf ("\x1b[0m\n"); \
+	} while (0)
+#else /* assume C99 compatibility: */
+#define D_(...) do { \
+	printf("\x1b[33m%s \x1b[37m[%s:%d] " D_INFO, LIBXMP_FUNC, \
+		__FILE__, __LINE__); printf (__VA_ARGS__); printf ("\x1b[0m\n"); \
+	} while (0)
+#endif
+#else
+#if defined(__GNUC__) && (__GNUC__ < 3)
+#define D_(fmt, args...) \
+		do {} while (0)
+#else
+/* assume C99 compatibility: */
+#define D_(...) do {} while (0)
+#endif
+#endif
+
+#endif	/* !_MSC_VER */
+
+#if defined(__GNUC__) || defined(__clang__)
+#define LIBXMP_ATTRIB_PRINTF(x,y) __attribute__((__format__(__printf__,x,y)))
+#else
+#define LIBXMP_ATTRIB_PRINTF(x,y)
+#endif
+
+>>>>>>> db7344ebf (abc)
 #if defined(_WIN32) || defined(__WATCOMC__) /* in win32.c */
 #define USE_LIBXMP_SNPRINTF
 /* MSVC 2015+ has C99 compliant snprintf and vsnprintf implementations.
@@ -181,21 +306,54 @@ static void __inline D_(const char *text, ...) {
 #if defined(_MSC_VER) && _MSC_VER >= 1900
 #undef USE_LIBXMP_SNPRINTF
 #endif
+<<<<<<< HEAD
+=======
+#if defined(__MINGW32__) && !defined(__MINGW_FEATURES__)
+#define __MINGW_FEATURES__ 0 /* to avoid -Wundef from old mingw.org headers */
+#endif
+>>>>>>> db7344ebf (abc)
 #if defined(__MINGW32__) && defined(__USE_MINGW_ANSI_STDIO) && (__USE_MINGW_ANSI_STDIO != 0)
 #undef USE_LIBXMP_SNPRINTF
 #endif
 #ifdef USE_LIBXMP_SNPRINTF
+<<<<<<< HEAD
 int libxmp_vsnprintf(char *, size_t, const char *, va_list);
 int libxmp_snprintf (char *, size_t, const char *, ...);
+=======
+int libxmp_vsnprintf(char *, size_t, const char *, va_list) LIBXMP_ATTRIB_PRINTF(3,0);
+int libxmp_snprintf (char *, size_t, const char *, ...) LIBXMP_ATTRIB_PRINTF(3,4);
+>>>>>>> db7344ebf (abc)
 #define snprintf  libxmp_snprintf
 #define vsnprintf libxmp_vsnprintf
 #endif
 #endif
 
+<<<<<<< HEAD
+=======
+/* Output file size limit for files unpacked from unarchivers into RAM. Most
+ * general archive compression formats can't nicely bound the output size
+ * from their input filesize, and a cap is needed for a few reasons:
+ *
+ * - Linux is too dumb for its own good and its malloc/realloc will return
+ *   pointers to RAM that doesn't exist instead of NULL. When these are used,
+ *   it will kill the application instead of allowing it to fail gracefully.
+ * - libFuzzer and the clang sanitizers have malloc/realloc interceptors that
+ *   terminate with an error instead of returning NULL.
+ *
+ * Depackers that have better ways of bounding the output size can ignore this.
+ * This value is fairly arbitrary and can be changed if needed.
+ */
+#define LIBXMP_DEPACK_LIMIT (512 << 20)
+
+>>>>>>> db7344ebf (abc)
 /* Quirks */
 #define QUIRK_S3MLOOP	(1 << 0)	/* S3M loop mode */
 #define QUIRK_ENVFADE	(1 << 1)	/* Fade at end of envelope */
 #define QUIRK_PROTRACK	(1 << 2)	/* Use Protracker-specific quirks */
+<<<<<<< HEAD
+=======
+#define QUIRK_RTONCE	(1 << 3)	/* Retrigger one time only */
+>>>>>>> db7344ebf (abc)
 #define QUIRK_ST3BUGS	(1 << 4)	/* Scream Tracker 3 bug compatibility */
 #define QUIRK_FINEFX	(1 << 5)	/* Enable 0xf/0xe for fine effects */
 #define QUIRK_VSALL	(1 << 6)	/* Volume slides in all frames */
@@ -204,7 +362,12 @@ int libxmp_snprintf (char *, size_t, const char *, ...);
 #define QUIRK_VOLPDN	(1 << 9)	/* Set priority to volume slide down */
 #define QUIRK_UNISLD	(1 << 10)	/* Unified pitch slide/portamento */
 #define QUIRK_ITVPOR	(1 << 11)	/* Disable fine bends in IT vol fx */
+<<<<<<< HEAD
 #define QUIRK_FTMOD	(1 << 12)	/* Flag for multichannel mods */
+=======
+/*#define QUIRK_FTMOD	(1 << 12)*/	/* Flag for multichannel mods */
+#define QUIRK_INVLOOP	(1 << 13)	/* Enable invert loop */
+>>>>>>> db7344ebf (abc)
 /*#define QUIRK_MODRNG	(1 << 13)*/	/* Limit periods to MOD range */
 #define QUIRK_INSVOL	(1 << 14)	/* Use instrument volume */
 #define QUIRK_VIRTUAL	(1 << 15)	/* Enable virtual channels */
@@ -217,12 +380,20 @@ int libxmp_snprintf (char *, size_t, const char *, ...);
 #define QUIRK_PRENV	(1 << 22)	/* Portamento resets envelope & fade */
 #define QUIRK_ITOLDFX	(1 << 23)	/* IT old effects mode */
 #define QUIRK_S3MRTG	(1 << 24)	/* S3M-style retrig when count == 0 */
+<<<<<<< HEAD
 #define QUIRK_RTDELAY	(1 << 25)	/* Delay effect retrigs instrument */
+=======
+/*#define QUIRK_RTDELAY	(1 << 25)*/	/* Delay effect retrigs instrument */
+>>>>>>> db7344ebf (abc)
 #define QUIRK_FT2BUGS	(1 << 26)	/* FT2 bug compatibility */
 #define QUIRK_MARKER	(1 << 27)	/* Patterns 0xfe and 0xff reserved */
 #define QUIRK_NOBPM	(1 << 28)	/* Adjust speed only, no BPM */
 #define QUIRK_ARPMEM	(1 << 29)	/* Arpeggio has memory (S3M_ARPEGGIO) */
 #define QUIRK_RSTCHN	(1 << 30)	/* Reset channel on sample end */
+<<<<<<< HEAD
+=======
+#define QUIRK_FT2ENV	(1 << 31)	/* Use FT2-style envelope handling */
+>>>>>>> db7344ebf (abc)
 
 #define HAS_QUIRK(x)	(m->quirk & (x))
 
@@ -230,12 +401,134 @@ int libxmp_snprintf (char *, size_t, const char *, ...);
 /* Format quirks */
 #define QUIRKS_ST3		(QUIRK_S3MLOOP | QUIRK_VOLPDN | QUIRK_FINEFX | \
 				 QUIRK_S3MRTG  | QUIRK_MARKER | QUIRK_RSTCHN )
+<<<<<<< HEAD
 #define QUIRKS_FT2		(QUIRK_RTDELAY | QUIRK_FINEFX )
+=======
+#define QUIRKS_FT2		(0)
+>>>>>>> db7344ebf (abc)
 #define QUIRKS_IT		(QUIRK_S3MLOOP | QUIRK_FINEFX | QUIRK_VIBALL | \
 				 QUIRK_ENVFADE | QUIRK_ITVPOR | QUIRK_KEYOFF | \
 				 QUIRK_VIRTUAL | QUIRK_FILTER | QUIRK_RSTCHN | \
 				 QUIRK_IGSTPOR | QUIRK_S3MRTG | QUIRK_MARKER )
 
+<<<<<<< HEAD
+=======
+/* Quirks specific to flow effects, especially Pattern Loop. */
+#define FLOW_LOOP_GLOBAL_TARGET	(1 <<  0) /* Global target for all tracks */
+#define FLOW_LOOP_GLOBAL_COUNT	(1 <<  1) /* Global count for all tracks */
+#define FLOW_LOOP_END_ADVANCES	(1 <<  2) /* Loop end advances target (S3M) */
+#define FLOW_LOOP_END_CANCELS	(1 <<  3) /* Loop end cancels prev jumps on row (LIQ) */
+#define FLOW_LOOP_PATTERN_RESET	(1 <<  4) /* Target/count reset on pattern change */
+#define FLOW_LOOP_INIT_SAMEROW	(1 <<  5) /* SBx sets target if it isn't set (ST 3.01) */
+#define FLOW_LOOP_FIRST_EFFECT	(1 <<  6) /* Only execute the first E60/E6x in a row */
+#define FLOW_LOOP_ONE_AT_A_TIME	(1 <<  7) /* Init E6x if no other channel is looping (MPT) */
+#define FLOW_LOOP_IGNORE_TARGET	(1 <<  8) /* Ignore E60 if count is >=1 (LIQ) */
+#define FLOW_LOOP_DELAY_BREAK	(1 <<  9) /* E6x jump prevents later Dxx on same row (S3M, IT) */
+#define FLOW_LOOP_DELAY_JUMP	(1 << 10) /* E6x jump prevents later Bxx on same row (S3M) */
+#define FLOW_LOOP_UNSET_BREAK	(1 << 11) /* E6x jump cancels prior Dxx on same row (S3M, IMF) */
+#define FLOW_LOOP_UNSET_JUMP	(1 << 12) /* E6x jump cancels prior Bxx on same row (S3M) */
+#define FLOW_LOOP_SHARED_BREAK	(1 << 13) /* E6x overrides prior Dxx dest on same row (LIQ) */
+/*#define FLOW_LOOP_TICK_0_JUMP */	  /* Loop jump shortens row to one tick (DTM) */
+#define FLOW_JUMP_THEN_BREAK	(1 << 29) /* TODO: Bxx Dxx jumps, then breaks (IMF, TT) */
+#define FLOW_JUMP_QUEUED	(1 << 30) /* TODO: Jump queues next position (ST2) */
+#define FLOW_JUMP_NO_ROW_SET	(1 << 31) /* Jump doesn't set break row to 0 (ST3/IT) */
+
+#define HAS_FLOW_MODE(x)	(m->flow_mode & (x))
+
+#define FLOW_MODE_GENERIC	0
+#define FLOW_LOOP_GLOBAL	(FLOW_LOOP_GLOBAL_TARGET | FLOW_LOOP_GLOBAL_COUNT)
+/* Simulate players where all breaks and jumps are ignored during a loop jump. */
+#define FLOW_LOOP_NO_BREAK_JUMP	(FLOW_LOOP_DELAY_BREAK | FLOW_LOOP_DELAY_JUMP | \
+				 FLOW_LOOP_UNSET_BREAK | FLOW_LOOP_UNSET_JUMP)
+
+/* Scream Tracker 3. No S3Ms seem to rely on the earlier behavior mode.
+ * 3.01b has a bug where the end advancement sets the target to the same line
+ * instead of the next line; there's no way to make use of this without getting
+ * stuck, so it's not simulated.
+ * ST2 has an entirely different behavior for pattern jump where, instead of
+ * immediately jumping, it queues the next position to be loaded after a break
+ * or the end of the current pattern.
+ */
+#define FLOW_MODE_ST2		(FLOW_JUMP_QUEUED)
+#define FLOW_MODE_ST3_301	(FLOW_LOOP_GLOBAL | FLOW_LOOP_PATTERN_RESET | \
+				 FLOW_LOOP_END_ADVANCES | FLOW_LOOP_INIT_SAMEROW | \
+				 FLOW_JUMP_NO_ROW_SET)
+#define FLOW_MODE_ST3_321	(FLOW_LOOP_GLOBAL | FLOW_LOOP_PATTERN_RESET | \
+				 FLOW_LOOP_END_ADVANCES | FLOW_LOOP_NO_BREAK_JUMP | \
+				 FLOW_JUMP_NO_ROW_SET)
+
+/* Impulse Tracker. Not clear if anything relies on the old behavior types.
+ * IT loops were global pre-1.04, and loop jumps override any prior break/jump.
+ * IT 2.00+ loop jumps also delay any following break, but not pattern jumps.
+ * IT 2.10+ reintroduced ST3's loop target advancement.
+ */
+#define FLOW_MODE_IT_100	(FLOW_LOOP_GLOBAL | \
+				 FLOW_LOOP_UNSET_BREAK | FLOW_LOOP_UNSET_JUMP | \
+				 FLOW_JUMP_NO_ROW_SET)
+#define FLOW_MODE_IT_104	(FLOW_LOOP_UNSET_BREAK | FLOW_LOOP_UNSET_JUMP | \
+				 FLOW_JUMP_NO_ROW_SET)
+#define FLOW_MODE_IT_200	(FLOW_MODE_IT_104 | FLOW_LOOP_DELAY_BREAK)
+#define FLOW_MODE_IT_210	(FLOW_MODE_IT_200 | FLOW_LOOP_END_ADVANCES)
+
+/* Modplug Tracker/early OpenMPT */
+#define FLOW_MODE_MPT_116	(FLOW_LOOP_ONE_AT_A_TIME | FLOW_LOOP_NO_BREAK_JUMP | \
+				 FLOW_JUMP_NO_ROW_SET)
+
+/* Imago Orpheus. Pattern Jump actually does not reset target/count, but all
+ * other forms of pattern change do. Unclear if anything relies on it.
+ * An XAx jump will set the destination row of a prior Txx jump.
+ * An XAx jump will cancel a prior Uxx break on the same row.
+ * Txx unsets a prior Uxx (normal); Txx followed by Uyy jumps and then
+ * breaks to the next pattern after position X.
+ */
+#define FLOW_MODE_ORPHEUS	(FLOW_LOOP_PATTERN_RESET | \
+				 FLOW_LOOP_SHARED_BREAK | FLOW_LOOP_UNSET_BREAK | \
+				 FLOW_JUMP_THEN_BREAK)
+
+/* Liquid Tracker uses generic MOD loops with an added behavior where
+ * the end of a loop will cancel any other jump in the row that preceded it.
+ * M60 is also ignored in channels that have started a loop for some reason.
+ * When M6x jumps, it overrides any prior break line set by Jxx/Cxx.
+ * There is also a "Scream Tracker" compatibility mode (only detectable in the
+ * newer format) that adds LOOP_MODE_PATTERN_RESET.
+ */
+#define FLOW_MODE_LIQUID	(FLOW_LOOP_END_CANCELS | FLOW_LOOP_IGNORE_TARGET | \
+				 FLOW_LOOP_SHARED_BREAK)
+#define FLOW_MODE_LIQUID_COMPAT	(FLOW_MODE_LIQUID | FLOW_LOOP_PATTERN_RESET)
+
+/* Octalyser (Atari). Looping jumps to the original position E60 was used in,
+ * which libxmp doesn't simulate for now since it mostly gets the player stuck.
+ * Octalyser ignores E60 if a loop is currently active; it's not clear if it's
+ * possible for a module to actually rely on this behavior. Loop jumps
+ * interrupt all breaks/jumps on the same row.
+ *
+ * LOOP_MODE_END_CANCELS is inaccurate but needed to fix "Dammed Illusion",
+ * which has multiple E6x on one line that don't trigger because the module
+ * expects to play in 4 channel mode. This quirk only works for this module
+ * because it uses even loop counts, and doesn't break any other modules
+ * because multiple E6x on a row otherwise traps the player.
+ */
+#define FLOW_MODE_OCTALYSER	(FLOW_LOOP_GLOBAL | FLOW_LOOP_IGNORE_TARGET | \
+				 FLOW_LOOP_END_CANCELS | FLOW_LOOP_NO_BREAK_JUMP)
+
+/* Digital Tracker prior to shareware 1.02 doesn't use LOOP_MODE_FIRST_EFFECT,
+ * but any MOD that would rely on it is impossible to fingerprint.
+ * Early versions had fully working loop jump precedence over jump/break;
+ * later versions gradually break this in ways libxmp only partially implements.
+ * Commercial version 1.9(?) added per-track counters.
+ * Digital Home Studio added a bizarre tick-0 jump bug.
+ */
+#define FLOW_MODE_DTM_2015	(FLOW_LOOP_GLOBAL | FLOW_LOOP_FIRST_EFFECT | \
+				 FLOW_LOOP_NO_BREAK_JUMP)
+#define FLOW_MODE_DTM_2015_6CH	(FLOW_LOOP_GLOBAL | FLOW_LOOP_FIRST_EFFECT | \
+				 FLOW_LOOP_DELAY_BREAK | FLOW_LOOP_UNSET_BREAK | \
+				 FLOW_LOOP_SHARED_BREAK)
+#define FLOW_MODE_DTM_19	(FLOW_LOOP_GLOBAL_TARGET | FLOW_LOOP_UNSET_BREAK | \
+				 FLOW_LOOP_SHARED_BREAK)
+#define FLOW_MODE_DTM_DHS	(FLOW_LOOP_GLOBAL_TARGET | FLOW_LOOP_TICK_0_JUMP)
+
+
+>>>>>>> db7344ebf (abc)
 /* DSP effects */
 #define DSP_EFFECT_CUTOFF	0x02
 #define DSP_EFFECT_RESONANCE	0x03
@@ -248,6 +541,10 @@ int libxmp_snprintf (char *, size_t, const char *, ...);
 #define MED_TIME_FACTOR		2.64
 #define FAR_TIME_FACTOR		4.01373	/* See far_extras.c */
 
+<<<<<<< HEAD
+=======
+#define NO_SEQUENCE		MAX_SEQUENCES
+>>>>>>> db7344ebf (abc)
 #define MAX_SEQUENCES		255
 #define MAX_SAMPLE_SIZE		0x10000000
 #define MAX_SAMPLES		1024
@@ -266,10 +563,17 @@ int libxmp_snprintf (char *, size_t, const char *, ...);
 #define IS_AMIGA_MOD()	(IS_PLAYER_MODE_MOD() && IS_PERIOD_MODRNG())
 
 struct ord_data {
+<<<<<<< HEAD
 	int speed;
 	int bpm;
 	int gvl;
 	int time;
+=======
+	double time;			/* replay time (ms) at start of ord */
+	int speed;
+	int bpm;
+	int gvl;
+>>>>>>> db7344ebf (abc)
 	int start_row;
 #ifndef LIBXMP_CORE_PLAYER
 	int st26_speed;
@@ -294,6 +598,18 @@ struct extra_sample_data {
 	int sue;
 };
 
+<<<<<<< HEAD
+=======
+struct midi_macro {
+	char data[32];
+};
+
+struct midi_macro_data {
+	struct midi_macro param[16];
+	struct midi_macro fixed[128];
+};
+
+>>>>>>> db7344ebf (abc)
 struct module_data {
 	struct xmp_module mod;
 
@@ -309,8 +625,16 @@ struct module_data {
 	int volbase;			/* Volume base */
 	int gvolbase;			/* Global volume base */
 	int gvol;			/* Global volume */
+<<<<<<< HEAD
 	const int *vol_table;		/* Volume translation table */
 	int quirk;			/* player quirks */
+=======
+	int mvolbase;			/* Mix volume base (S3M/IT) */
+	int mvol;			/* Mix volume (S3M/IT) */
+	const int *vol_table;		/* Volume translation table */
+	int quirk;			/* player quirks */
+	int flow_mode;			/* Flow quirks, esp. Pattern Loop */
+>>>>>>> db7344ebf (abc)
 #define READ_EVENT_MOD	0
 #define READ_EVENT_FT2	1
 #define READ_EVENT_ST3	2
@@ -331,9 +655,16 @@ struct module_data {
 	void *extra;			/* format-specific extra fields */
 	uint8 **scan_cnt;		/* scan counters */
 	struct extra_sample_data *xtra;
+<<<<<<< HEAD
 };
 
 
+=======
+	struct midi_macro_data *midi;
+	int compare_vblank;
+};
+
+>>>>>>> db7344ebf (abc)
 struct pattern_loop {
 	int start;
 	int count;
@@ -344,7 +675,15 @@ struct flow_control {
 	int jump;
 	int delay;
 	int jumpline;
+<<<<<<< HEAD
 	int loop_chn;
+=======
+	int loop_dest;		/* Pattern loop destination, -1 for none */
+	int loop_param;		/* Last loop param for Digital Tracker */
+	int loop_start;		/* Global loop target for S3M et al. */
+	int loop_count;		/* Global loop count for S3M et al. */
+	int loop_active_num;	/* Number of active loops for scan */
+>>>>>>> db7344ebf (abc)
 
 	struct pattern_loop *loop;
 
@@ -354,6 +693,10 @@ struct flow_control {
 #define ROWDELAY_FIRST_FRAME	(1 << 1)
 	int rowdelay;		/* For IT pattern row delay */
 	int rowdelay_set;
+<<<<<<< HEAD
+=======
+	int force_reposition;
+>>>>>>> db7344ebf (abc)
 };
 
 struct virt_channel {
@@ -362,7 +705,11 @@ struct virt_channel {
 };
 
 struct scan_data {
+<<<<<<< HEAD
 	int time;			/* replay time in ms */
+=======
+	double time;			/* replay time in ms */
+>>>>>>> db7344ebf (abc)
 	int row;
 	int ord;
 	int num;
@@ -379,8 +726,14 @@ struct player_data {
 	int player_flags;
 	int flags;
 
+<<<<<<< HEAD
 	double current_time;
 	double frame_time;
+=======
+	double time_factor_relative;	/* User time factor adjustment */
+	double scan_time_factor;	/* m->time_factor for most recent scan */
+	double current_time;		/* current time based on scan time factor */
+>>>>>>> db7344ebf (abc)
 
 	int loop_count;
 	int sequence;
@@ -433,6 +786,12 @@ struct mixer_data {
 	int dsp;		/* dsp effect flags */
 	char *buffer;		/* output buffer */
 	int32 *buf32;		/* temporary buffer for 32 bit samples */
+<<<<<<< HEAD
+=======
+	int total_size;		/* allocated samples (not frames) in buffers */
+	int sample_size;	/* individual output sample (not frame) size */
+	int output_chn;		/* output channels (1 or 2) */
+>>>>>>> db7344ebf (abc)
 	int numvoc;		/* default softmixer voices number */
 	int ticksize;
 	int dtright;		/* anticlick control, right channel */
@@ -441,23 +800,47 @@ struct mixer_data {
 	double pbase;		/* period base */
 };
 
+<<<<<<< HEAD
+=======
+struct rng_state {
+	unsigned state;
+};
+
+>>>>>>> db7344ebf (abc)
 struct context_data {
 	struct player_data p;
 	struct mixer_data s;
 	struct module_data m;
 	struct smix_data smix;
+<<<<<<< HEAD
+=======
+	struct rng_state rng;
+>>>>>>> db7344ebf (abc)
 	int state;
 };
 
 
 /* Prototypes */
 
+<<<<<<< HEAD
 char	*libxmp_adjust_string	(char *);
+=======
+LIBXMP_BEGIN_DECLS
+
+char	*libxmp_adjust_string	(char *);
+void	libxmp_load_prologue	(struct context_data *); /* use in load only */
+void	libxmp_load_epilogue	(struct context_data *); /* use in load only */
+>>>>>>> db7344ebf (abc)
 int	libxmp_prepare_scan	(struct context_data *);
 void	libxmp_free_scan	(struct context_data *);
 int	libxmp_scan_sequences	(struct context_data *);
 int	libxmp_get_sequence	(struct context_data *, int);
 int	libxmp_set_player_mode	(struct context_data *);
+<<<<<<< HEAD
+=======
+double	libxmp_get_frame_time	(struct context_data *);
+void	libxmp_reset_flow	(struct context_data *);
+>>>>>>> db7344ebf (abc)
 
 int8	read8s			(FILE *, int *err);
 uint8	read8			(FILE *, int *err);
@@ -488,4 +871,9 @@ struct xmp_sample *libxmp_get_sample(struct context_data *, int);
 char *libxmp_strdup(const char *);
 int libxmp_get_filetype (const char *);
 
+<<<<<<< HEAD
+=======
+LIBXMP_END_DECLS
+
+>>>>>>> db7344ebf (abc)
 #endif /* LIBXMP_COMMON_H */

@@ -1,6 +1,193 @@
 Stable versions
 ---------------
 
+<<<<<<< HEAD
+=======
+4.7.0 (20260225):
+	Changes by Alice Rowan:
+	- Increase maximum sampling rate (XMP_MAX_SRATE) to 768000.
+	  This increases XMP_MAX_FRAMESIZE to 384000. The tick buffers are now
+	  allocated using the player-provided rate instead of XMP_MAX_FRAMESIZE:
+	  the frame info buffer may also be much smaller than XMP_MAX_FRAMESIZE.
+	  In case of existing software misusing the old XMP_MAX_FRAMESIZE, the
+	  minimum value for mixer_data->total_size is the old XMP_MAX_FRAMESIZE
+	  for now.
+	- xmp_seek_time now always seeks (even if the position is the same
+	  as the current position) and uses the start row detected by the scan.
+	- New function: xmp_seek_time_frame, which attempts to seek to the time
+	  requested by the caller within frame precision. This is achieved by
+	  using xmp_seek_time then repeatedly calling xmp_play_frame until the
+	  *next* frame contains the caller-requested time. The caller can then
+	  use xmp_play_frame/xmp_play_buffer to render the requested frame.
+	  WARNING: this is more computationally expensive than xmp_seek_time.
+	- New function: xmp_set_tempo_factor_relative, to set a relative
+	  tempo factor without clobbering the module's tempo factor.
+	- New function: xmp_get_tempo_factor, to get the base tempo factor
+	  set by loading a module or by xmp_set_tempo_factor.
+	- New function: xmp_get_tempo_factor_relative, to get the relative
+	  tempo factor set by xmp_start_player/xmp_set_tempo_factor_relative.
+	- New API define: XMP_FORMAT_32BIT for xmp_start_player to enable
+	  32-bit integer output.
+	- New API define: XMP_INST_NO_DEFAULT_PAN for xmp_subinstrument::pan
+	- New API defines: XMP_MARK_SKIP and XMP_MARK_END for xmp_module::xxo
+	- All internal module time/duration calculations are now in doubles
+	  (fixes off-by-one module time on final tick of some modules).
+	- Fix XM volume effects cxx/dxx accidentally having effects memory.
+	- Correct default of sample default panning values to -1 (no default
+	  panning) for most module formats.
+	- Simplify read_event_mod, read_event_st3, read_event_ft2 sample
+	  default volume handling.
+	- Anticlick decay curves are now applied after IT note cut, DCA note
+	  cut, IT effect S70 (etc.), and API-requested position changes.
+	- XM, MOD: remove QUIRK_FINEFX from QUIRKS_FT2.
+	- XM: channel fade rate is only copied from the instrument on rows
+	  with note + ins. + no toneporta/K00.
+	- XM: zero-length samples cut the channel like invalid instruments.
+	- XM: do not cut on a no-instrument key off note if the preceding
+	  instrument was invalid.
+	- XM: previous instrument's sample default volume is now applied for
+	  invalid instrument numbers beside a key off note.
+	- XM: previous instrument's sample default panning is now applied for
+	  invalid instrument numbers.
+	- XM: apply default volume, panning, and instrument fade rate for
+	  active invalid instruments.
+	- XM: invalid instrument numbers now reset the envelope positions.
+	- XM: valid instrument numbers with no note no longer set xc->ins,
+	  which would cause notes to play with the wrong instrument envelopes
+	  and could cause subsequent no-note instruments or invalid
+	  instruments to apply the wrong instrument's volume/panning.
+	- XM: rows with an instrument number and K00 no longer reset fadeout.
+	- XM: apply QUIRK_FT2BUGS to Fasttracker II clone modules.
+	- XM: reimplement Fasttracker II note delay effect.
+	- XM: FT2 tremor now resets on all delay rows, does not reset on
+	  instrument number + K00 rows, and is suppressed by instrument default
+	  volume and Cxx in cases where it is not reset. FT2 tremor no longer
+	  updates on note delay events before the delayed event is processed.
+	- XM: load all keyoff notes as XMP_KEY_OFF (fixes keyoff + ins rows).
+	- XM: keyoff without delay always initiates fadeout, even if there is
+	  if there is a volume envelope. The old implementation would sometimes
+	  delay the start of fadeout.
+	- XM: keyoff without volume envelope sets the channel volume to 0
+	  instead of setting fadeout to 0. This is now performed on the tick
+	  where keyoff takes effect only (fixes volume effects not cancelling
+	  the volume cut when they should have).
+	- XM: fix volume column set volume effects resetting fadeout
+	  (fixes Comic Bakery Remix position 35).
+	- XM: fix Kxx persisting between rows and pattern delay interaction.
+	- XM: fix note without ins# resetting fadeout position and state.
+	- XM: handle out-of-range notes more closely to FT2.
+	- XM: fix setting toneporta target with an active invalid instrument.
+	- XM: implement FT2-style offset effect memory (QUIRK_FT2BUGS only).
+	- Sum toneporta rates when toneporta is present in both effects slots
+	  in an event; FT2 bug emulation for double toneporta now zeroes the
+	  parameter of 3xx in the player instead of using a loader hack.
+	- Fix time tracking bugs in some complex pattern loop cases.
+	- Fix time tracking bugs when Bxx+Dxx jumps within the same position.
+	- S3M/IT: Cxx followed by Byy on the same row now jumps to pos Y row X.
+	- IT: fix importing channel initial panning for muted channels.
+	- IT: fix playing instruments with samples >=120 in the key map.
+	- Fix xmp_start_player not unmuting non-muted channels (regression
+	  introduced in 4.5.0).
+	Changes by Alice Rowan and ds-sloth:
+	- Minor Impulse Tracker loader performance improvements.
+
+4.6.3 (20250511):
+	Changes by Alice Rowan:
+	- Fix crashes when xmp_set_position is used to set a negative position.
+	  Negative positions now correctly return -XMP_ERROR_INVALID.
+	- Fix crashes when xmp_set_row is used to set a negative row.
+	  Negative positions now correctly return -XMP_ERROR_INVALID.
+	- Fix hangs when xmp_prev_position is used on the first position of
+	  a sequence which is preceded by an S3M/IT skip marker.
+	- Fix out-of-bounds reads when xmp_next_position is used at the end of
+	  a 256 position module.
+	- Fix hangs when seeking to an end-of-module marker caused by these
+	  positions getting assigned a non-existent sequence.
+	- Document xmp_set_position/xmp_next_position/xmp_prev_position
+	  interactions with xmp_stop_module/xmp_restart_module.
+	- xmp_set_tempo_factor no longer alters frame time calculation for
+	  xmp_get_frame_info. Frame time is now updated to account for the
+	  new time factor after calling xmp_scan_module.
+	- Fix loading XMs with some types of harmless pattern truncation.
+	  See: Jazztiz/ta-da-da-da.xm, Sonic (UK)/phuture.xm, et al.
+	- Fix pattern loop jump interactions with same row pattern jump/break
+	  for Scream Tracker 3.03b+ S3Ms and Impulse Tracker ITs.
+
+4.6.2 (20250224):
+	
+
+4.6.1 (20250101):
+	Changes by Alice Rowan:
+	- Add stereo sample loading support for IT, S3M, XM.
+	- Add sample preamplification to filter mixers for high sample rates.
+	- Implement support for Protracker instrument swapping.
+	- Fix XM envelope sustain points that exist on a zero-length loop.
+	- Fix XM extra fine portamento effect memory.
+	- Fix XM portamento up and portamento down memory (only for modules
+	  where FT2 bug compatibility is enabled, for now).
+	- Faster IT loading by buffering pattern, sample, and comment reads.
+	- Fix loop detection edge cases broken by S3M/IT marker scan bugs.
+	- Add fix for IT break to module scan (was missed in libxmp 4.5.0.)
+	- Fix restart position for >64k sample and Digital Tracker MODs.
+	- Replace rand() with a built-in reentrant alternative.
+	- Fix Paula mixer state leak after changing XMP_PLAYER_MODE.
+	- xmp_set_tempo_factor now returns -XMP_ERROR_STATE when called prior
+	  to xmp_start_player (instead of causing crashes).
+	- Fix mixer crashes caused by previously valid tempo factors after
+	  sample rate or BPM changes.
+	- Passing NULL to xmp_set_instrument_path() now unsets the instrument
+	  path instead of crashing.
+	- Fix module scan pattern delay counting.
+	- Add compatibility for non-standard IT Pattern Loop implementations.
+	- Fixed numerous defects found by fuzzing.
+	Changes by Thomas Neumann:
+	- Fix XM envelope handling
+	- Fix XM restart position, so that it is possible to play
+	 "10 Days Of Abstinence.xm"
+	Changes by ds-sloth:
+	- Optimize scan code for common case of no effects
+	Changes by Ozkan Sezer:
+	- Build system fixes and clean-ups. Misc code clean-ups.
+
+4.6.0 (20230615):
+	Changes by Alice Rowan:
+	- Implement S3M and IT mix volume.
+	- Add IT MIDI macro filter effects support.
+	- Fix for IT filter cutoff 127 on new note behavior.
+	- Add missing IT filter clamp to mixer loops.
+	- Fix IT duplicate note check to use the key prior to transpose.
+	- Fix multiple IT playback bugs affecting, e.g. Atomic Playboy.
+	- Fix IT tone portamento and offset.
+	- Fix reverse sustain loop release bug, add IT effect S9F support.
+	- Add Modplug ADPCM4 support for Impulse Tracker modules.
+	- Improve anticlick performance and fix anticlick filter volume bug.
+	- IT fade envelope reset should only affect volume envelope.
+	- Fix Impulse Tracker envelope and fadeout order.
+	- Replace bidirectional loop unrolling with reverse sample rendering.
+	- Fix crash when xmp_set_row() is used on an IT end marker.
+	- Fix NNA and tone portamento interaction with sample changes.
+	- Fix detection for TakeTracker TDZx MODs.
+	- Fix >1MB S3M modules relying on the sample segment high byte.
+	- Move interpolation wraparound handling out of sample loader.
+	- Don't increment voice position by step value at loop/tick end.
+	- Several loading performance improvements.
+	- Allow up to 255 sequences to be scanned.
+	- Allow xmp_smix_play functions to play key off, cut and fade events.
+	- Fixed numerous defects found by fuzzing.
+	Changes by Vitaly Novichkov:
+	- Cmake build system support.
+	Changes by Ozkan Sezer:
+	- Cleanups and refactoring of platform-specific code.
+	- Multiple code cleanups.
+	- Build system fixes and clean-ups.
+	Changes by Claudio Matsuoka:
+	- Fix linkage with gcc when versioned symbols and LTO are enabled.
+	Changes by Cameron Cawley:
+	- Several code and build system clean-ups.
+	Changes by Clownacy:
+	- Fixes and cleanups for C++ compatibility.
+
+>>>>>>> db7344ebf (abc)
 4.5.0 (20210606):
 	- fix xmp_set_position et al. when used during loops, pattern delay
 	- make xmp_set_position() consistently clear pattern break/jump vars
@@ -11,7 +198,11 @@ Stable versions
 	  (no ABI change)
 	- xmp_load_module_from_memory() now accepts a const void* memory
 	  param (no ABI change)
+<<<<<<< HEAD
 	- xmp_load_module_from_memory no longer accepts sizes <= 0.
+=======
+	- xmp_load_module_from_memory() no longer accepts sizes <= 0.
+>>>>>>> db7344ebf (abc)
 	- explicitly document that callers of xmp_load_module_from_file()
 	  are responsible for closing their own file.
 	- remove nonportable use of fdopen in xmp_load_module_from_file()
@@ -115,7 +306,11 @@ Stable versions
 	- fix S3M set pan effect (reported by Hai Shalom and Johannes Schultz)
 	- code refactoring and cleanup
 
+<<<<<<< HEAD
 4.3.12 (20150305):
+=======
+4.3.12 (20160305):
+>>>>>>> db7344ebf (abc)
 	Fix bugs caught in the OpenMPT test cases:
 	- fix IT note off with instrument
 	- fix IT note recover after cut
@@ -162,8 +357,13 @@ Stable versions
 	- prevent division by zero in memory I/O
 	Other changes:
 	- fix IT envelope release + fadeout (reported by NoSuck)
+<<<<<<< HEAD
 	- fix IT autovibrato depth (reported by Travis Evans)
 	- fix tone portamento target setting (reported by Georgy Lomsadze)
+=======
+	- fix tone portamento target setting (reported by Georgy Lomsadze)
+	- fix IT autovibrato depth (reported by Travis Evans)
+>>>>>>> db7344ebf (abc)
 	- disable ST3 sample size limit (reported by Jochen Goernitz)
 
 4.3.9 (20150623):
@@ -289,7 +489,11 @@ Stable versions
 	- fix module titles and instrument names in Mac OS X
 	- fix row delay initialization on new module
 
+<<<<<<< HEAD
 4.3.0 (20140927):
+=======
+4.3.0 (20140926):
+>>>>>>> db7344ebf (abc)
 	- rebranded as libxmp-lite
 	- build from the same source tree as the full libxmp
 	- fix fine volume slide memory

@@ -2,6 +2,7 @@
 
 TEST(test_player_med_synth)
 {
+<<<<<<< HEAD
 	xmp_context opaque;
 	struct xmp_frame_info info;
 	struct xmp_channel_info *ci;
@@ -42,5 +43,10 @@ TEST(test_player_med_synth)
 	xmp_end_player(opaque);
 	xmp_release_module(opaque);
 	xmp_free_context(opaque);
+=======
+	compare_med_synth_data(
+		"data/Inertiaload-1.med",
+		"data/med_synth.data");
+>>>>>>> db7344ebf (abc)
 }
 END_TEST

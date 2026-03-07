@@ -16,7 +16,11 @@ void Sap_Emu::cpu_write( sap_addr_t addr, int data )
 	#define CPU_READ( cpu, addr, time )     READ_LOW( addr )
 #else
 	#define CPU_READ( cpu, addr, time )     STATIC_CAST(Sap_Emu&,*cpu).cpu_read( addr )
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	int Sap_Emu::cpu_read( sap_addr_t addr )
 	{
 		if ( (addr & 0xF900) == 0xD000 )

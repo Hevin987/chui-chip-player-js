@@ -49,6 +49,13 @@
 #define EX_PATT_DELAY	0x0e
 #define EX_INVLOOP	0x0f
 
+<<<<<<< HEAD
+=======
+/* XM extended effects 2 */
+#define XX_XF_PORTA_UP	0x01
+#define XX_XF_PORTA_DN	0x02
+
+>>>>>>> db7344ebf (abc)
 #ifndef LIBXMP_CORE_PLAYER
 /* Oktalyzer effects */
 #define FX_OKT_ARP3	0x70
@@ -88,7 +95,12 @@
 #define FX_FAR_RETRIG	0x6d	/* FAR retrigger */
 #define FX_FAR_DELAY	0x6e	/* FAR note offset */
 
+<<<<<<< HEAD
 /* Other frequency based effects (ULT, etc) */
+=======
+/* ULT effects */
+#define FX_ULT_TEMPO	0x5f
+>>>>>>> db7344ebf (abc)
 #define FX_ULT_TPORTA   0x6f
 #endif
 
@@ -107,6 +119,12 @@
 #define FX_PANBRELLO_WF	0x8b
 #define FX_HIOFFSET	0x8c
 #define FX_IT_BREAK	0x8e	/* like FX_BREAK with hex parameter */
+<<<<<<< HEAD
+=======
+#define FX_MACRO_SET	0xbd	/* Set active IT parametered MIDI macro */
+#define FX_MACRO	0xbe	/* Execute IT MIDI macro */
+#define FX_MACROSMOOTH	0xbf	/* Execute IT MIDI macro slide */
+>>>>>>> db7344ebf (abc)
 #endif
 
 #ifndef LIBXMP_CORE_PLAYER
@@ -114,6 +132,14 @@
 #define FX_HOLD_DECAY	0x90
 #define FX_SETPITCH	0x91
 #define FX_VIBRATO2	0x92
+<<<<<<< HEAD
+=======
+#define FX_MED_RETRIG	0x93
+
+/* IMF effects */
+#define FX_IMF_FPORTA_DN 0x9a	/* IMF 1/16th fine porta down, 1xx/2xx mem */
+#define FX_IMF_FPORTA_UP 0x9b	/* IMF 1/16th fine porta up, 1xx/2xx mem */
+>>>>>>> db7344ebf (abc)
 
 /* PTM effects */
 #define FX_NSLIDE_DN	0x9c	/* IMF/PTM note slide down */
@@ -134,9 +160,18 @@
 #define FX_VOL_SUB	0xb7	/* SFX change volume down */
 #define FX_PITCH_ADD	0xb8	/* SFX add steps to current note */
 #define FX_PITCH_SUB	0xb9	/* SFX add steps to current note */
+<<<<<<< HEAD
 #endif
 
 #define FX_SURROUND	0x8d	/* S3M/IT */
+=======
+#define FX_LINE_JUMP	0xba	/* Archimedes jump to line in current order */
+#define FX_RETRIG	0xbb	/* Retrigger with extended range (LIQ, DSym) */
+#endif
+
+#define FX_SURROUND	0x8d	/* S3M/IT */
+#define FX_REVERSE	0x8f	/* XM/IT/others: play forward/reverse */
+>>>>>>> db7344ebf (abc)
 #define FX_S3M_SPEED	0xa3	/* S3M */
 #define FX_VOLSLIDE_2	0xa4
 #define FX_FINETUNE	0xa6

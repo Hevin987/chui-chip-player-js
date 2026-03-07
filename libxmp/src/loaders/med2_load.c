@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,6 +28,10 @@
  * MED 1.12 is in Fish disk #255
  */
 
+<<<<<<< HEAD
+=======
+#include "med.h"
+>>>>>>> db7344ebf (abc)
 #include "loader.h"
 #include "../period.h"
 
@@ -84,7 +92,11 @@ static int med2_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	hio_read8(f);		/* skip 0 */
 	for (i = 0; i < 31; i++) {
 		mod->xxi[i].sub[0].vol = hio_read8(f);
+<<<<<<< HEAD
 		mod->xxi[i].sub[0].pan = 0x80;
+=======
+		mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		mod->xxi[i].sub[0].fin = 0;
 		mod->xxi[i].sub[0].sid = i;
 	}
@@ -184,6 +196,7 @@ static int med2_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	D_(D_INFO "Instruments    : %d ", mod->ins);
 
 	for (i = 0; i < 31; i++) {
+<<<<<<< HEAD
 		char path[XMP_MAXPATH];
 		char ins_path[256];
 		char ins_name[32];
@@ -236,6 +249,11 @@ static int med2_load(struct module_data *m, HIO_HANDLE *f, const int start)
 			if (ret < 0) {
 				return -1;
 			}
+=======
+		if (med_load_external_instrument(f, m, i)) {
+			D_(D_CRIT "error loading instrument %d", i);
+			return -1;
+>>>>>>> db7344ebf (abc)
 		}
 	}
 

@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2024 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -77,7 +81,11 @@ typedef int _check_hdrsize[2 * (offsetof(struct upkg_hdr, gen) == UPKG_HDR_SIZE)
 #define UMUSIC_WAV	4
 #define UMUSIC_MP2	5
 
+<<<<<<< HEAD
 static const char *mustype[] = {
+=======
+static const char *const mustype[] = {
+>>>>>>> db7344ebf (abc)
 	"IT", "S3M", "XM", "MOD",
 	"WAV", "MP2", NULL
 };
@@ -128,6 +136,10 @@ static int get_objtype (HIO_HANDLE *f, int32 ofs, int type)
 {
 	char sig[16];
 _retry:
+<<<<<<< HEAD
+=======
+	memset(sig, 0, sizeof(sig));
+>>>>>>> db7344ebf (abc)
 	hio_seek(f, ofs, SEEK_SET);
 	hio_read(sig, 16, 1, f);
 	if (type == UMUSIC_IT) {

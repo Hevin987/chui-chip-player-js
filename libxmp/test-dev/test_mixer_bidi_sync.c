@@ -23,8 +23,13 @@ static void bidi_sync_test_mode(xmp_context opaque, int rate, int interp, const 
 	struct xmp_frame_info info;
 	int i, j;
 
+<<<<<<< HEAD
 	xmp_start_player(opaque, 8000, XMP_FORMAT_MONO);
 	xmp_set_player(opaque, XMP_PLAYER_INTERP, XMP_INTERP_SPLINE);
+=======
+	xmp_start_player(opaque, rate, XMP_FORMAT_MONO);
+	xmp_set_player(opaque, XMP_PLAYER_INTERP, interp);
+>>>>>>> db7344ebf (abc)
 
 	for (i = 0; i < RENDER_FRAMES; i++) {
 		xmp_play_frame(opaque);
@@ -36,12 +41,21 @@ static void bidi_sync_test_mode(xmp_context opaque, int rate, int interp, const 
 	}
 }
 
+<<<<<<< HEAD
 #define bidi_sync_helper(opaque, str) do { \
 	bidi_sync_test_mode(opaque, 8000,  XMP_INTERP_NEAREST, str ":nearest:8k"); \
+=======
+/* xm:nearest:8k has a pop ~3/4 through, just skip it for now. */
+#define bidi_sync_helper(opaque, str) do { \
+>>>>>>> db7344ebf (abc)
 	bidi_sync_test_mode(opaque, 8000,  XMP_INTERP_LINEAR,  str ":linear:8k"); \
 	bidi_sync_test_mode(opaque, 8000,  XMP_INTERP_SPLINE,  str ":spline:8k"); \
 	bidi_sync_test_mode(opaque, 11025, XMP_INTERP_NEAREST, str ":nearest:11k"); \
 	bidi_sync_test_mode(opaque, 11025, XMP_INTERP_LINEAR,  str ":linear:11k"); \
+<<<<<<< HEAD
+=======
+	bidi_sync_test_mode(opaque, 11025, XMP_INTERP_SPLINE,  str ":spline:11k"); \
+>>>>>>> db7344ebf (abc)
 } while (0)
 
 TEST(test_mixer_bidi_sync)

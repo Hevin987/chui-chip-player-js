@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,6 +28,10 @@
 #include "common.h"
 #include "virtual.h"
 #include "mixer.h"
+<<<<<<< HEAD
+=======
+#include "mix_all.h"
+>>>>>>> db7344ebf (abc)
 #include "period.h"
 #include "player.h"	/* for set_sample_end() */
 
@@ -32,6 +40,7 @@
 #endif
 
 
+<<<<<<< HEAD
 #define FLAG_16_BITS	0x01
 #define FLAG_STEREO	0x02
 #define FLAG_FILTER	0x04
@@ -39,11 +48,20 @@
 /* #define FLAG_SYNTH	0x20 */
 #define FIDX_FLAGMASK	(FLAG_16_BITS | FLAG_STEREO | FLAG_FILTER)
 
+=======
+>>>>>>> db7344ebf (abc)
 #define DOWNMIX_SHIFT	 12
 #define LIM8_HI		 127
 #define LIM8_LO		-128
 #define LIM16_HI	 32767
 #define LIM16_LO	-32768
+<<<<<<< HEAD
+=======
+#define LIM32_HI	2147483647
+#define LIM32_LO	(-2147483647 - 1)
+
+#define ANTICLICK_FPSHIFT	24
+>>>>>>> db7344ebf (abc)
 
 struct loop_data
 {
@@ -55,6 +73,7 @@ struct loop_data
 	int first_loop;
 	int _16bit;
 	int active;
+<<<<<<< HEAD
 	uint32 prologue[LOOP_PROLOGUE];
 	uint32 epilogue[LOOP_EPILOGUE];
 };
@@ -173,6 +192,27 @@ static MIX_FP a500led_mixers[] = {
 
 /* Downmix 32bit samples to 8bit, signed or unsigned, mono or stereo output */
 static void downmix_int_8bit(char *dest, int32 *src, int num, int amp, int offs)
+=======
+	int prologue_num;
+	int epilogue_num;
+	uint8 prologue[LOOP_PROLOGUE * 2 /* 16-bit */ * 2 /* stereo */];
+	uint8 epilogue[LOOP_EPILOGUE * 2 /* 16-bit */ * 2 /* stereo */];
+};
+
+/* See mix_all.h for a full explanation of these flags. */
+#define FLAG_16_BITS	0x01
+#define FLAG_STEREO	0x02
+#define FLAG_STEREOOUT	0x04
+#define FLAG_FILTER	0x08
+#define FLAG_ACTIVE	0x10
+/* #define FLAG_SYNTH	0x20 */
+#define FIDX_FLAGMASK	(FLAG_16_BITS | FLAG_STEREO | FLAG_STEREOOUT | FLAG_FILTER)
+
+
+/* Downmix 32bit samples to 8bit, signed or unsigned, mono or stereo output */
+static void downmix_int_8bit(int8 *LIBXMP_RESTRICT dest,
+			     const int32 *src, int num, int amp, unsigned offs)
+>>>>>>> db7344ebf (abc)
 {
 	int smp;
 	int shift = DOWNMIX_SHIFT + 8 - amp;
@@ -187,13 +227,22 @@ static void downmix_int_8bit(char *dest, int32 *src, int num, int amp, int offs)
 			*dest = smp;
 		}
 
+<<<<<<< HEAD
 		if (offs) *dest += offs;
+=======
+		if (offs) *dest = (int8)((uint8)*dest + offs);
+>>>>>>> db7344ebf (abc)
 	}
 }
 
 
 /* Downmix 32bit samples to 16bit, signed or unsigned, mono or stereo output */
+<<<<<<< HEAD
 static void downmix_int_16bit(int16 *dest, int32 *src, int num, int amp, int offs)
+=======
+static void downmix_int_16bit(int16 *LIBXMP_RESTRICT dest,
+			      const int32 *src, int num, int amp, unsigned offs)
+>>>>>>> db7344ebf (abc)
 {
 	int smp;
 	int shift = DOWNMIX_SHIFT - amp;
@@ -208,7 +257,36 @@ static void downmix_int_16bit(int16 *dest, int32 *src, int num, int amp, int off
 			*dest = smp;
 		}
 
+<<<<<<< HEAD
 		if (offs) *dest += offs;
+=======
+		if (offs) *dest = (int16)((uint16)*dest + offs);
+	}
+}
+
+/* Saturate 32bit samples, signed or unsigned, mono or stereo output */
+static void downmix_int_32bit(int32 *LIBXMP_RESTRICT dest,
+			      const int32 *src, int num, int amp, unsigned offs)
+{
+	int32 smp;
+	int shift = (16 - DOWNMIX_SHIFT) + amp;
+
+	/* Signed left shift overflow is UB; clamp with pre-shifted bounds. */
+	int max_value = LIM32_HI >> shift;
+	int min_value = LIM32_LO >> shift;
+
+	for (; num--; src++, dest++) {
+		smp = *src;
+		if (smp >= max_value) {
+			*dest = LIM32_HI;
+		} else if (smp <= min_value) {
+			*dest = LIM32_LO;
+		} else {
+			*dest = smp << shift;
+		}
+
+		if (offs) *dest = (int32)((uint32)*dest + offs);
+>>>>>>> db7344ebf (abc)
 	}
 }
 
@@ -230,8 +308,13 @@ static void do_anticlick(struct context_data *ctx, int voc, int32 *buf, int coun
 	int stepmul, stepval;
 	uint32 stepmul_sq;
 
+<<<<<<< HEAD
 	smp_r = vi->sright;
 	smp_l = vi->sleft;
+=======
+	smp_l = vi->sleft;
+	smp_r = vi->sright;
+>>>>>>> db7344ebf (abc)
 	vi->sright = vi->sleft = 0;
 
 	if (smp_l == 0 && smp_r == 0) {
@@ -257,8 +340,13 @@ static void do_anticlick(struct context_data *ctx, int voc, int32 *buf, int coun
 			/* Truncate to 16-bits of precision so the product is 32-bits. */
 			stepmul_sq = stepmul >> (ANTICLICK_FPSHIFT - 16);
 			stepmul_sq *= stepmul_sq;
+<<<<<<< HEAD
 			*buf++ += (stepmul_sq * (int64)smp_r) >> 32;
 			*buf++ += (stepmul_sq * (int64)smp_l) >> 32;
+=======
+			*buf++ += (stepmul_sq * (int64)smp_l) >> 32;
+			*buf++ += (stepmul_sq * (int64)smp_r) >> 32;
+>>>>>>> db7344ebf (abc)
 		}
 	} else {
 		while ((stepmul -= stepval) > 0) {
@@ -283,6 +371,10 @@ static void set_sample_end(struct context_data *ctx, int voc, int end)
 
 	if (end) {
 		SET_NOTE(NOTE_SAMPLE_END);
+<<<<<<< HEAD
+=======
+		vi->fidx &= ~FLAG_ACTIVE;
+>>>>>>> db7344ebf (abc)
 		if (HAS_QUIRK(QUIRK_RSTCHN)) {
 			libxmp_virt_resetvoice(ctx, voc, 0);
 		}
@@ -292,10 +384,20 @@ static void set_sample_end(struct context_data *ctx, int voc, int end)
 }
 
 /* Back up sample data before and after loop and replace it for interpolation.
+<<<<<<< HEAD
+=======
+ * TODO: if higher order interpolation than spline is added, the copy needs to
+ *       properly wrap around the loop data (modulo) for correct small loops.
+>>>>>>> db7344ebf (abc)
  * TODO: use an overlap buffer like OpenMPT? This is easier, but a little dirty. */
 static void init_sample_wraparound(struct mixer_data *s, struct loop_data *ld,
 				   struct mixer_voice *vi, struct xmp_sample *xxs)
 {
+<<<<<<< HEAD
+=======
+	int prologue_num = LOOP_PROLOGUE;
+	int epilogue_num = LOOP_EPILOGUE;
+>>>>>>> db7344ebf (abc)
 	int bidir;
 	int i;
 
@@ -311,6 +413,7 @@ static void init_sample_wraparound(struct mixer_data *s, struct loop_data *ld,
 	ld->_16bit = (xxs->flg & XMP_SAMPLE_16BIT);
 	ld->active = 1;
 
+<<<<<<< HEAD
 	bidir = vi->flags & VOICE_BIDIR;
 
 	if (ld->_16bit) {
@@ -341,6 +444,50 @@ static void init_sample_wraparound(struct mixer_data *s, struct loop_data *ld,
 		}
 		for (i = 0; i < LOOP_EPILOGUE; i++) {
 			ld->epilogue[i] = end[i];
+=======
+	/* Stereo */
+	if (xxs->flg & XMP_SAMPLE_STEREO) {
+		ld->start <<= 1;
+		ld->end <<= 1;
+		prologue_num <<= 1;
+		epilogue_num <<= 1;
+	}
+	ld->prologue_num = prologue_num;
+	ld->epilogue_num = epilogue_num;
+
+	bidir = vi->flags & VOICE_BIDIR;
+
+	if (ld->_16bit) {
+		uint16 *start = (uint16 *)ld->sptr + ld->start;
+		uint16 *end = (uint16 *)ld->sptr + ld->end;
+
+		memcpy(ld->prologue, start - prologue_num, prologue_num * 2);
+		memcpy(ld->epilogue, end, epilogue_num * 2);
+
+		if (!ld->first_loop) {
+			for (i = 0; i < prologue_num; i++) {
+				int j = i - prologue_num;
+				start[j] = bidir ? start[-1 - j] : end[j];
+			}
+		}
+		for (i = 0; i < epilogue_num; i++) {
+			end[i] = bidir ? end[-1 - i] : start[i];
+		}
+	} else {
+		uint8 *start = (uint8 *)ld->sptr + ld->start;
+		uint8 *end = (uint8 *)ld->sptr + ld->end;
+
+		memcpy(ld->prologue, start - prologue_num, prologue_num);
+		memcpy(ld->epilogue, end, epilogue_num);
+
+		if (!ld->first_loop) {
+			for (i = 0; i < prologue_num; i++) {
+				int j = i - prologue_num;
+				start[j] = bidir ? start[-1 - j] : end[j];
+			}
+		}
+		for (i = 0; i < epilogue_num; i++) {
+>>>>>>> db7344ebf (abc)
 			end[i] = bidir ? end[-1 - i] : start[i];
 		}
 	}
@@ -349,7 +496,12 @@ static void init_sample_wraparound(struct mixer_data *s, struct loop_data *ld,
 /* Restore old sample data from before and after loop. */
 static void reset_sample_wraparound(struct loop_data *ld)
 {
+<<<<<<< HEAD
 	int i;
+=======
+	int prologue_num = ld->prologue_num;
+	int epilogue_num = ld->epilogue_num;
+>>>>>>> db7344ebf (abc)
 
 	if (!ld->active)
 		return;
@@ -358,22 +510,32 @@ static void reset_sample_wraparound(struct loop_data *ld)
 		uint16 *start = (uint16 *)ld->sptr + ld->start;
 		uint16 *end = (uint16 *)ld->sptr + ld->end;
 
+<<<<<<< HEAD
 		if (!ld->first_loop) {
 			for (i = 0; i < LOOP_PROLOGUE; i++)
 				start[i - LOOP_PROLOGUE] = ld->prologue[i];
 		}
 		for (i = 0; i < LOOP_EPILOGUE; i++)
 			end[i] = ld->epilogue[i];
+=======
+		memcpy(start - prologue_num, ld->prologue, prologue_num * 2);
+		memcpy(end, ld->epilogue, epilogue_num * 2);
+>>>>>>> db7344ebf (abc)
 	} else {
 		uint8 *start = (uint8 *)ld->sptr + ld->start;
 		uint8 *end = (uint8 *)ld->sptr + ld->end;
 
+<<<<<<< HEAD
 		if (!ld->first_loop) {
 			for (i = 0; i < LOOP_PROLOGUE; i++)
 				start[i - LOOP_PROLOGUE] = ld->prologue[i];
 		}
 		for (i = 0; i < LOOP_EPILOGUE; i++)
 			end[i] = ld->epilogue[i];
+=======
+		memcpy(start - prologue_num, ld->prologue, prologue_num);
+		memcpy(end, ld->epilogue, epilogue_num);
+>>>>>>> db7344ebf (abc)
 	}
 }
 
@@ -383,8 +545,14 @@ static int has_active_sustain_loop(struct context_data *ctx, struct mixer_voice 
 #ifndef LIBXMP_CORE_DISABLE_IT
 	struct module_data *m = &ctx->m;
 	return vi->smp < m->mod.smp && (xxs->flg & XMP_SAMPLE_SLOOP) && (~vi->flags & VOICE_RELEASE);
+<<<<<<< HEAD
 #endif
 	return 0;
+=======
+#else
+	return 0;
+#endif
+>>>>>>> db7344ebf (abc)
 }
 
 static int has_active_loop(struct context_data *ctx, struct mixer_voice *vi,
@@ -430,7 +598,14 @@ static int loop_reposition(struct context_data *ctx, struct mixer_voice *vi,
 
 	if (~vi->flags & VOICE_BIDIR) {
 		/* Reposition for next loop */
+<<<<<<< HEAD
 		vi->pos -= vi->end - vi->start;
+=======
+		if (~vi->flags & VOICE_REVERSE)
+			vi->pos -= vi->end - vi->start;
+		else
+			vi->pos += vi->end - vi->start;
+>>>>>>> db7344ebf (abc)
 	} else {
 		/* Bidirectional loop: switch directions */
 		vi->flags ^= VOICE_REVERSE;
@@ -445,22 +620,98 @@ static int loop_reposition(struct context_data *ctx, struct mixer_voice *vi,
 			vi->pos = vi->start * 2 - vi->pos;
 		}
 	}
+<<<<<<< HEAD
 	return loop_changed;
 }
 
 
 /* Prepare the mixer for the next tick */
 void libxmp_mixer_prepare(struct context_data *ctx)
+=======
+	/* Safety check: pos should not be excessively past the sample end.
+	 * This only seems to happen with very low sample rates. */
+	if (vi->pos > xxs->len + 1) {
+		vi->pos = xxs->len + 1;
+	}
+	return loop_changed;
+}
+
+static void hotswap_sample(struct context_data *ctx, struct mixer_voice *vi,
+ int voc, int smp)
+{
+	int vol = vi->vol;
+	int pan = vi->pan;
+	libxmp_mixer_setpatch(ctx, voc, smp, 0);
+	vi->flags |= SAMPLE_LOOP;
+	vi->vol = vol;
+	vi->pan = pan;
+}
+
+static void get_current_sample(struct context_data *ctx, struct mixer_voice *vi,
+ struct xmp_sample **xxs, struct extra_sample_data **xtra, int *c5spd)
+{
+	struct module_data *m = &ctx->m;
+	struct xmp_module *mod = &m->mod;
+
+	if (vi->smp < mod->smp) {
+		*xxs = &mod->xxs[vi->smp];
+		*xtra = &m->xtra[vi->smp];
+		*c5spd = m->xtra[vi->smp].c5spd;
+	} else {
+		*xxs = &ctx->smix.xxs[vi->smp - mod->smp];
+		*xtra = NULL;
+		*c5spd = m->c4rate;
+	}
+	adjust_voice_end(ctx, vi, *xxs, *xtra);
+}
+
+/* Calculate the required number of sample frames to render a tick.
+ * Returns -1 if any of the parameters are invalid. */
+int libxmp_mixer_get_ticksize(int freq, double time_factor, double rrate, int bpm)
+{
+	double calc;
+	int ticksize;
+
+	if (freq <= 0 || bpm <= 0 || time_factor <= 0.0 || rrate <= 0.0) {
+		return -1;
+	}
+
+	calc = freq * time_factor * rrate / bpm / 1000;
+	if (calc > INT_MAX || calc != calc /* NaN */) {
+		return -1;
+	}
+
+	ticksize = (int)calc;
+
+	if (ticksize < (1 << ANTICLICK_SHIFT))
+		ticksize = 1 << ANTICLICK_SHIFT;
+
+	return ticksize;
+}
+
+/* Prepare the mixer for the next tick */
+static void libxmp_mixer_prepare(struct context_data *ctx)
+>>>>>>> db7344ebf (abc)
 {
 	struct player_data *p = &ctx->p;
 	struct module_data *m = &ctx->m;
 	struct mixer_data *s = &ctx->s;
 	int bytelen;
 
+<<<<<<< HEAD
 	s->ticksize = s->freq * m->time_factor * m->rrate / p->bpm / 1000;
 
 	if (s->ticksize < (1 << ANTICLICK_SHIFT))
 		s->ticksize = 1 << ANTICLICK_SHIFT;
+=======
+	s->ticksize = libxmp_mixer_get_ticksize(s->freq,
+		m->time_factor * p->time_factor_relative, m->rrate, p->bpm);
+
+	/* Protect the mixer from broken values caused by xmp_set_tempo_factor. */
+	if (s->ticksize < 0 || s->ticksize > (s->total_size / 2)) {
+		s->ticksize = s->total_size / 2;
+	}
+>>>>>>> db7344ebf (abc)
 
 	bytelen = s->ticksize * sizeof(int32);
 	if (~s->format & XMP_FORMAT_MONO) {
@@ -468,6 +719,10 @@ void libxmp_mixer_prepare(struct context_data *ctx)
 	}
 	memset(s->buf32, 0, bytelen);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> db7344ebf (abc)
 /* Fill the output buffer calling one of the handlers. The buffer contains
  * sound for one tick (a PAL frame or 1/50s for standard vblank-timed mods)
  */
@@ -483,6 +738,7 @@ void libxmp_mixer_softmixer(struct context_data *ctx)
 	struct loop_data loop_data;
 	double step, step_dir;
 	int samples, size;
+<<<<<<< HEAD
 	int vol_l, vol_r, voc, usmp;
 	int prev_l, prev_r = 0;
 	int32 *buf_pos;
@@ -501,15 +757,41 @@ void libxmp_mixer_softmixer(struct context_data *ctx)
 		break;
 	default:
 		mixerset = linear_mixers;
+=======
+	int vol, vol_l, vol_r, voc, usmp;
+	int prev_l, prev_r = 0;
+	int32 *buf_pos;
+	MIXER_FP  mix_fn;
+	const MIXER_FP *mixerset;
+
+	switch (s->interp) {
+	case XMP_INTERP_NEAREST:
+		mixerset = libxmp_nearest_mixers;
+		break;
+	case XMP_INTERP_LINEAR:
+		mixerset = libxmp_linear_mixers;
+		break;
+	case XMP_INTERP_SPLINE:
+		mixerset = libxmp_spline_mixers;
+		break;
+	default:
+		mixerset = libxmp_linear_mixers;
+>>>>>>> db7344ebf (abc)
 	}
 
 #ifdef LIBXMP_PAULA_SIMULATOR
 	if (p->flags & XMP_FLAGS_A500) {
 		if (IS_AMIGA_MOD()) {
 			if (p->filter) {
+<<<<<<< HEAD
 				mixerset = a500led_mixers;
 			} else {
 				mixerset = a500_mixers;
+=======
+				mixerset = libxmp_a500led_mixers;
+			} else {
+				mixerset = libxmp_a500_mixers;
+>>>>>>> db7344ebf (abc)
 			}
 		}
 	}
@@ -545,6 +827,7 @@ void libxmp_mixer_softmixer(struct context_data *ctx)
 			continue;
 		}
 
+<<<<<<< HEAD
 		vi->pos0 = vi->pos;
 
 		buf_pos = s->buf32;
@@ -564,15 +847,61 @@ void libxmp_mixer_softmixer(struct context_data *ctx)
 			xxs = &ctx->smix.xxs[vi->smp - mod->smp];
 			xtra = NULL;
 			c5spd = m->c4rate;
+=======
+		/* Negative positions can be left over from some
+		 * loop edge cases. These can be safely clamped. */
+		if (vi->pos < 0.0)
+			vi->pos = 0.0;
+
+		vi->pos0 = vi->pos;
+
+		buf_pos = s->buf32;
+		vol = vi->vol;
+
+		/* Mix volume (S3M and IT) */
+		if (m->mvolbase > 0 && m->mvol != m->mvolbase) {
+			vol = vol * m->mvol / m->mvolbase;
+		}
+
+		if (vi->pan == PAN_SURROUND) {
+			vol_l = vol * 0x80;
+			vol_r = -vol * 0x80;
+		} else {
+			vol_l = vol * (0x80 - vi->pan);
+			vol_r = vol * (0x80 + vi->pan);
+		}
+
+		/* Sample is paused - skip channel unless a new sample is queued. */
+		if (vi->flags & SAMPLE_PAUSED) {
+			if ((~vi->flags & SAMPLE_QUEUED) || vi->queued.smp < 0) {
+				vi->flags &= ~SAMPLE_QUEUED;
+				continue;
+			}
+			hotswap_sample(ctx, vi, voc, vi->queued.smp);
+			get_current_sample(ctx, vi, &xxs, &xtra, &c5spd);
+			vi->pos = vi->start;
+		} else {
+			get_current_sample(ctx, vi, &xxs, &xtra, &c5spd);
+>>>>>>> db7344ebf (abc)
 		}
 
 		step = C4_PERIOD * c5spd / s->freq / vi->period;
 
+<<<<<<< HEAD
 		if (step < 0.001) {	/* otherwise m5v-nwlf.it crashes */
 			continue;
 		}
 
 		adjust_voice_end(ctx, vi, xxs, xtra);
+=======
+		/* Don't allow <=0, otherwise m5v-nwlf.it crashes
+		 * Extremely high values that can cause undefined float/int
+		 * conversion are also possible for c5spd modules. */
+		if (step < 0.001 || step > (double)SHRT_MAX) {
+			continue;
+		}
+
+>>>>>>> db7344ebf (abc)
 		init_sample_wraparound(s, &loop_data, vi, xxs);
 
 		rampsize = s->ticksize >> ANTICLICK_SHIFT;
@@ -629,9 +958,17 @@ void libxmp_mixer_softmixer(struct context_data *ctx)
 				/* For Hipolito's anticlick routine */
 				if (samples > 0) {
 					if (~s->format & XMP_FORMAT_MONO) {
+<<<<<<< HEAD
 						prev_r = buf_pos[mix_size - 2];
 					}
 					prev_l = buf_pos[mix_size - 1];
+=======
+						prev_l = buf_pos[mix_size - 2];
+						prev_r = buf_pos[mix_size - 1];
+					} else {
+						prev_l = buf_pos[mix_size - 1];
+					}
+>>>>>>> db7344ebf (abc)
 				} else {
 					prev_r = prev_l = 0;
 				}
@@ -671,16 +1008,27 @@ void libxmp_mixer_softmixer(struct context_data *ctx)
 					vi->old_vl += samples * delta_l;
 					vi->old_vr += samples * delta_r;
 
+<<<<<<< HEAD
 
 					/* For Hipolito's anticlick routine */
 					if (~s->format & XMP_FORMAT_MONO) {
 						vi->sright = buf_pos[-2] - prev_r;
 					}
 					vi->sleft = buf_pos[-1] - prev_l;
+=======
+					/* For Hipolito's anticlick routine */
+					if (~s->format & XMP_FORMAT_MONO) {
+						vi->sleft = buf_pos[-2] - prev_l;
+						vi->sright = buf_pos[-1] - prev_r;
+					} else {
+						vi->sleft = buf_pos[-1] - prev_l;
+					}
+>>>>>>> db7344ebf (abc)
 				}
 			}
 
 			vi->pos += step_dir * samples;
+<<<<<<< HEAD
 
 			/* No more samples in this tick */
 			size -= samples;
@@ -700,13 +1048,66 @@ void libxmp_mixer_softmixer(struct context_data *ctx)
 			if (!has_active_loop(ctx, vi, xxs) || split_noloop) {
 				do_anticlick(ctx, voc, buf_pos, size);
 				set_sample_end(ctx, voc, 1);
+=======
+			size -= samples;
+
+			/* One-shot samples do not loop. */
+			if ((!has_active_loop(ctx, vi, xxs) || split_noloop) &&
+			    !(vi->flags & SAMPLE_QUEUED)) {
+				if (size > 0) {
+					do_anticlick(ctx, voc, buf_pos, size);
+					set_sample_end(ctx, voc, 1);
+					/* Next sample should ramp. */
+					vol_l = vol_r = 0;
+				}
+>>>>>>> db7344ebf (abc)
 				size = 0;
 				continue;
 			}
 
+<<<<<<< HEAD
 			if (loop_reposition(ctx, vi, xxs, xtra)) {
 				reset_sample_wraparound(&loop_data);
 				init_sample_wraparound(s, &loop_data, vi, xxs);
+=======
+			/* Loop before continuing to the next channel if the
+			 * tick is complete. This is particularly important
+			 * for reverse loops to avoid position clamping. */
+			if (size > 0 ||
+			    ((~vi->flags & VOICE_REVERSE) && vi->pos >= vi->end) ||
+			     ((vi->flags & VOICE_REVERSE) && vi->pos <= vi->start)) {
+				if (vi->flags & SAMPLE_QUEUED) {
+					/* Protracker sample swap */
+					do_anticlick(ctx, voc, buf_pos, size);
+					if (vi->queued.smp < 0 ||
+					    (!has_active_loop(ctx, vi, xxs) &&
+					     !(mod->xxs[vi->queued.smp].flg & XMP_SAMPLE_LOOP))) {
+						/* Invalid samples and one-shots that
+						 * are being replaced by one-shots
+						 * (OpenMPT PTStoppedSwap.mod) stop
+						 * the current sample. If the current
+						 * sample is looped, it needs to be paused.
+						 */
+						vi->flags &= ~SAMPLE_QUEUED;
+						vi->flags |= SAMPLE_PAUSED;
+						set_sample_end(ctx, voc, 1);
+						/* Next sample should ramp. */
+						vol_l = vol_r = 0;
+						size = 0;
+						continue;
+					}
+					reset_sample_wraparound(&loop_data);
+					hotswap_sample(ctx, vi, voc, vi->queued.smp);
+					get_current_sample(ctx, vi, &xxs, &xtra, &c5spd);
+					init_sample_wraparound(s, &loop_data, vi, xxs);
+					vi->pos = vi->start;
+					continue;
+				}
+				if (loop_reposition(ctx, vi, xxs, xtra)) {
+					reset_sample_wraparound(&loop_data);
+					init_sample_wraparound(s, &loop_data, vi, xxs);
+				}
+>>>>>>> db7344ebf (abc)
 			}
 		}
 
@@ -722,6 +1123,7 @@ void libxmp_mixer_softmixer(struct context_data *ctx)
 		size *= 2;
 	}
 
+<<<<<<< HEAD
 	if (size > XMP_MAX_FRAMESIZE) {
 		size = XMP_MAX_FRAMESIZE;
 	}
@@ -732,6 +1134,21 @@ void libxmp_mixer_softmixer(struct context_data *ctx)
 	} else {
 		downmix_int_16bit((int16 *)s->buffer, s->buf32, size,s->amplify,
 				s->format & XMP_FORMAT_UNSIGNED ? 0x8000 : 0);
+=======
+	if (size > s->total_size) {
+		size = s->total_size;
+	}
+
+	if (s->format & XMP_FORMAT_32BIT) {
+		downmix_int_32bit((int32 *)s->buffer, s->buf32, size, s->amplify,
+				s->format & XMP_FORMAT_UNSIGNED ? 0x80000000u : 0u);
+	} else if (~s->format & XMP_FORMAT_8BIT) {
+		downmix_int_16bit((int16 *)s->buffer, s->buf32, size, s->amplify,
+				s->format & XMP_FORMAT_UNSIGNED ? 0x8000u : 0u);
+	} else {
+		downmix_int_8bit((int8 *)s->buffer, s->buf32, size, s->amplify,
+				s->format & XMP_FORMAT_UNSIGNED ? 0x80u : 0u);
+>>>>>>> db7344ebf (abc)
 	}
 
 	s->dtright = s->dtleft = 0;
@@ -745,6 +1162,21 @@ void libxmp_mixer_voicepos(struct context_data *ctx, int voc, double pos, int ac
 	struct xmp_sample *xxs;
 	struct extra_sample_data *xtra;
 
+<<<<<<< HEAD
+=======
+	/* Position changes e.g. retrigger make the new sample take effect
+	 * if queued (OpenMPT InstrSwapRetrigger.mod). */
+	if (vi->flags & SAMPLE_QUEUED) {
+		vi->flags &= ~SAMPLE_QUEUED;
+		if (vi->queued.smp < 0) {
+			vi->flags |= SAMPLE_PAUSED;
+		} else if (vi->smp != vi->queued.smp) {
+			hotswap_sample(ctx, vi, voc, vi->queued.smp);
+		}
+		vi->flags |= SAMPLE_LOOP;
+	}
+
+>>>>>>> db7344ebf (abc)
 	if (vi->smp < m->mod.smp) {
 		xxs = &m->mod.xxs[vi->smp];
 		xtra = &m->xtra[vi->smp];
@@ -763,8 +1195,17 @@ void libxmp_mixer_voicepos(struct context_data *ctx, int voc, double pos, int ac
 
 	if (vi->pos >= vi->end) {
 		vi->pos = vi->end;
+<<<<<<< HEAD
 		if (has_active_loop(ctx, vi, xxs))
 			loop_reposition(ctx, vi, xxs, xtra);
+=======
+		/* Restart forward sample loops. */
+		if ((~vi->flags & VOICE_REVERSE) && has_active_loop(ctx, vi, xxs))
+			loop_reposition(ctx, vi, xxs, xtra);
+	} else if ((vi->flags & VOICE_REVERSE) && vi->pos <= 0.1) {
+		/* Hack: 0 maps to the end for reversed samples. */
+		vi->pos = vi->end;
+>>>>>>> db7344ebf (abc)
 	}
 
 	if (ac) {
@@ -802,12 +1243,20 @@ void libxmp_mixer_setpatch(struct context_data *ctx, int voc, int smp, int ac)
 	vi->smp = smp;
 	vi->vol = 0;
 	vi->pan = 0;
+<<<<<<< HEAD
 	vi->flags &= ~(SAMPLE_LOOP | VOICE_REVERSE | VOICE_BIDIR);
+=======
+	vi->flags &= ~(SAMPLE_LOOP | SAMPLE_QUEUED | SAMPLE_PAUSED | VOICE_REVERSE | VOICE_BIDIR);
+>>>>>>> db7344ebf (abc)
 
 	vi->fidx = 0;
 
 	if (~s->format & XMP_FORMAT_MONO) {
+<<<<<<< HEAD
 		vi->fidx |= FLAG_STEREO;
+=======
+		vi->fidx |= FLAG_STEREOOUT;
+>>>>>>> db7344ebf (abc)
 	}
 
 	set_sample_end(ctx, voc, 0);
@@ -826,10 +1275,38 @@ void libxmp_mixer_setpatch(struct context_data *ctx, int voc, int smp, int ac)
 	if (xxs->flg & XMP_SAMPLE_16BIT) {
 		vi->fidx |= FLAG_16_BITS;
 	}
+<<<<<<< HEAD
+=======
+	if (xxs->flg & XMP_SAMPLE_STEREO) {
+		vi->fidx |= FLAG_STEREO;
+	}
+>>>>>>> db7344ebf (abc)
 
 	libxmp_mixer_voicepos(ctx, voc, 0, ac);
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * Replace the current playing sample when it reaches the end of its
+ * sample loop, a la Protracker 1/2. The new sample will begin playing
+ * at the start of its loop if it is looped, the start of the sample if
+ * it is a one-shot, and it will not play and instead pause the channel
+ * if both the original and the new sample are one-shots or if the new
+ * sample is empty/invalid/-1.
+ */
+void libxmp_mixer_queuepatch(struct context_data *ctx, int voc, int smp)
+{
+	struct player_data *p = &ctx->p;
+	struct mixer_voice *vi = &p->virt.voice_array[voc];
+
+	if (smp != vi->smp || (vi->flags & SAMPLE_PAUSED)) {
+		vi->queued.smp = smp;
+		vi->flags |= SAMPLE_QUEUED;
+	}
+}
+
+>>>>>>> db7344ebf (abc)
 void libxmp_mixer_setnote(struct context_data *ctx, int voc, int note)
 {
 	struct player_data *p = &ctx->p;
@@ -874,12 +1351,48 @@ void libxmp_mixer_release(struct context_data *ctx, int voc, int rel)
 	struct mixer_voice *vi = &p->virt.voice_array[voc];
 
 	if (rel) {
+<<<<<<< HEAD
+=======
+#ifndef LIBXMP_CORE_DISABLE_IT
+		/* Cancel voice reverse when releasing an active sustain loop,
+		 * unless the main loop is bidirectional. This is done both for
+		 * bidirectional sustain loops and for forward sustain loops
+		 * that have been reversed with MPT S9F Play Backward. */
+		if (~vi->flags & VOICE_RELEASE) {
+			struct xmp_sample *xxs = libxmp_get_sample(ctx, vi->smp);
+
+			if (has_active_sustain_loop(ctx, vi, xxs) &&
+			    (~xxs->flg & XMP_SAMPLE_LOOP_BIDIR))
+				vi->flags &= ~VOICE_REVERSE;
+		}
+#endif
+>>>>>>> db7344ebf (abc)
 		vi->flags |= VOICE_RELEASE;
 	} else {
 		vi->flags &= ~VOICE_RELEASE;
 	}
 }
 
+<<<<<<< HEAD
+=======
+void libxmp_mixer_reverse(struct context_data *ctx, int voc, int rev)
+{
+	struct player_data *p = &ctx->p;
+	struct mixer_voice *vi = &p->virt.voice_array[voc];
+
+	/* Don't reverse samples that have already ended */
+	if (~vi->fidx & FLAG_ACTIVE) {
+		return;
+	}
+
+	if (rev) {
+		vi->flags |= VOICE_REVERSE;
+	} else {
+		vi->flags &= ~VOICE_REVERSE;
+	}
+}
+
+>>>>>>> db7344ebf (abc)
 void libxmp_mixer_seteffect(struct context_data *ctx, int voc, int type, int val)
 {
 #ifndef LIBXMP_CORE_DISABLE_IT
@@ -928,6 +1441,7 @@ int libxmp_mixer_numvoices(struct context_data *ctx, int num)
 int libxmp_mixer_on(struct context_data *ctx, int rate, int format, int c4rate)
 {
 	struct mixer_data *s = &ctx->s;
+<<<<<<< HEAD
 
 	s->buffer = (char *) calloc(2, XMP_MAX_FRAMESIZE);
 	if (s->buffer == NULL)
@@ -937,11 +1451,56 @@ int libxmp_mixer_on(struct context_data *ctx, int rate, int format, int c4rate)
 	if (s->buf32 == NULL)
 		goto err1;
 
+=======
+	int total_size;
+	int sample_size;
+	int output_chn;
+
+	if (format & XMP_FORMAT_32BIT) {
+		sample_size = 4;
+	} else if (~format & XMP_FORMAT_8BIT) {
+		sample_size = 2;
+	} else {
+		sample_size = 1;
+	}
+
+	if (format & XMP_FORMAT_MONO) {
+		output_chn = 1;
+	} else {
+		output_chn = 2;
+	}
+
+	/* This should be equivalent to the XMP_MAX_FRAMESIZE calculation. */
+	total_size = output_chn * libxmp_mixer_get_ticksize(rate,
+				DEFAULT_TIME_FACTOR * 2, PAL_RATE, XMP_MIN_BPM);
+	if (total_size < 0)
+		goto err;
+
+	/* These allocations were made with a fixed framesize based on the rate
+	 * 49170 for a long time, so make that the minimum size for now. */
+	CLAMP(total_size, 5 * 49170 * 2 / 20, XMP_MAX_FRAMESIZE);
+
+	s->buffer = (char *) calloc(total_size, sample_size);
+	if (s->buffer == NULL)
+		goto err;
+
+	s->buf32 = (int32 *) calloc(total_size, sizeof(int32));
+	if (s->buf32 == NULL)
+		goto err1;
+
+	s->total_size = total_size;
+	s->sample_size = sample_size;
+	s->output_chn = output_chn;
+>>>>>>> db7344ebf (abc)
 	s->freq = rate;
 	s->format = format;
 	s->amplify = DEFAULT_AMPLIFY;
 	s->mix = DEFAULT_MIX;
+<<<<<<< HEAD
 	/* s->pbase = C4_PERIOD * c4rate / s->freq; */(void) c4rate;
+=======
+	/* s->pbase = C4_PERIOD * c4rate / s->freq; */
+>>>>>>> db7344ebf (abc)
 	s->interp = XMP_INTERP_LINEAR;	/* default interpolation type */
 	s->dsp = XMP_DSP_LOWPASS;	/* enable filters by default */
 	/* s->numvoc = SMIX_NUMVOC; */

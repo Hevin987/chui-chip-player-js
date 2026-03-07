@@ -73,7 +73,11 @@ const chipModules = [
     name: 'gme',
     enabled: true,
     sourceFiles: [
+<<<<<<< HEAD
       '../game-music-emu/build/gme/libgme.a',
+=======
+      './game-music-emu/build/gme/libgme.a',
+>>>>>>> db7344ebf (abc)
     ],
     exportedFunctions: [
       '_gme_open_data',
@@ -107,7 +111,11 @@ const chipModules = [
     sourceFiles: [
       // 'libxmp/lib/libxmp.a', // full libxmp build
       // 'libxmp/libxmp-lite-stagedir/lib/libxmp-lite.a',
+<<<<<<< HEAD
       '../libxmp/build/libxmp-lite.a',
+=======
+      './libxmp/build/libxmp-lite.a',
+>>>>>>> db7344ebf (abc)
     ],
     exportedFunctions: [
       '_xmp_create_context',
@@ -162,7 +170,11 @@ const chipModules = [
     name: 'fluidlite',
     enabled: true,
     sourceFiles: [
+<<<<<<< HEAD
       '../FluidLite/build/libfluidlite.a',
+=======
+      './fluidlite/build/libfluidlite.a',
+>>>>>>> db7344ebf (abc)
     ],
     exportedFunctions: [
       '_new_fluid_settings',

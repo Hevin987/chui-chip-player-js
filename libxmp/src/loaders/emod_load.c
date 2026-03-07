@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -63,7 +67,11 @@ struct local_data {
 	int has_8smp;
 };
 
+<<<<<<< HEAD
 static int get_emic(struct module_data *m, int size, HIO_HANDLE * f, void *parm)
+=======
+static int get_emic(struct module_data *m, uint32 size, HIO_HANDLE * f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -115,7 +123,11 @@ static int get_emic(struct module_data *m, int size, HIO_HANDLE * f, void *parm)
 		hio_read32b(f);	/* ptr */
 
 		xxi->nsm = 1;
+<<<<<<< HEAD
 		sub->pan = 0x80;
+=======
+		sub->pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		sub->sid = i;
 
 		D_(D_INFO "[%2X] %-20.20s %05x %05x %05x %c V%02x %+d",
@@ -153,7 +165,11 @@ static int get_emic(struct module_data *m, int size, HIO_HANDLE * f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_patt(struct module_data *m, int size, HIO_HANDLE * f, void *parm)
+=======
+static int get_patt(struct module_data *m, uint32 size, HIO_HANDLE * f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -202,7 +218,11 @@ static int get_patt(struct module_data *m, int size, HIO_HANDLE * f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_8smp(struct module_data *m, int size, HIO_HANDLE * f, void *parm)
+=======
+static int get_8smp(struct module_data *m, uint32 size, HIO_HANDLE * f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;

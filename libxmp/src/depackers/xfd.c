@@ -57,16 +57,29 @@ static int test_xfd(unsigned char *b)
 	return _test_xfd(b, 1024);
 }
 
+<<<<<<< HEAD
 static int decrunch_xfd(HIO_HANDLE *f, void **outbuf, long inlen, long *outlen)
+=======
+static int decrunch_xfd(HIO_HANDLE *f, void **outbuf, long *outlen)
+>>>>>>> db7344ebf (abc)
 {
     struct xfdBufferInfo *xfdobj;
     uint8 *packed;
     void *unpacked;
+<<<<<<< HEAD
+=======
+    long inlen;
+>>>>>>> db7344ebf (abc)
     int ret = -1;
 
     if (xfdMasterBase == NULL)
 	return -1;
 
+<<<<<<< HEAD
+=======
+    inlen = hio_size(f);
+
+>>>>>>> db7344ebf (abc)
     packed = (uint8 *) AllocVec(inlen,MEMF_CLEAR);
     if (!packed) return -1;
 
@@ -108,7 +121,11 @@ static int decrunch_xfd(HIO_HANDLE *f, void **outbuf, long inlen, long *outlen)
 	return(ret);
 }
 
+<<<<<<< HEAD
 struct depacker libxmp_depacker_xfd = {
+=======
+const struct depacker libxmp_depacker_xfd = {
+>>>>>>> db7344ebf (abc)
 	test_xfd,
 	NULL,
 	decrunch_xfd

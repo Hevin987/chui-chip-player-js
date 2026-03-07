@@ -10,6 +10,11 @@ struct lfo {
 	int phase;
 };
 
+<<<<<<< HEAD
+=======
+LIBXMP_BEGIN_DECLS
+
+>>>>>>> db7344ebf (abc)
 int  libxmp_lfo_get(struct context_data *, struct lfo *, int);
 void libxmp_lfo_update(struct lfo *);
 void libxmp_lfo_set_phase(struct lfo *, int);
@@ -17,4 +22,9 @@ void libxmp_lfo_set_depth(struct lfo *, int);
 void libxmp_lfo_set_rate(struct lfo *, int);
 void libxmp_lfo_set_waveform(struct lfo *, int);
 
+<<<<<<< HEAD
+=======
+LIBXMP_END_DECLS
+
+>>>>>>> db7344ebf (abc)
 #endif

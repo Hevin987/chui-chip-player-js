@@ -1,8 +1,13 @@
 #include "test.h"
 
 /*
+<<<<<<< HEAD
  Pan swing should not be overriden by effects such as instrument panning or
  panning envelopes. Previously, pan swing was overriden in OpenMPT if the
+=======
+ Pan swing should not be overridden by effects such as instrument panning or
+ panning envelopes. Previously, pan swing was overridden in OpenMPT if the
+>>>>>>> db7344ebf (abc)
  instrument also had a panning envelope. In this file, pan swing should be
  applied to every note.
 */
@@ -14,6 +19,11 @@ TEST(test_openmpt_it_randompan)
 	struct xmp_channel_info *ci;
 	int values[64];
 
+<<<<<<< HEAD
+=======
+	memset(values, 0, sizeof(values));
+
+>>>>>>> db7344ebf (abc)
 	opaque = xmp_create_context();
 	xmp_load_module(opaque, "openmpt/it/RandomPan.it");
 	xmp_start_player(opaque, 8000, 0);

@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 #include "test.h"
 #include "../src/mixer.h"
 #include "../src/virtual.h"
+=======
+#include "read_event_common.h"
+>>>>>>> db7344ebf (abc)
 
 /*
 Case 1: New note
@@ -33,6 +37,10 @@ TEST(test_new_note_same_ins_st3)
 	xmp_context opaque;
 	struct context_data *ctx;
 	struct player_data *p;
+<<<<<<< HEAD
+=======
+	struct channel_data *xc;
+>>>>>>> db7344ebf (abc)
 	struct mixer_voice *vi;
 	int voc;
 
@@ -40,6 +48,7 @@ TEST(test_new_note_same_ins_st3)
 	ctx = (struct context_data *)opaque;
 	p = &ctx->p;
 
+<<<<<<< HEAD
  	create_simple_module(ctx, 2, 2);
 	set_instrument_volume(ctx, 0, 0, 22);
 	set_instrument_volume(ctx, 1, 0, 33);
@@ -48,14 +57,30 @@ TEST(test_new_note_same_ins_st3)
 	set_quirk(ctx, QUIRKS_ST3, READ_EVENT_ST3);
 
 	xmp_start_player(opaque, 44100, 0);
+=======
+	create_read_event_test_module(ctx, 2);
+	new_event(ctx, 0, 0, 0, KEY_C5, INS_0, 0, 0x00, 0, 0, 0);
+	new_event(ctx, 0, 1, 0, 0,      0,     0, FX_VOLSET, SET_VOL,
+						  FX_SETPAN, SET_PAN);
+	new_event(ctx, 0, 2, 0, KEY_D4, INS_0, 0, 0x00, 0, 0, 0);
+	new_event(ctx, 0, 3, 0, KEY_B5, INS_0, 0, 0x00, 0, 0, 0);
+	set_quirk(ctx, QUIRKS_ST3, READ_EVENT_ST3);
+
+	xmp_start_player(opaque, XMP_MIN_SRATE, 0);
+>>>>>>> db7344ebf (abc)
 
 	/* Row 0 */
 	xmp_play_frame(opaque);
 
+<<<<<<< HEAD
+=======
+	xc = &p->xc_data[0];
+>>>>>>> db7344ebf (abc)
 	voc = map_channel(p, 0);
 	fail_unless(voc >= 0, "virtual map");
 	vi = &p->virt.voice_array[voc];
 
+<<<<<<< HEAD
 	fail_unless(vi->note == 59, "set note");
 	fail_unless(vi->ins  ==  0, "set instrument");
 	fail_unless(vi->vol  == 43 * 16, "set volume");
@@ -74,6 +99,41 @@ TEST(test_new_note_same_ins_st3)
 	fail_unless(vi->note == 49, "not new note");
 	fail_unless(vi->vol  == 22 * 16, "not same instrument volume");
 	fail_unless(vi->pos0 ==  0, "sample didn't reset");
+=======
+	check_new(xc, vi, KEY_C5, INS_0,
+		  INS_0_SUB_0_VOL, INS_0_SUB_0_PAN, INS_0_FADE, "row 0");
+
+	xmp_play_frame(opaque);
+
+	/* Row 1: set non-default volume and pan */
+	xmp_play_frame(opaque);
+	check_on(xc, vi, KEY_C5, INS_0,
+		 SET_VOL, SET_PAN, INS_0_FADE, "row 1");
+
+	xmp_play_frame(opaque);
+
+	/* Row 2: same instrument with new note (ST3)
+	 *
+	 * When a new valid instrument is the same as the current instrument
+	 * and a new note is set, ST3 plays the new sample with the
+	 * instrument's default volume.
+	 */
+	xmp_play_frame(opaque);
+	check_new(xc, vi, KEY_D4, INS_0,
+		  INS_0_SUB_0_VOL, INS_0_SUB_0_PAN, INS_0_FADE, "row 2");
+
+	xmp_play_frame(opaque);
+
+	/* Row 3: same instrument, different subinstrument with new note (ST3)
+	 *
+	 * ST3 doesn't support this feature, which is only provided in case
+	 * other formats which rely on it use this player.
+	 */
+	xmp_play_frame(opaque);
+	check_new(xc, vi, KEY_B5, INS_0,
+		  INS_0_SUB_1_VOL, INS_0_SUB_1_PAN, INS_0_FADE, "row 3");
+
+>>>>>>> db7344ebf (abc)
 	xmp_play_frame(opaque);
 
 	xmp_release_module(opaque);

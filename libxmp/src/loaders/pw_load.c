@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,12 +27,20 @@
 #include "loader.h"
 #include "mod.h"
 #include "../period.h"
+<<<<<<< HEAD
 #include "prowizard/prowiz.h"
 #include "../tempfile.h"
 
 #ifndef LIBXMP_NO_PROWIZARD
 
 extern struct list_head *checked_format;
+=======
+
+#ifndef LIBXMP_NO_PROWIZARD
+
+#include "prowizard/prowiz.h"
+#include "../tempfile.h"
+>>>>>>> db7344ebf (abc)
 
 static int pw_test(HIO_HANDLE *, char *, const int);
 static int pw_load(struct module_data *, HIO_HANDLE *, const int);
@@ -140,7 +152,11 @@ static int pw_load(struct module_data *m, HIO_HANDLE *h, const int start)
 		mod->xxs[i].flg = mh.ins[i].loop_size > 1 ? XMP_SAMPLE_LOOP : 0;
 		mod->xxi[i].sub[0].fin = (int8) (mh.ins[i].finetune << 4);
 		mod->xxi[i].sub[0].vol = mh.ins[i].volume;
+<<<<<<< HEAD
 		mod->xxi[i].sub[0].pan = 0x80;
+=======
+		mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		mod->xxi[i].sub[0].sid = i;
 		mod->xxi[i].rls = 0xfff;
 

@@ -73,7 +73,11 @@ static int depack_pm01(HIO_HANDLE *in, FILE *out)
 		}
 	}
 
+<<<<<<< HEAD
 	len = hio_read16b(in) >> 2;		/* pattern table lenght */
+=======
+	len = hio_read16b(in) >> 2;		/* pattern table length */
+>>>>>>> db7344ebf (abc)
 	write8(out, len);
 	write8(out, 0x7f);			/* write NoiseTracker byte */
 

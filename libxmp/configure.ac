@@ -1,9 +1,24 @@
+<<<<<<< HEAD
 AC_PREREQ(2.60)
 AC_INIT
+=======
+m4_define([libxmp_VERSION_MAJOR_m4], [4])
+m4_define([libxmp_VERSION_MINOR_m4], [7])
+m4_define([libxmp_VERSION_PATCH_m4], [0])
+m4_define([libxmp_VERSION_m4], libxmp_VERSION_MAJOR_m4[.]libxmp_VERSION_MINOR_m4[.]libxmp_VERSION_PATCH_m4)
+
+AC_PREREQ(2.60)
+AC_INIT([libxmp],libxmp_VERSION_m4)
+>>>>>>> db7344ebf (abc)
 AC_ARG_ENABLE(depackers, [  --disable-depackers     Don't build depackers])
 AC_ARG_ENABLE(prowizard, [  --disable-prowizard     Don't build ProWizard])
 AC_ARG_ENABLE(static,    [  --enable-static         Build static library])
 AC_ARG_ENABLE(shared,    [  --disable-shared        Don't build shared library])
+<<<<<<< HEAD
+=======
+AC_ARG_ENABLE(lite,      [  --enable-lite           Build lite version of the library])
+AC_ARG_ENABLE(it,        [  --disable-it            Disable IT format in libxmp-lite])
+>>>>>>> db7344ebf (abc)
 AC_SUBST(LD_VERSCRIPT)
 AC_SUBST(LIBM)
 AC_SUBST(DARWIN_VERSION)
@@ -53,13 +68,21 @@ darwin*)
     CFLAGS="${CFLAGS} -fno-common"
   fi
   ;;
+<<<<<<< HEAD
 cygwin* | *djgpp | mint* | amigaos* |aros* | morphos*)
+=======
+cygwin* | *djgpp | emx* | mint* | amigaos* | aros* | morphos*)
+>>>>>>> db7344ebf (abc)
   enable_static=yes
   enable_shared=no
   ;;
 esac
 
 AC_CHECK_DEFINED(__clang__)
+<<<<<<< HEAD
+=======
+AC_CHECK_DEFINED(__cplusplus)
+>>>>>>> db7344ebf (abc)
 
 case "${host_os}" in
 dnl Skip this on platforms where it is just simply busted.
@@ -77,20 +100,47 @@ dnl Skip this on platforms where it is just simply busted.
 esac
 
 if test "${enable_static}" = yes; then
+<<<<<<< HEAD
   AC_SUBST(STATIC,static)
 fi
 if test "${enable_shared}" != no; then
   AC_CHECK_DEFINED(_WIN32,[
     AC_SUBST(SHARED,dll)
+=======
+  STATIC="static"
+  if test "${enable_lite}" = yes; then
+     STATIC="$STATIC static-lite"
+  fi
+  if test x"$AR" = x: || test  x"$RANLIB" = x: ; then
+     AC_MSG_ERROR([Build tools ar and/or ranlib not found.])
+  fi
+  AC_SUBST(STATIC)
+fi
+if test "${enable_shared}" != no; then
+  AC_CHECK_DEFINED(_WIN32,[
+    SHARED="dll"
+>>>>>>> db7344ebf (abc)
     CFLAGS_SHARED="-DBUILDING_DLL"
   ],[
     CFLAGS_SHARED="-fPIC"
     AC_CHECK_DEFINED(__APPLE__,[
+<<<<<<< HEAD
       AC_SUBST(SHARED,dylib)
     ],[
       AC_SUBST(SHARED,shared)
     ])
   ])
+=======
+      SHARED="dylib"
+    ],[
+      SHARED="shared"
+    ])
+  ])
+  if test "${enable_lite}" = yes; then
+     SHARED="$SHARED $SHARED-lite"
+  fi
+  AC_SUBST(SHARED)
+>>>>>>> db7344ebf (abc)
   AC_SUBST(CFLAGS_SHARED)
 fi
 
@@ -106,12 +156,15 @@ XMP_TRY_COMPILE(whether compiler understands -Wextra,
   int main(void){return 0;}],
   CFLAGS="${CFLAGS} -Wextra")
 
+<<<<<<< HEAD
 if test x$ac_cv_c_flag_w_extra != xyes; then
   XMP_TRY_COMPILE(whether compiler understands -W,
     ac_cv_c_flag_w, -W,
    [int main(void){return 0;}], CFLAGS="${CFLAGS} -W")
 fi
 
+=======
+>>>>>>> db7344ebf (abc)
 XMP_TRY_COMPILE(whether compiler understands -Wunused-parameter,
   ac_cv_c_flag_w_unused_parameter,
   -Wunused-parameter,[
@@ -130,6 +183,35 @@ XMP_TRY_COMPILE(whether compiler understands -Wwrite-strings,
   int main(void){return 0;}],
   CFLAGS="${CFLAGS} -Wwrite-strings")
 
+<<<<<<< HEAD
+=======
+if test "$ac_cv_defined___cplusplus" = "no"; then
+  XMP_TRY_COMPILE(whether compiler understands -Wdeclaration-after-statement,
+    ac_cv_c_flag_w_declaration_after_statement,
+    -Wdeclaration-after-statement,[
+    int main(void){return 0;}],
+    CFLAGS="${CFLAGS} -Wdeclaration-after-statement")
+
+  XMP_TRY_COMPILE(whether compiler understands -Wmissing-prototypes,
+    ac_cv_c_flag_w_missing_prototypes,
+    -Wmissing-prototypes,[
+    int main(void){return 0;}],
+    CFLAGS="${CFLAGS} -Wmissing-prototypes")
+
+  XMP_TRY_COMPILE(whether compiler understands -Wstrict-prototypes,
+    ac_cv_c_flag_w_strict_prototypes,
+    -Wstrict-prototypes,[
+    int main(void){return 0;}],
+    CFLAGS="${CFLAGS} -Wstrict-prototypes")
+fi
+
+XMP_TRY_COMPILE(whether compiler understands -Wundef,
+  ac_cv_c_flag_w_undef,
+  -Wundef,[
+  int main(void){return 0;}],
+  CFLAGS="${CFLAGS} -Wundef")
+
+>>>>>>> db7344ebf (abc)
 old_CFLAGS="${CFLAGS}"
 XMP_TRY_COMPILE(whether compiler understands -Werror,
   ac_cv_c_flag_w_error,
@@ -207,6 +289,14 @@ XMP_TRY_COMPILE(whether compiler understands -Wunknown-warning-option,
   int main(void){return 0;}],
   CFLAGS="${CFLAGS} -Wno-unknown-warning-option")
 
+<<<<<<< HEAD
+=======
+if test "${enable_lite}" = yes &&\
+   test "${enable_it}" = no; then
+  CFLAGS="${CFLAGS} -DLIBXMP_CORE_DISABLE_IT"
+fi
+
+>>>>>>> db7344ebf (abc)
 if test "${enable_depackers}" != no; then
   DEPACKER_OBJS='$(DEPACKER_OBJS)'
 else
@@ -221,12 +311,15 @@ else
 fi
 AC_SUBST(PROWIZARD_OBJS)
 
+<<<<<<< HEAD
 XMP_TRY_COMPILE(whether alloca() needs alloca.h,
   ac_cv_c_flag_w_have_alloca_h,,[
   #include <alloca.h>
   int main(void){return 0;}],
   AC_DEFINE(HAVE_ALLOCA_H, 1, [ ]))
 
+=======
+>>>>>>> db7344ebf (abc)
 LIBM=
 case "${host_os}" in
 dnl These systems don't have libm or don't need it (list based on libtool)
@@ -247,7 +340,11 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <dirent.h>]], [[
   struct dirent *d = readdir(dirp);
   (void)d; closedir(dirp);]])],
  [have_dirent=yes
+<<<<<<< HEAD
   AC_DEFINE(HAVE_DIRENT,1,[])],
+=======
+  AC_DEFINE(HAVE_DIRENT,1,[ ])],
+>>>>>>> db7344ebf (abc)
  [have_dirent=no])
 AC_MSG_RESULT($have_dirent)
 
@@ -262,11 +359,34 @@ esac
 
 case "${host_os}" in
 amigaos*|aros*|morphos*)
+<<<<<<< HEAD
 dnl for depackers/xfd.c
+=======
+>>>>>>> db7344ebf (abc)
   AC_CHECK_HEADERS(proto/xfdmaster.h)
   ;;
 esac
 
+<<<<<<< HEAD
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([libxmp.pc])
+=======
+# FIXME: Make out-of-tree builds work.
+CPPFLAGS="$CPPFLAGS -Iinclude"
+CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+
+AC_SUBST([libxmp_VERSION_MAJOR],libxmp_VERSION_MAJOR_m4)
+AC_SUBST([libxmp_VERSION_MINOR],libxmp_VERSION_MINOR_m4)
+AC_SUBST([libxmp_VERSION_PATCH],libxmp_VERSION_PATCH_m4)
+AC_SUBST([libxmp_VERSION],libxmp_VERSION_m4)
+AC_SUBST([libxmplite_VERSION],libxmp_VERSION_m4)
+
+AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([libxmp.pc])
+AC_CONFIG_FILES([libxmp-config-version.cmake.autotools])
+if test "${enable_lite}" = yes; then
+   AC_CONFIG_FILES([libxmp-lite.pc:src/lite/libxmp-lite.pc.in])
+   AC_CONFIG_FILES([libxmp-lite-config-version.cmake.autotools:src/lite/libxmp-lite-config-version.cmake.autotools.in])
+fi
+>>>>>>> db7344ebf (abc)
 AC_OUTPUT

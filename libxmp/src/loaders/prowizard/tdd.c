@@ -155,7 +155,11 @@ static int test_tdd(const uint8 *data, char *t, int s)
 		if (d[137] > 0x40)
 			return -1;
 
+<<<<<<< HEAD
 		/* loop start addy < sampl addy ? */
+=======
+		/* loop start addy < sample addy ? */
+>>>>>>> db7344ebf (abc)
 		if (sadr < addr)
 			return -1;
 

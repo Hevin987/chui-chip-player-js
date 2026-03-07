@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2025 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -32,9 +36,20 @@
 #define IT_LINEAR_FREQ	0x08
 #define IT_OLD_FX	0x10
 #define IT_LINK_GXX	0x20
+<<<<<<< HEAD
 
 /* IT special */
 #define IT_HAS_MSG	0x01
+=======
+#define IT_MIDI_WHEEL	0x40
+#define IT_MIDI_CONFIG	0x80
+
+/* IT special */
+#define IT_HAS_MSG	0x01
+#define IT_EDIT_HISTORY	0x02
+#define IT_HIGHLIGHTS	0x04
+#define IT_SPEC_MIDICFG	0x08
+>>>>>>> db7344ebf (abc)
 
 /* IT instrument flags */
 #define IT_INST_SAMPLE	0x01
@@ -185,7 +200,18 @@ struct it_sample_header {
 	uint8 vit;		/* Vibrato waveform */
 };
 
+<<<<<<< HEAD
 int itsex_decompress8(HIO_HANDLE *src, uint8 *dst, int len, int it215);
 int itsex_decompress16(HIO_HANDLE *src, int16 *dst, int len, int it215);
+=======
+LIBXMP_BEGIN_DECLS
+
+int itsex_decompress8(HIO_HANDLE *src, uint8 *dst, int len,
+		      uint8 *tmp, int tmplen, int it215);
+int itsex_decompress16(HIO_HANDLE *src, int16 *dst, int len,
+		       uint8 *tmp, int tmplen, int it215);
+
+LIBXMP_END_DECLS
+>>>>>>> db7344ebf (abc)
 
 #endif /* LIBXMP_LOADERS_IT_H */

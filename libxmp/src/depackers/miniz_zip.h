@@ -1,7 +1,11 @@
 #ifndef MINIZ_ZIP_H
 #define MINIZ_ZIP_H
 
+<<<<<<< HEAD
 #include "miniz.h"
+=======
+#include "../miniz.h"
+>>>>>>> db7344ebf (abc)
 
 #if 1 /* LIBXMP-SPECIFIC : */
 /* change namespace from mz_ to libxmp_ for public functions: */
@@ -203,9 +207,14 @@ MINIZ_EXPORT mz_bool mz_zip_reader_end(mz_zip_archive *pZip);
 
 /* -------- ZIP reading or writing */
 
+<<<<<<< HEAD
 #ifdef DEBUG /* libxmp uses this only in debug mode */
 MINIZ_EXPORT const char *mz_zip_get_error_string(mz_zip_error mz_err);
 #endif
+=======
+/* libxmp uses this only in debug mode in _D(...) calls. */
+MINIZ_EXPORT const char *mz_zip_get_error_string(mz_zip_error mz_err);
+>>>>>>> db7344ebf (abc)
 
 /* MZ_TRUE if the archive file entry is a directory entry. */
 MINIZ_EXPORT mz_bool mz_zip_reader_is_file_a_directory(mz_zip_archive *pZip, mz_uint file_index);

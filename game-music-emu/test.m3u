@@ -1,2 +1,6 @@
 # filename,track number,track name,track time
+<<<<<<< HEAD
 test.nsf,$00,BGM C,1:16
+=======
+test.nsf,$00,BGM C,0:01:16.78
+>>>>>>> db7344ebf (abc)

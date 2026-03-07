@@ -63,7 +63,11 @@ static int depack_fcm(HIO_HANDLE *in, FILE *out)
 	}
 
 	hio_read32b(in);				/* bypass "LONG" chunk */
+<<<<<<< HEAD
 	write8(out, pat_pos = hio_read8(in));	/* pattern table lenght */
+=======
+	write8(out, pat_pos = hio_read8(in));	/* pattern table length */
+>>>>>>> db7344ebf (abc)
 	write8(out, hio_read8(in));			/* NoiseTracker byte */
 	hio_read32b(in);				/* bypass "PATT" chunk */
 

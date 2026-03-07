@@ -9,16 +9,37 @@
    (ProTracker 1/2). If the sample loops, the new sample should be activated
    after the loop ended.
 
+<<<<<<< HEAD
  o the new sample should be applied (ProTracker 3, various other players)
 
  OpenMPT implements the second option, which is also how it works in e.g. XM
  and S3M files.
+=======
+ o the old sample should keep playing (various other players)
+
+ OpenMPT implements the second option in normal playback mode and the
+ first option in ProTracker 1/2 mode.
+
+>>>>>>> db7344ebf (abc)
 */
 
 TEST(test_openmpt_mod_portasmpchange)
 {
+<<<<<<< HEAD
 	compare_mixer_data(
 		"openmpt/mod/PortaSmpChange.mod",
 		"openmpt/mod/PortaSmpChange.data");
+=======
+	/* Test generic MOD player behavior. */
+	compare_mixer_data_player_mode(
+		"openmpt/mod/PortaSmpChange.mod",
+		"openmpt/mod/PortaSmpChange.data",
+		XMP_MODE_MOD);
+
+	/* Test Protracker 1/2 behavior. */
+	compare_mixer_data(
+		"openmpt/mod/PortaSmpChange.mod",
+		"openmpt/mod/PortaSmpChange_PT.data");
+>>>>>>> db7344ebf (abc)
 }
 END_TEST

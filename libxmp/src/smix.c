@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2022 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -110,7 +114,11 @@ int xmp_smix_play_instrument(xmp_context opaque, int ins, int note, int vol, int
 		return -XMP_ERROR_STATE;
 	}
 
+<<<<<<< HEAD
 	if (chn >= smix->chn || ins >= mod->ins) {
+=======
+	if (chn >= smix->chn || chn < 0 || ins >= mod->ins || ins < 0) {
+>>>>>>> db7344ebf (abc)
 		return -XMP_ERROR_INVALID;
 	}
 
@@ -120,7 +128,11 @@ int xmp_smix_play_instrument(xmp_context opaque, int ins, int note, int vol, int
 
 	event = &p->inject_event[mod->chn + chn];
 	memset(event, 0, sizeof (struct xmp_event));
+<<<<<<< HEAD
 	event->note = note + 1;
+=======
+	event->note = (note < XMP_MAX_KEYS) ? note + 1 : note;
+>>>>>>> db7344ebf (abc)
 	event->ins = ins + 1;
 	event->vol = vol + 1;
 	event->_flag = 1;
@@ -141,7 +153,11 @@ int xmp_smix_play_sample(xmp_context opaque, int ins, int note, int vol, int chn
 		return -XMP_ERROR_STATE;
 	}
 
+<<<<<<< HEAD
 	if (chn >= smix->chn || ins >= smix->ins) {
+=======
+	if (chn >= smix->chn || chn < 0 || ins >= smix->ins || ins < 0) {
+>>>>>>> db7344ebf (abc)
 		return -XMP_ERROR_INVALID;
 	}
 
@@ -151,7 +167,11 @@ int xmp_smix_play_sample(xmp_context opaque, int ins, int note, int vol, int chn
 
 	event = &p->inject_event[mod->chn + chn];
 	memset(event, 0, sizeof (struct xmp_event));
+<<<<<<< HEAD
 	event->note = note + 1;
+=======
+	event->note = (note < XMP_MAX_KEYS) ? note + 1 : note;
+>>>>>>> db7344ebf (abc)
 	event->ins = mod->ins + ins + 1;
 	event->vol = vol + 1;
 	event->_flag = 1;

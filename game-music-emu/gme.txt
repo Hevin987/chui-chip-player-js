@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 Game_Music_Emu 0.6.2
 --------------------
 Author     : Shay Green <gblargg@gmail.com>
 Maintainer : Michael Pyne <mpyne@purinchu.net>
 Website    : https://bitbucket.org/mpyne/game-music-emu/
 Source     : https://bitbucket.org/mpyne/game-music-emu/
+=======
+Game_Music_Emu 0.6.4
+--------------------
+Author     : Shay Green <gblargg@gmail.com>
+Maintainers: Vitaly Novichkov <admin@wohlnet.ru>, Michael Pyne <mpyne@purinchu.net>
+Website    : https://github.com/libgme/game-music-emu
+Source     : https://github.com/libgme/game-music-emu
+>>>>>>> db7344ebf (abc)
 License    : GNU Lesser General Public License (LGPL), see LICENSE.txt
 
 Contents
@@ -209,7 +218,11 @@ examples assume these variables:
 
 If you're letting the library determine a file's type, you can use
 either gme_open_file() or gme_open_data():
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	error = gme_open_file( pathname, &emu );
 	error = gme_open_data( pointer, size, &emu );
 
@@ -227,7 +240,11 @@ create an emulator, you can use the following methods of loading:
 		// code that reads 'count' bytes into 'out' buffer
 		// and return 0 if no error
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	error = gme_load_custom( emu, my_read, file_size, my_data );
 
 

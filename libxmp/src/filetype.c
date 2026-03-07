@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2022 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -82,6 +86,7 @@ int libxmp_get_filetype (const char *path)
 	return (attr & (_A_SUBDIR|_A_VOLID)) ? XMP_FILETYPE_DIR : XMP_FILETYPE_FILE;
 }
 
+<<<<<<< HEAD
 #elif defined(LIBXMP_AMIGA)
 
 #ifdef __amigaos4__
@@ -91,6 +96,33 @@ int libxmp_get_filetype (const char *path)
 #ifdef __amigaos4__
 #include <dos/obsolete.h>
 #endif
+=======
+#elif defined(__amigaos4__)
+
+#define __USE_INLINE__
+#include <proto/dos.h>
+
+int libxmp_get_filetype (const char *path)
+{
+	int typ = XMP_FILETYPE_NONE;
+	struct ExamineData *data = ExamineObjectTags(EX_StringNameInput, path, TAG_END);
+	if (data) {
+	    if (EXD_IS_FILE(data)) {
+		typ = XMP_FILETYPE_FILE;
+	    } else
+	    if (EXD_IS_DIRECTORY(data)) {
+		typ = XMP_FILETYPE_DIR;
+	    }
+	    FreeDosObject(DOS_EXAMINEDATA, data);
+	}
+	if (typ == XMP_FILETYPE_NONE) errno = ENOENT;
+	return typ;
+}
+
+#elif defined(LIBXMP_AMIGA)
+
+#include <proto/dos.h>
+>>>>>>> db7344ebf (abc)
 
 int libxmp_get_filetype (const char *path)
 {
@@ -110,8 +142,14 @@ int libxmp_get_filetype (const char *path)
 	return typ;
 }
 
+<<<<<<< HEAD
 #else /* unix (ish) */
 
+=======
+#else /* unix (ish): */
+
+#include <sys/types.h>
+>>>>>>> db7344ebf (abc)
 #include <sys/stat.h>
 
 int libxmp_get_filetype (const char *path)

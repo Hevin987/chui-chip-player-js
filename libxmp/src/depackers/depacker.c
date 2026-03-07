@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2025 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,7 +32,11 @@
 #include "../tempfile.h"
 #include "xfnmatch.h"
 
+<<<<<<< HEAD
 #ifdef _WIN32
+=======
+#if defined(_WIN32 ) && !LIBXMP_UWP
+>>>>>>> db7344ebf (abc)
 /* Note: The _popen function returns an invalid file opaque, if
  * used in a Windows program, that will cause the program to hang
  * indefinitely. _popen works properly in a Console application.
@@ -53,7 +61,11 @@
 
 #define BUFLEN 16384
 
+<<<<<<< HEAD
 static struct depacker *depacker_list[] = {
+=======
+static const struct depacker *const depacker_list[] = {
+>>>>>>> db7344ebf (abc)
 #if defined(LIBXMP_AMIGA) && defined(HAVE_PROTO_XFDMASTER_H)
 	&libxmp_depacker_xfd,
 #endif
@@ -65,12 +77,22 @@ static struct depacker *depacker_list[] = {
 	&libxmp_depacker_compress,
 	&libxmp_depacker_pp,
 	&libxmp_depacker_sqsh,
+<<<<<<< HEAD
 	&libxmp_depacker_arcfs,
 	&libxmp_depacker_mmcmp,
 	&libxmp_depacker_muse,
 	&libxmp_depacker_lzx,
 	&libxmp_depacker_s404,
 	&libxmp_depacker_arc,
+=======
+	&libxmp_depacker_arc,
+	&libxmp_depacker_arcfs,
+	&libxmp_depacker_mmcmp,
+	&libxmp_depacker_ice1,
+	&libxmp_depacker_ice2,
+	&libxmp_depacker_lzx,
+	&libxmp_depacker_s404,
+>>>>>>> db7344ebf (abc)
 	NULL
 };
 
@@ -138,6 +160,10 @@ static int execute_command(const char * const cmd[], FILE *t)
 #endif /* USE_PTPOPEN */
 
 #ifdef DECRUNCH_USE_FORK
+<<<<<<< HEAD
+=======
+#include <sys/types.h>
+>>>>>>> db7344ebf (abc)
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -173,6 +199,20 @@ static int execute_command(const char * const cmd[], FILE *t)
 		exit(errno);
 	}
 	close(fds[1]);
+<<<<<<< HEAD
+=======
+
+	if ((p = fdopen(fds[0], "rb")) == NULL) {
+		D_(D_CRIT "failed fdopen");
+		close(fds[0]);
+		return -1;
+	}
+
+	while ((n = fread(buf, 1, BUFLEN, p)) > 0) {
+		fwrite(buf, 1, n, t);
+	}
+
+>>>>>>> db7344ebf (abc)
 	wait(&status);
 	if (!WIFEXITED(status)) {
 		D_(D_CRIT "process failed (wstatus = %d)", status);
@@ -184,6 +224,7 @@ static int execute_command(const char * const cmd[], FILE *t)
 		close(fds[0]);
 		return -1;
 	}
+<<<<<<< HEAD
 	if ((p = fdopen(fds[0], "rb")) == NULL) {
 		D_(D_CRIT "failed fdopen");
 		close(fds[0]);
@@ -193,19 +234,28 @@ static int execute_command(const char * const cmd[], FILE *t)
 	while ((n = fread(buf, 1, BUFLEN, p)) > 0) {
 		fwrite(buf, 1, n, t);
 	}
+=======
+>>>>>>> db7344ebf (abc)
 
 	fclose(p);
 	return 0;
 }
 #endif /* USE_FORK */
 
+<<<<<<< HEAD
 static int decrunch_command(HIO_HANDLE **h, const char * const cmd[], char **temp)
+=======
+static int decrunch_command(HIO_HANDLE *h, const char * const cmd[], char **temp)
+>>>>>>> db7344ebf (abc)
 {
 #if defined __ANDROID__ || defined __native_client__
 	/* Don't use external helpers in android */
 	return 0;
 #else
+<<<<<<< HEAD
 	HIO_HANDLE *tmp;
+=======
+>>>>>>> db7344ebf (abc)
 	FILE *t;
 
 	D_(D_WARN "Depacking file... ");
@@ -228,11 +278,17 @@ static int decrunch_command(HIO_HANDLE **h, const char * const cmd[], char **tem
 		goto err2;
 	}
 
+<<<<<<< HEAD
 	if ((tmp = hio_open_file2(t)) == NULL)
 		return -1;  /* call closes on failure. */
 
 	hio_close(*h);
 	*h = tmp;
+=======
+	if (hio_reopen_file(t, 1, h) < 0) {
+		goto err2;
+	}
+>>>>>>> db7344ebf (abc)
 	return 0;
 
     err2:
@@ -242,6 +298,7 @@ static int decrunch_command(HIO_HANDLE **h, const char * const cmd[], char **tem
 #endif
 }
 
+<<<<<<< HEAD
 static int decrunch_internal_tempfile(HIO_HANDLE **h, struct depacker *depacker, char **temp)
 {
 	HIO_HANDLE *tmp;
@@ -283,6 +340,10 @@ static int decrunch_internal_tempfile(HIO_HANDLE **h, struct depacker *depacker,
 static int decrunch_internal_memory(HIO_HANDLE **h, struct depacker *depacker)
 {
 	HIO_HANDLE *tmp;
+=======
+static int decrunch_internal(HIO_HANDLE *h, const struct depacker *depacker)
+{
+>>>>>>> db7344ebf (abc)
 	void *out;
 	long outlen;
 
@@ -290,13 +351,18 @@ static int decrunch_internal_memory(HIO_HANDLE **h, struct depacker *depacker)
 
 	/* Depack file */
 	D_(D_INFO "Internal depacker");
+<<<<<<< HEAD
 	if (depacker->depack_mem(*h, &out, hio_size(*h), &outlen) < 0) {
+=======
+	if (depacker->depack(h, &out, &outlen) < 0) {
+>>>>>>> db7344ebf (abc)
 		D_(D_CRIT "failed");
 		return -1;
 	}
 
 	D_(D_INFO "done");
 
+<<<<<<< HEAD
 	if ((tmp = hio_open_mem(out, outlen, 1)) == NULL) {
 		free(out);
 		return -1;
@@ -308,25 +374,50 @@ static int decrunch_internal_memory(HIO_HANDLE **h, struct depacker *depacker)
 }
 
 int libxmp_decrunch(HIO_HANDLE **h, const char *filename, char **temp)
+=======
+	if (hio_reopen_mem(out, outlen, 1, h) < 0) {
+		free(out);
+		return -1;
+	}
+	return 0;
+}
+
+int libxmp_decrunch(HIO_HANDLE *h, const char *filename, char **temp)
+>>>>>>> db7344ebf (abc)
 {
 	unsigned char b[1024];
 	const char *cmd[32];
 	int headersize;
 	int i;
+<<<<<<< HEAD
 	struct depacker *depacker = NULL;
+=======
+	const struct depacker *depacker = NULL;
+>>>>>>> db7344ebf (abc)
 
 	cmd[0] = NULL;
 	*temp = NULL;
 
+<<<<<<< HEAD
 	headersize = hio_read(b, 1, 1024, *h);
 	if (headersize < 100) {	/* minimum valid file size */
+=======
+	headersize = hio_read(b, 1, 1024, h);
+	if (headersize < 64) {	/* minimum valid file size */
+>>>>>>> db7344ebf (abc)
 		return 0;
 	}
 
 	/* Check built-in depackers */
 	for (i = 0; depacker_list[i] != NULL; i++) {
+<<<<<<< HEAD
 		if (depacker_list[i]->test(b)) {
 			depacker = depacker_list[i];
+=======
+		const struct depacker *d = depacker_list[i];
+		if ((d->test && d->test(b)) || (d->test_hio && d->test_hio(h))) {
+			depacker = d;
+>>>>>>> db7344ebf (abc)
 			D_(D_INFO "Use depacker %d", i);
 			break;
 		}
@@ -361,7 +452,11 @@ int libxmp_decrunch(HIO_HANDLE **h, const char *filename, char **temp)
 		}
 	}
 
+<<<<<<< HEAD
 	if (hio_seek(*h, 0, SEEK_SET) < 0) {
+=======
+	if (hio_seek(h, 0, SEEK_SET) < 0) {
+>>>>>>> db7344ebf (abc)
 		return -1;
 	}
 
@@ -376,9 +471,13 @@ int libxmp_decrunch(HIO_HANDLE **h, const char *filename, char **temp)
 
 		return decrunch_command(h, cmd, temp);
 	} else if (depacker && depacker->depack) {
+<<<<<<< HEAD
 		return decrunch_internal_tempfile(h, depacker, temp);
 	} else if (depacker && depacker->depack_mem) {
 		return decrunch_internal_memory(h, depacker);
+=======
+		return decrunch_internal(h, depacker);
+>>>>>>> db7344ebf (abc)
 	} else {
 		D_(D_INFO "Not packed");
 		return 0;
@@ -394,7 +493,12 @@ int libxmp_exclude_match(const char *name)
 	int i;
 
 	static const char *const exclude[] = {
+<<<<<<< HEAD
 		"README", "readme",
+=======
+		"README", "readme", "ReadMe",
+		"ReadMe!", "readMe!", "!ReadMe!",
+>>>>>>> db7344ebf (abc)
 		"*.DIZ", "*.diz",
 		"*.NFO", "*.nfo",
 		"*.DOC", "*.Doc", "*.doc",
@@ -403,6 +507,13 @@ int libxmp_exclude_match(const char *name)
 		"*.EXE", "*.exe",
 		"*.COM", "*.com",
 		"*.README", "*.readme", "*.Readme", "*.ReadMe",
+<<<<<<< HEAD
+=======
+		"*.HTM", "*.htm",
+		"*.HTML", "*.html",
+		/* Found in Spark archives. */
+		"\\?From", "From\\?", "InfoText",
+>>>>>>> db7344ebf (abc)
 		NULL
 	};
 

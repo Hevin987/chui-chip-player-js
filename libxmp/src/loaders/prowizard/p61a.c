@@ -28,7 +28,11 @@
  * The Player 6.1a to Protracker.
  *
  * note: As for version 5.0A and 6.0A, it's a REAL mess !.
+<<<<<<< HEAD
  *      It's VERY badly coded, I know. Just dont forget it was mainly done
+=======
+ *      It's VERY badly coded, I know. Just don't forget it was mainly done
+>>>>>>> db7344ebf (abc)
  *      to test the description I made of P61a format.
  *      I certainly wont dare to beat Gryzor on the ground :). His Prowiz IS
  *      the converter to use !!!. Though, using the official depacker could
@@ -859,7 +863,11 @@ void testP61A_pack (void)
     /* test pattern table */
     l = 0;
     o = 0;
+<<<<<<< HEAD
     /* first, test if we dont oversize the input file */
+=======
+    /* first, test if we don't oversize the input file */
+>>>>>>> db7344ebf (abc)
     if ((k * 6 + 8 + m * 8) > in_size) {
 /*printf ( "8,0 Start:%ld\n" , start );*/
 	Test = BAD;

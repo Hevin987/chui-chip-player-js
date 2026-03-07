@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2024 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -390,7 +394,11 @@ HIO_HANDLE *hio_open(const char *path, const char *mode)
 	return NULL;
 }
 
+<<<<<<< HEAD
 HIO_HANDLE *hio_open_mem(const void *ptr, long size, int free_after_use)
+=======
+HIO_HANDLE *hio_open_const_mem(const void *ptr, long size)
+>>>>>>> db7344ebf (abc)
 {
 	HIO_HANDLE *h;
 
@@ -400,7 +408,11 @@ HIO_HANDLE *hio_open_mem(const void *ptr, long size, int free_after_use)
 		return NULL;
 
 	h->type = HIO_HANDLE_TYPE_MEMORY;
+<<<<<<< HEAD
 	h->handle.mem = mopen(ptr, size, free_after_use);
+=======
+	h->handle.mem = mcopen(ptr, size);
+>>>>>>> db7344ebf (abc)
 	h->size = size;
 
 	if (!h->handle.mem) {
@@ -467,7 +479,11 @@ HIO_HANDLE *hio_open_callbacks(void *priv, struct xmp_callbacks callbacks)
 	return h;
 }
 
+<<<<<<< HEAD
 int hio_close(HIO_HANDLE *h)
+=======
+static int hio_close_internal(HIO_HANDLE *h)
+>>>>>>> db7344ebf (abc)
 {
 	int ret = -1;
 
@@ -482,7 +498,62 @@ int hio_close(HIO_HANDLE *h)
 		ret = cbclose(h->handle.cbfile);
 		break;
 	}
+<<<<<<< HEAD
 
+=======
+	return ret;
+}
+
+/* hio_close + hio_open_mem. Reuses the same HIO_HANDLE. */
+int hio_reopen_mem(void *ptr, long size, int free_after_use, HIO_HANDLE *h)
+{
+	MFILE *m;
+	int ret;
+	if (size <= 0) return -1;
+
+	m = mopen(ptr, size, free_after_use);
+	if (m == NULL) {
+		return -1;
+	}
+
+	ret = hio_close_internal(h);
+	if (ret < 0) {
+		m->ptr_free = NULL;
+		mclose(m);
+		return ret;
+	}
+
+	h->type = HIO_HANDLE_TYPE_MEMORY;
+	h->handle.mem = m;
+	h->size = size;
+	return 0;
+}
+
+/* hio_close + hio_open_file. Reuses the same HIO_HANDLE. */
+int hio_reopen_file(FILE *f, int close_after_use, HIO_HANDLE *h)
+{
+	long size = get_size(f);
+	int ret;
+	if (size < 0) {
+		return -1;
+	}
+
+	ret = hio_close_internal(h);
+	if (ret < 0) {
+		return -1;
+	}
+
+	h->noclose = !close_after_use;
+	h->type = HIO_HANDLE_TYPE_FILE;
+	h->handle.file = f;
+	h->size = size;
+	return 0;
+}
+
+int hio_close(HIO_HANDLE *h)
+{
+	int ret = hio_close_internal(h);
+>>>>>>> db7344ebf (abc)
 	free(h);
 	return ret;
 }
@@ -491,3 +562,22 @@ long hio_size(HIO_HANDLE *h)
 {
 	return h->size;
 }
+<<<<<<< HEAD
+=======
+
+/* Returns a pointer to the underlying continuous memory buffer the entire
+ * contents of HIO_HANDLE `h` are stored at if applicable, otherwise NULL.
+ * Do not reallocate this pointer or modify its underlying data!
+ */
+const unsigned char *hio_get_underlying_memory(HIO_HANDLE *h)
+{
+	switch (HIO_HANDLE_TYPE(h)) {
+	case HIO_HANDLE_TYPE_FILE:
+	case HIO_HANDLE_TYPE_CBFILE:
+		return NULL;
+	case HIO_HANDLE_TYPE_MEMORY:
+		return h->handle.mem->start;
+	}
+	return NULL;
+}
+>>>>>>> db7344ebf (abc)

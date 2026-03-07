@@ -3,7 +3,11 @@
 /* This input caused uninitialized reads in the LZW depacker
  * when called from the Digital Symphony loader due to using
  * the uncompressed size as the compressed size bound. This
+<<<<<<< HEAD
  * issue presumably could also have occured with valid modules.
+=======
+ * issue presumably could also have occurred with valid modules.
+>>>>>>> db7344ebf (abc)
  */
 
 TEST(test_fuzzer_sym_truncated_lzw)

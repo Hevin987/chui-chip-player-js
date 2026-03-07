@@ -4,6 +4,7 @@
  * due to a broken bounds check. Only occurs when using xmp_load_module_from_memory.
  */
 
+<<<<<<< HEAD
 #define BUFFER_SIZE 2048
 
 TEST(test_fuzzer_prowizard_heatseek_truncated)
@@ -24,6 +25,18 @@ TEST(test_fuzzer_prowizard_heatseek_truncated)
 
 	fail_unless(len > 0 && len < BUFFER_SIZE, "read error");
 
+=======
+TEST(test_fuzzer_prowizard_heatseek_truncated)
+{
+	xmp_context opaque;
+	void *buffer;
+	long len;
+	int ret;
+
+	read_file_to_memory("data/f/prowizard_heatseek_truncated", &buffer, &len);
+	fail_unless(buffer != NULL, "buffer alloc");
+
+>>>>>>> db7344ebf (abc)
 	opaque = xmp_create_context();
 	ret = xmp_load_module_from_memory(opaque, buffer, len);
 	fail_unless(ret == -XMP_ERROR_LOAD, "module load");

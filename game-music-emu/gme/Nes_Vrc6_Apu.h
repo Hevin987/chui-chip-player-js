@@ -1,6 +1,10 @@
 // Konami VRC6 sound chip emulator
 
+<<<<<<< HEAD
 // Nes_Snd_Emu $vers
+=======
+// Nes_Snd_Emu 0.1.8
+>>>>>>> db7344ebf (abc)
 #ifndef NES_VRC6_APU_H
 #define NES_VRC6_APU_H
 
@@ -15,6 +19,7 @@ public:
 	void reset();
 	void volume( double );
 	void treble_eq( blip_eq_t const& );
+<<<<<<< HEAD
 	void set_output( Blip_Buffer* );
 	enum { osc_count = 3 };
 	void set_output( int index, Blip_Buffer* );
@@ -22,6 +27,15 @@ public:
 	void save_state( vrc6_apu_state_t* ) const;
 	void load_state( vrc6_apu_state_t const& );
 	
+=======
+	void output( Blip_Buffer* );
+	enum { osc_count = 3 };
+	void osc_output( int index, Blip_Buffer* );
+	void end_frame( blip_time_t );
+	void save_state( vrc6_apu_state_t* ) const;
+	void load_state( vrc6_apu_state_t const& );
+
+>>>>>>> db7344ebf (abc)
 	// Oscillator 0 write-only registers are at $9000-$9002
 	// Oscillator 1 write-only registers are at $A000-$A002
 	// Oscillator 2 write-only registers are at $B000-$B002
@@ -29,7 +43,11 @@ public:
 	enum { base_addr = 0x9000 };
 	enum { addr_step = 0x1000 };
 	void write_osc( blip_time_t, int osc, int reg, int data );
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 public:
 	Nes_Vrc6_Apu();
 	BLARGG_DISABLE_NOTHROW
@@ -37,15 +55,23 @@ private:
 	// noncopyable
 	Nes_Vrc6_Apu( const Nes_Vrc6_Apu& );
 	Nes_Vrc6_Apu& operator = ( const Nes_Vrc6_Apu& );
+<<<<<<< HEAD
 	
 	struct Vrc6_Osc
 	{
 		BOOST::uint8_t regs [3];
+=======
+
+	struct Vrc6_Osc
+	{
+		uint8_t regs [3];
+>>>>>>> db7344ebf (abc)
 		Blip_Buffer* output;
 		int delay;
 		int last_amp;
 		int phase;
 		int amp; // only used by saw
+<<<<<<< HEAD
 		
 		int period() const
 		{
@@ -59,6 +85,21 @@ private:
 	Blip_Synth_Fast saw_synth;
 	Blip_Synth_Norm square_synth;
 	
+=======
+
+		int period() const
+		{
+			return (regs [2] & 0x0F) * 0x100L + regs [1] + 1;
+		}
+	};
+
+	Vrc6_Osc oscs [osc_count];
+	blip_time_t last_time;
+
+	Blip_Synth<blip_med_quality,1> saw_synth;
+	Blip_Synth<blip_good_quality,1> square_synth;
+
+>>>>>>> db7344ebf (abc)
 	void run_until( blip_time_t );
 	void run_square( Vrc6_Osc& osc, blip_time_t );
 	void run_saw( blip_time_t );
@@ -66,6 +107,7 @@ private:
 
 struct vrc6_apu_state_t
 {
+<<<<<<< HEAD
 	BOOST::uint8_t regs [3] [3];
 	BOOST::uint8_t saw_amp;
 	BOOST::uint16_t delays [3];
@@ -74,6 +116,16 @@ struct vrc6_apu_state_t
 };
 
 inline void Nes_Vrc6_Apu::set_output( int i, Blip_Buffer* buf )
+=======
+	uint8_t regs [3] [3];
+	uint8_t saw_amp;
+	uint16_t delays [3];
+	uint8_t phases [3];
+	uint8_t unused;
+};
+
+inline void Nes_Vrc6_Apu::osc_output( int i, Blip_Buffer* buf )
+>>>>>>> db7344ebf (abc)
 {
 	assert( (unsigned) i < osc_count );
 	oscs [i].output = buf;

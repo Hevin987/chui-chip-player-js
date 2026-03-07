@@ -1,8 +1,18 @@
+<<<<<<< HEAD
 // Game_Music_Emu $vers. http://www.slack.net/~ant/
 
 #include "Sap_Apu.h"
 
 /* Copyright (C) 2006-2008 Shay Green. This module is free software; you
+=======
+// Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
+
+#include "Sap_Apu.h"
+
+#include <string.h>
+
+/* Copyright (C) 2006 Shay Green. This module is free software; you
+>>>>>>> db7344ebf (abc)
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version. This
@@ -15,11 +25,19 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 #include "blargg_source.h"
 
+<<<<<<< HEAD
 int const max_frequency = 12000; // pure waves above this frequency are silenced
 
 static void gen_poly( unsigned mask, int count, byte out [] )
 {
 	unsigned n = 1;
+=======
+static int const max_frequency = 12000; // pure waves above this frequency are silenced
+
+static void gen_poly( uint32_t mask, int count, byte* out )
+{
+	uint32_t n = 1;
+>>>>>>> db7344ebf (abc)
 	do
 	{
 		int bits = 0;
@@ -28,7 +46,11 @@ static void gen_poly( unsigned mask, int count, byte out [] )
 		{
 			// implemented using "Galios configuration"
 			bits |= (n & 1) << b;
+<<<<<<< HEAD
 			n = (n >> 1) ^ (mask * (n & 1));
+=======
+			n = (n >> 1) ^ (mask & uMinus(n & 1));
+>>>>>>> db7344ebf (abc)
 		}
 		while ( b++ < 7 );
 		*out++ = bits;
@@ -37,28 +59,45 @@ static void gen_poly( unsigned mask, int count, byte out [] )
 }
 
 // poly5
+<<<<<<< HEAD
 int const poly5_len = (1 <<  5) - 1;
 unsigned const poly5_mask = (1U << poly5_len) - 1;
 unsigned const poly5 = 0x167C6EA1;
 
 inline unsigned run_poly5( unsigned in, int shift )
+=======
+static int const poly5_len = (1 <<  5) - 1;
+static uint32_t const poly5_mask = (1UL << poly5_len) - 1;
+static uint32_t const poly5 = 0x167C6EA1;
+
+static inline uint32_t run_poly5( uint32_t in, int shift )
+>>>>>>> db7344ebf (abc)
 {
 	return (in << shift & poly5_mask) | (in >> (poly5_len - shift));
 }
 
 #define POLY_MASK( width, tap1, tap2 ) \
+<<<<<<< HEAD
 	((1U << (width - 1 - tap1)) | (1U << (width - 1 - tap2)))
+=======
+	((1UL << (width - 1 - tap1)) | (1UL << (width - 1 - tap2)))
+>>>>>>> db7344ebf (abc)
 
 Sap_Apu_Impl::Sap_Apu_Impl()
 {
 	gen_poly( POLY_MASK(  4, 1, 0 ), sizeof poly4,  poly4  );
 	gen_poly( POLY_MASK(  9, 5, 0 ), sizeof poly9,  poly9  );
 	gen_poly( POLY_MASK( 17, 5, 0 ), sizeof poly17, poly17 );
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	if ( 0 ) // comment out to recauculate poly5 constant
 	{
 		byte poly5 [4];
 		gen_poly( POLY_MASK(  5, 2, 0 ), sizeof poly5,  poly5  );
+<<<<<<< HEAD
 		unsigned n = poly5 [3] * 0x1000000 + poly5 [2] * 0x10000 + 
 				poly5 [1] * 0x100 + poly5 [0];
 		unsigned rev = n & 1;
@@ -78,6 +117,22 @@ Sap_Apu::Sap_Apu()
 {
 	impl = NULL;
 	set_output( NULL );
+=======
+		uint32_t n = poly5 [3] * 0x1000000L + poly5 [2] * 0x10000L +
+				poly5 [1] * 0x100L + poly5 [0];
+		uint32_t rev = n & 1;
+		for ( int i = 1; i < poly5_len; i++ )
+			rev |= (n >> i & 1) << (poly5_len - i);
+		debug_printf( "poly5: 0x%08lX\n", (long unsigned int)rev );
+	}
+}
+
+Sap_Apu::Sap_Apu()
+{
+	impl = 0;
+	for ( int i = 0; i < osc_count; i++ )
+		osc_output( i, 0 );
+>>>>>>> db7344ebf (abc)
 }
 
 void Sap_Apu::reset( Sap_Apu_Impl* new_impl )
@@ -88,7 +143,11 @@ void Sap_Apu::reset( Sap_Apu_Impl* new_impl )
 	poly4_pos = 0;
 	polym_pos = 0;
 	control   = 0;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	for ( int i = 0; i < osc_count; i++ )
 		memset( &oscs [i], 0, offsetof (osc_t,output) );
 }
@@ -99,6 +158,7 @@ inline void Sap_Apu::calc_periods()
 	int divider = 28;
 	if ( this->control & 1 )
 		divider = 114;
+<<<<<<< HEAD
 	
 	for ( int i = 0; i < osc_count; i++ )
 	{
@@ -106,18 +166,36 @@ inline void Sap_Apu::calc_periods()
 		
 		int const osc_reload = osc->regs [0]; // cache
 		int period = (osc_reload + 1) * divider;
+=======
+
+	for ( int i = 0; i < osc_count; i++ )
+	{
+		osc_t* const osc = &oscs [i];
+
+		int const osc_reload = osc->regs [0]; // cache
+		int32_t period = (osc_reload + 1) * divider;
+>>>>>>> db7344ebf (abc)
 		static byte const fast_bits [osc_count] = { 1 << 6, 1 << 4, 1 << 5, 1 << 3 };
 		if ( this->control & fast_bits [i] )
 		{
 			period = osc_reload + 4;
 			if ( i & 1 )
 			{
+<<<<<<< HEAD
 				period = osc_reload * 0x100 + osc [-1].regs [0] + 7;
 				if ( !(this->control & fast_bits [i - 1]) )
 					period = (period - 6) * divider;
 				
 				if ( (osc [-1].regs [1] & 0x1F) > 0x10 )
 					dprintf( "Use of slave channel in 16-bit mode not supported\n" );
+=======
+				period = osc_reload * 0x100L + osc [-1].regs [0] + 7;
+				if ( !(this->control & fast_bits [i - 1]) )
+					period = (period - 6) * divider;
+
+				if ( (osc [-1].regs [1] & 0x1F) > 0x10 )
+					debug_printf( "Use of slave channel in 16-bit mode not supported\n" );
+>>>>>>> db7344ebf (abc)
 			}
 		}
 		osc->period = period;
@@ -128,7 +206,11 @@ void Sap_Apu::run_until( blip_time_t end_time )
 {
 	calc_periods();
 	Sap_Apu_Impl* const impl = this->impl; // cache
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	// 17/9-bit poly selection
 	byte const* polym = impl->poly17;
 	int polym_len = poly17_len;
@@ -138,17 +220,30 @@ void Sap_Apu::run_until( blip_time_t end_time )
 		polym = impl->poly9;
 	}
 	polym_pos %= polym_len;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	for ( int i = 0; i < osc_count; i++ )
 	{
 		osc_t* const osc = &oscs [i];
 		blip_time_t time = last_time + osc->delay;
 		blip_time_t const period = osc->period;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		// output
 		Blip_Buffer* output = osc->output;
 		if ( output )
 		{
+<<<<<<< HEAD
+=======
+			output->set_modified();
+
+>>>>>>> db7344ebf (abc)
 			int const osc_control = osc->regs [1]; // cache
 			int volume = (osc_control & 0x0F) * 2;
 			if ( !volume || osc_control & 0x10 || // silent, DAC mode, or inaudible frequency
@@ -156,15 +251,25 @@ void Sap_Apu::run_until( blip_time_t end_time )
 			{
 				if ( !(osc_control & 0x10) )
 					volume >>= 1; // inaudible frequency = half volume
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> db7344ebf (abc)
 				int delta = volume - osc->last_amp;
 				if ( delta )
 				{
 					osc->last_amp = volume;
+<<<<<<< HEAD
 					output->set_modified();
 					impl->synth.offset( last_time, delta, output );
 				}
 				
+=======
+					impl->synth.offset( last_time, delta, output );
+				}
+
+>>>>>>> db7344ebf (abc)
 				// TODO: doesn't maintain high pass flip-flop (very minor issue)
 			}
 			else
@@ -184,7 +289,11 @@ void Sap_Apu::run_until( blip_time_t end_time )
 						volume = -volume;
 					}
 				}
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> db7344ebf (abc)
 				if ( time < end_time || time2 < end_time )
 				{
 					// poly source
@@ -208,9 +317,15 @@ void Sap_Apu::run_until( blip_time_t end_time )
 						poly_pos = (poly_pos + osc->delay) % poly_len;
 					}
 					poly_inc -= poly_len; // allows more optimized inner loop below
+<<<<<<< HEAD
 					
 					// square/poly5 wave
 					unsigned wave = poly5;
+=======
+
+					// square/poly5 wave
+					uint32_t wave = poly5;
+>>>>>>> db7344ebf (abc)
 					check( poly5 & 1 ); // low bit is set for pure wave
 					int poly5_inc = 0;
 					if ( !(osc_control & 0x80) )
@@ -218,9 +333,13 @@ void Sap_Apu::run_until( blip_time_t end_time )
 						wave = run_poly5( wave, (osc->delay + poly5_pos) % poly5_len );
 						poly5_inc = period % poly5_len;
 					}
+<<<<<<< HEAD
 					
 					output->set_modified();
 					
+=======
+
+>>>>>>> db7344ebf (abc)
 					// Run wave and high pass interleved with each catching up to the other.
 					// Disabled high pass has no performance effect since inner wave loop
 					// makes no compromise for high pass, and only runs once in that case.
@@ -242,7 +361,11 @@ void Sap_Apu::run_until( blip_time_t end_time )
 						}
 						while ( time2 <= time ) // must advance *past* time to avoid hang
 							time2 += period2;
+<<<<<<< HEAD
 						
+=======
+
+>>>>>>> db7344ebf (abc)
 						// run wave
 						blip_time_t end = end_time;
 						if ( end > time2 )
@@ -251,7 +374,11 @@ void Sap_Apu::run_until( blip_time_t end_time )
 						{
 							if ( wave & 1 )
 							{
+<<<<<<< HEAD
 								int amp = volume * (poly [poly_pos >> 3] >> (poly_pos & 7) & 1);
+=======
+								int amp = volume & -(poly [poly_pos >> 3] >> (poly_pos & 7) & 1);
+>>>>>>> db7344ebf (abc)
 								if ( (poly_pos += poly_inc) < 0 )
 									poly_pos += poly_len;
 								int delta = amp - osc_last_amp;
@@ -266,11 +393,19 @@ void Sap_Apu::run_until( blip_time_t end_time )
 						}
 					}
 					while ( time < end_time || time2 < end_time );
+<<<<<<< HEAD
 					
 					osc->phase = poly_pos;
 					osc->last_amp = osc_last_amp;
 				}
 				
+=======
+
+					osc->phase = poly_pos;
+					osc->last_amp = osc_last_amp;
+				}
+
+>>>>>>> db7344ebf (abc)
 				osc->invert = 0;
 				if ( volume < 0 )
 				{
@@ -280,18 +415,30 @@ void Sap_Apu::run_until( blip_time_t end_time )
 				}
 			}
 		}
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		// maintain divider
 		blip_time_t remain = end_time - time;
 		if ( remain > 0 )
 		{
+<<<<<<< HEAD
 			int count = (remain + period - 1) / period;
+=======
+			int32_t count = (remain + period - 1) / period;
+>>>>>>> db7344ebf (abc)
 			osc->phase ^= count;
 			time += count * period;
 		}
 		osc->delay = time - end_time;
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	// advance polies
 	blip_time_t duration = end_time - last_time;
 	last_time = end_time;
@@ -300,11 +447,19 @@ void Sap_Apu::run_until( blip_time_t end_time )
 	polym_pos += duration; // will get %'d on next call
 }
 
+<<<<<<< HEAD
 void Sap_Apu::write_data( blip_time_t time, int addr, int data )
 {
 	run_until( time );
 	int i = (addr - 0xD200) >> 1;
 	if ( (unsigned) i < osc_count )
+=======
+void Sap_Apu::write_data( blip_time_t time, unsigned addr, int data )
+{
+	run_until( time );
+	int i = (addr ^ 0xD200) >> 1;
+	if ( i < osc_count )
+>>>>>>> db7344ebf (abc)
 	{
 		oscs [i].regs [addr & 1] = data;
 	}
@@ -333,7 +488,12 @@ void Sap_Apu::end_frame( blip_time_t end_time )
 {
 	if ( end_time > last_time )
 		run_until( end_time );
+<<<<<<< HEAD
 	
 	last_time -= end_time;
 	assert( last_time >= 0 );
+=======
+
+	last_time -= end_time;
+>>>>>>> db7344ebf (abc)
 }

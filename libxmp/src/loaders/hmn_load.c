@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -237,7 +241,11 @@ static int hmn_load(struct module_data *m, HIO_HANDLE * f, const int start)
 			mod->xxi[i].sub[j].fin =
 					-(int8)(mh.ins[i].finetune << 3);
 			mod->xxi[i].sub[j].vol = mh.ins[i].volume;
+<<<<<<< HEAD
 			mod->xxi[i].sub[j].pan = 0x80;
+=======
+			mod->xxi[i].sub[j].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 			mod->xxi[i].sub[j].sid = i;
 		}
 	}
@@ -273,6 +281,11 @@ static int hmn_load(struct module_data *m, HIO_HANDLE * f, const int start)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* Noisetracker does not support CIA timing (Glue Master/muppenkorva.mod) */
+	m->quirk |= QUIRK_NOBPM;
+>>>>>>> db7344ebf (abc)
 	m->period_type = PERIOD_MODRNG;
 
 	/* Load samples */

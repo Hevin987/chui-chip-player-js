@@ -21,7 +21,11 @@ TEST(test_api_smix_load_sample)
 	ret = xmp_smix_load_sample(opaque, 2, "data/blip.wav");
 	fail_unless(ret == -XMP_ERROR_INVALID, "load sample in invalid slot");
 
+<<<<<<< HEAD
 	/* try to load non-existant file */
+=======
+	/* try to load non-existent file */
+>>>>>>> db7344ebf (abc)
 	ret = xmp_smix_load_sample(opaque, 0, "doesnt.exist");
 	fail_unless(ret == -XMP_ERROR_SYSTEM, "sample doesn't exist");
 	fail_unless(xmp_syserrno() == ENOENT, "errno");

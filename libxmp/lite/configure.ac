@@ -1,5 +1,15 @@
+<<<<<<< HEAD
 AC_PREREQ(2.60)
 AC_INIT
+=======
+m4_define([libxmplite_VERSION_MAJOR_m4], [4])
+m4_define([libxmplite_VERSION_MINOR_m4], [7])
+m4_define([libxmplite_VERSION_PATCH_m4], [0])
+m4_define([libxmplite_VERSION_m4], libxmplite_VERSION_MAJOR_m4[.]libxmplite_VERSION_MINOR_m4[.]libxmplite_VERSION_PATCH_m4)
+
+AC_PREREQ(2.60)
+AC_INIT([libxmp-lite],libxmplite_VERSION_m4)
+>>>>>>> db7344ebf (abc)
 AC_ARG_ENABLE(it,        [  --disable-it            Don't build IT format support])
 AC_ARG_ENABLE(static,    [  --enable-static         Build static library])
 AC_ARG_ENABLE(shared,    [  --disable-shared        Don't build shared library])
@@ -52,13 +62,21 @@ darwin*)
     CFLAGS="${CFLAGS} -fno-common"
   fi
   ;;
+<<<<<<< HEAD
 cygwin* | *djgpp | mint* | amigaos* |aros* | morphos*)
+=======
+cygwin* | *djgpp | emx* | mint* | amigaos* | aros* | morphos*)
+>>>>>>> db7344ebf (abc)
   enable_static=yes
   enable_shared=no
   ;;
 esac
 
 AC_CHECK_DEFINED(__clang__)
+<<<<<<< HEAD
+=======
+AC_CHECK_DEFINED(__cplusplus)
+>>>>>>> db7344ebf (abc)
 
 case "${host_os}" in
 dnl Skip this on platforms where it is just simply busted.
@@ -76,6 +94,12 @@ dnl Skip this on platforms where it is just simply busted.
 esac
 
 if test "${enable_static}" = yes; then
+<<<<<<< HEAD
+=======
+  if test x"$AR" = x: || test  x"$RANLIB" = x: ; then
+     AC_MSG_ERROR([Build tools ar and/or ranlib not found.])
+  fi
+>>>>>>> db7344ebf (abc)
   AC_SUBST(STATIC,static)
 fi
 if test "${enable_shared}" != no; then
@@ -109,12 +133,15 @@ XMP_TRY_COMPILE(whether compiler understands -Wextra,
   int main(void){return 0;}],
   CFLAGS="${CFLAGS} -Wextra")
 
+<<<<<<< HEAD
 if test x$ac_cv_c_flag_w_extra != xyes; then
   XMP_TRY_COMPILE(whether compiler understands -W,
     ac_cv_c_flag_w, -W,
    [int main(void){return 0;}], CFLAGS="${CFLAGS} -W")
 fi
 
+=======
+>>>>>>> db7344ebf (abc)
 XMP_TRY_COMPILE(whether compiler understands -Wunused-parameter,
   ac_cv_c_flag_w_unused_parameter,
   -Wunused-parameter,[
@@ -133,6 +160,35 @@ XMP_TRY_COMPILE(whether compiler understands -Wwrite-strings,
   int main(void){return 0;}],
   CFLAGS="${CFLAGS} -Wwrite-strings")
 
+<<<<<<< HEAD
+=======
+if test "$ac_cv_defined___cplusplus" = "no"; then
+  XMP_TRY_COMPILE(whether compiler understands -Wdeclaration-after-statement,
+    ac_cv_c_flag_w_declaration_after_statement,
+    -Wdeclaration-after-statement,[
+    int main(void){return 0;}],
+    CFLAGS="${CFLAGS} -Wdeclaration-after-statement")
+
+  XMP_TRY_COMPILE(whether compiler understands -Wmissing-prototypes,
+    ac_cv_c_flag_w_missing_prototypes,
+    -Wmissing-prototypes,[
+    int main(void){return 0;}],
+    CFLAGS="${CFLAGS} -Wmissing-prototypes")
+
+  XMP_TRY_COMPILE(whether compiler understands -Wstrict-prototypes,
+    ac_cv_c_flag_w_strict_prototypes,
+    -Wstrict-prototypes,[
+    int main(void){return 0;}],
+    CFLAGS="${CFLAGS} -Wstrict-prototypes")
+fi
+
+XMP_TRY_COMPILE(whether compiler understands -Wundef,
+  ac_cv_c_flag_w_undef,
+  -Wundef,[
+  int main(void){return 0;}],
+  CFLAGS="${CFLAGS} -Wundef")
+
+>>>>>>> db7344ebf (abc)
 old_CFLAGS="${CFLAGS}"
 XMP_TRY_COMPILE(whether compiler understands -Werror,
   ac_cv_c_flag_w_error,
@@ -224,6 +280,22 @@ dnl djgpp has all c89 math funcs in libc.a
 esac
 AC_CHECK_FUNCS(powf)
 
+<<<<<<< HEAD
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([libxmp-lite.pc])
+=======
+# FIXME: Make out-of-tree builds work.
+CPPFLAGS="$CPPFLAGS -Iinclude/libxmp-lite"
+CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+CPPFLAGS="$CPPFLAGS -DLIBXMP_CORE_PLAYER"
+
+AC_SUBST([libxmplite_VERSION_MAJOR],libxmplite_VERSION_MAJOR_m4)
+AC_SUBST([libxmplite_VERSION_MINOR],libxmplite_VERSION_MINOR_m4)
+AC_SUBST([libxmplite_VERSION_PATCH],libxmplite_VERSION_PATCH_m4)
+AC_SUBST([libxmplite_VERSION],libxmplite_VERSION_m4)
+
+AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([libxmp-lite.pc])
+AC_CONFIG_FILES([libxmp-lite-config-version.cmake.autotools])
+>>>>>>> db7344ebf (abc)
 AC_OUTPUT

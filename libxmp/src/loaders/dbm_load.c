@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2025 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -52,6 +56,16 @@ static int dbm_test(HIO_HANDLE * f, char *t, const int start)
 }
 
 
+<<<<<<< HEAD
+=======
+#define DBM_INSTRUMENT_LOOP		(1 << 0)
+#define DBM_INSTRUMENT_LOOP_BIDIR	(1 << 1)
+
+#define DBM_SAMPLE_8BIT			(1 << 0)
+#define DBM_SAMPLE_16BIT		(1 << 1)
+#define DBM_SAMPLE_32BIT		(1 << 2)
+
+>>>>>>> db7344ebf (abc)
 struct local_data {
 	int have_info;
 	int have_song;
@@ -79,7 +93,49 @@ struct dbm_envelope {
 };
 
 
+<<<<<<< HEAD
 static int get_info(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static void dbm_translate_effect(struct xmp_event *event, uint8 *fxt, uint8 *fxp)
+{
+	switch (*fxt) {
+	case 0x0e:
+		switch (MSN(*fxp)) {
+		case 0x3:	/* Play from backward */
+			/* TODO: this is supposed to play the sample in
+			 * reverse only once, then forward. */
+			if (event->note) {
+				*fxt = FX_REVERSE;
+				*fxp = 1;
+			} else {
+				*fxt = *fxp = 0;
+			}
+			break;
+		case 0x4:	/* Turn off sound in channel */
+			*fxt = FX_EXTENDED;
+			*fxp = (EX_CUT << 4);
+			break;
+		case 0x5:	/* Turn on/off channel */
+			/* In DigiBooster Pro, this is tied to
+			 * the channel mute toggle in the UI. */
+			*fxt = FX_TRK_VOL;
+			*fxp = *fxp ? 0x40 : 0x00;
+			break;
+		}
+		break;
+
+	case 0x1c:		/* Set Real BPM */
+		*fxt = FX_S3M_BPM;
+		break;
+
+	default:
+		if (*fxt > 0x1c)
+			*fxt = *fxp = 0;
+	}
+}
+
+static int get_info(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -138,7 +194,11 @@ static int get_info(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return -1;
 }
 
+<<<<<<< HEAD
 static int get_song(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_song(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -168,16 +228,29 @@ static int get_song(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_inst(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 {
 	struct xmp_module *mod = &m->mod;
+=======
+static int get_inst(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+{
+	struct xmp_module *mod = &m->mod;
+	struct xmp_instrument *xxi;
+	struct xmp_subinstrument *sub;
+	struct xmp_sample *xxs;
+>>>>>>> db7344ebf (abc)
 	struct local_data *data = (struct local_data *)parm;
 	int i;
 	int c2spd, flags, snum;
 	uint8 buffer[50];
 
 	/* Sanity check */
+<<<<<<< HEAD
 	if (data->have_inst || size < 50 * mod->ins) {
+=======
+	if (data->have_inst || (int64)size < 50 * mod->ins) {
+>>>>>>> db7344ebf (abc)
 		return -1;
 	}
 	data->have_inst = 1;
@@ -185,6 +258,7 @@ static int get_inst(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	D_(D_INFO "Instruments: %d", mod->ins);
 
 	for (i = 0; i < mod->ins; i++) {
+<<<<<<< HEAD
 		mod->xxi[i].nsm = 1;
 		if (libxmp_alloc_subinstrument(mod, i, 1) < 0)
 			return -1;
@@ -217,12 +291,58 @@ static int get_inst(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 		D_(D_INFO "[%2X] %-30.30s #%02X V%02x P%02x %5d",
 			i, mod->xxi[i].name, snum,
 			mod->xxi[i].sub[0].vol, mod->xxi[i].sub[0].pan, c2spd);
+=======
+		xxi = &mod->xxi[i];
+
+		xxi->nsm = 1;
+		if (libxmp_alloc_subinstrument(mod, i, 1) < 0)
+			return -1;
+
+		if (hio_read(buffer, 1, 50, f) < 50)
+			return -1;
+
+		libxmp_instrument_name(mod, i, buffer, 30);
+		snum = readmem16b(buffer + 30);
+		if (snum == 0 || snum > mod->smp) {
+			/* Skip remaining data for this instrument. */
+			continue;
+		}
+		sub = &xxi->sub[0];
+		sub->sid = --snum;
+		xxs = &mod->xxs[sub->sid];
+
+		sub->vol = readmem16b(buffer + 32);
+		c2spd = readmem32b(buffer + 34);
+		xxs->lps = readmem32b(buffer + 38);
+		xxs->lpe = xxs->lps + readmem32b(buffer + 42);
+		/* Format documentation incorrectly states pan is 0-255. */
+		sub->pan = 0x80 + (int16)readmem16b(buffer + 46);
+		flags = readmem16b(buffer + 48);
+
+		if (flags & (DBM_INSTRUMENT_LOOP | DBM_INSTRUMENT_LOOP_BIDIR))
+			xxs->flg |= XMP_SAMPLE_LOOP;
+		if (flags & DBM_INSTRUMENT_LOOP_BIDIR)
+			xxs->flg |= XMP_SAMPLE_LOOP_BIDIR;
+
+		CLAMP(sub->vol, 0, 64);
+		CLAMP(sub->pan, 0, 255);
+
+		libxmp_c2spd_to_note(c2spd, &sub->xpo, &sub->fin);
+
+		D_(D_INFO "[%2X] %-30.30s #%02X V%02x P%02x %5d",
+			i, xxi->name, snum,
+			sub->vol, sub->pan, c2spd);
+>>>>>>> db7344ebf (abc)
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_patt(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -262,11 +382,18 @@ static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 
 		while (sz > 0) {
 			//printf("  offset=%x,  sz = %d, ", hio_tell(f), sz);
+<<<<<<< HEAD
+=======
+			--sz;
+>>>>>>> db7344ebf (abc)
 			c = hio_read8(f);
 			if (hio_error(f))
 				return -1;
 
+<<<<<<< HEAD
 			if (--sz <= 0) break;
+=======
+>>>>>>> db7344ebf (abc)
 			//printf("c = %02x\n", c);
 
 			if (c == 0) {
@@ -275,8 +402,13 @@ static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 			}
 			c--;
 
+<<<<<<< HEAD
 			n = hio_read8(f);
 			if (--sz <= 0) break;
+=======
+			if (--sz < 0) break;
+			n = hio_read8(f);
+>>>>>>> db7344ebf (abc)
 			//printf("    n = %d\n", n);
 
 			if (c >= mod->chn || r >= mod->xxp[i]->rows) {
@@ -287,6 +419,7 @@ static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 
 			memset(event, 0, sizeof (struct xmp_event));
 
+<<<<<<< HEAD
 			if (n & 0x01) {
 				x = hio_read8(f);
 				event->note = 13 + MSN(x) * 12 + LSN(x);
@@ -324,15 +457,50 @@ static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 
 			if (event->f2t > 0x1c)
 				event->f2t = event->f2p = 0;
+=======
+			if ((n & 0x01) && (--sz >= 0)) {
+				x = hio_read8(f);
+				if (x == 0x1f) {
+					event->note = XMP_KEY_OFF;
+				} else {
+					event->note = 13 + MSN(x) * 12 + LSN(x);
+				}
+			}
+			if ((n & 0x02) && (--sz >= 0)) {
+				event->ins = hio_read8(f);
+			}
+			if ((n & 0x04) && (--sz >= 0)) {
+				event->fxt = hio_read8(f);
+			}
+			if ((n & 0x08) && (--sz >= 0)) {
+				event->fxp = hio_read8(f);
+			}
+			if ((n & 0x10) && (--sz >= 0)) {
+				event->f2t = hio_read8(f);
+			}
+			if ((n & 0x20) && (--sz >= 0)) {
+				event->f2p = hio_read8(f);
+			}
+
+			dbm_translate_effect(event, &event->fxt, &event->fxp);
+			dbm_translate_effect(event, &event->f2t, &event->f2p);
+>>>>>>> db7344ebf (abc)
 		}
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_smpl(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 {
 	struct xmp_module *mod = &m->mod;
+=======
+static int get_smpl(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+{
+	struct xmp_module *mod = &m->mod;
+	struct xmp_sample *xxs;
+>>>>>>> db7344ebf (abc)
 	struct local_data *data = (struct local_data *)parm;
 	int i, flags;
 
@@ -345,6 +513,7 @@ static int get_smpl(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	D_(D_INFO "Stored samples: %d", mod->smp);
 
 	for (i = 0; i < mod->smp; i++) {
+<<<<<<< HEAD
 		flags = hio_read32b(f);
 		mod->xxs[i].len = hio_read32b(f);
 
@@ -370,6 +539,44 @@ static int get_smpl(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 			mod->xxs[i].lps, mod->xxs[i].lpe,
 			mod->xxs[i].flg & XMP_SAMPLE_LOOP ?
 			(mod->xxs[i].flg & XMP_SAMPLE_LOOP_BIDIR ? 'B' : 'L') : ' ');
+=======
+		xxs = &mod->xxs[i];
+		flags = hio_read32b(f);
+		xxs->len = hio_read32b(f);
+
+		/* This seems to be roughly how DigiBooster 2.21 prioritizes
+		 * sample formats, with the caveat that it doesn't actually
+		 * support 32-bit samples. No flags set -> assumes 16-bit,
+		 * but don't support this (in case 3.0 is different...).
+		 */
+		if (flags & DBM_SAMPLE_8BIT) {
+			/* nop */
+
+		} else if (flags & DBM_SAMPLE_16BIT) {
+			xxs->flg |= XMP_SAMPLE_16BIT;
+
+		} else if (flags & DBM_SAMPLE_32BIT) {
+			/* Skip 32-bit samples */
+			hio_seek(f, (long)xxs->len << 2, SEEK_CUR);
+			continue;
+		} else {
+			D_(D_CRIT "unknown sample type %08x", flags);
+			return -1;
+		}
+
+		if (libxmp_load_sample(m, f, SAMPLE_FLAG_BIGEND, xxs, NULL) < 0)
+			return -1;
+
+		if (xxs->len == 0)
+			continue;
+
+		D_(D_INFO "[%2X] %08x %05x%c%05x %05x %c",
+			i, flags, xxs->len,
+			xxs->flg & XMP_SAMPLE_16BIT ? '+' : ' ',
+			xxs->lps, xxs->lpe,
+			xxs->flg & XMP_SAMPLE_LOOP ?
+			(xxs->flg & XMP_SAMPLE_LOOP_BIDIR ? 'B' : 'L') : ' ');
+>>>>>>> db7344ebf (abc)
 
 	}
 
@@ -409,7 +616,11 @@ static int read_envelope(struct xmp_module *mod, struct dbm_envelope *env, HIO_H
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_venv(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_venv(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -446,7 +657,11 @@ static int get_venv(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_penv(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_penv(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;

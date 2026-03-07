@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -42,7 +46,11 @@ struct stx_file_header {
 	uint8 name[20];		/* Song name */
 	uint8 magic[8];		/* !Scream! */
 	uint16 psize;		/* Pattern 0 size? */
+<<<<<<< HEAD
 	uint16 unknown1;	/* ??!? */
+=======
+	uint16 unknown1;	/* ?! */
+>>>>>>> db7344ebf (abc)
 	uint16 pp_pat;		/* Pointer to pattern table */
 	uint16 pp_ins;		/* Pattern to instrument table */
 	uint16 pp_chn;		/* Pointer to channel table (?) */
@@ -114,7 +122,10 @@ static int stx_test(HIO_HANDLE * f, char *t, const int start)
 }
 
 #define FX_NONE 0xff
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)
 static const uint8 fx[11] = {
 	FX_NONE,
 	FX_SPEED,
@@ -133,7 +144,11 @@ static int stx_load(struct module_data *m, HIO_HANDLE *f, const int start)
 {
 	struct xmp_module *mod = &m->mod;
 	int c, r, i, broken = 0;
+<<<<<<< HEAD
 	struct xmp_event *event = 0, dummy;
+=======
+	struct xmp_event *event = NULL, dummy;
+>>>>>>> db7344ebf (abc)
 	struct stx_file_header sfh;
 	struct stx_instrument_header sih;
 	uint8 n, b;
@@ -201,8 +216,12 @@ static int stx_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	if (bmod2stm)
 		libxmp_set_type(m, "BMOD2STM STX");
 	else
+<<<<<<< HEAD
 		snprintf(mod->type, XMP_NAME_SIZE, "STM2STX 1.%d",
 			 broken ? 0 : 1);
+=======
+		snprintf(mod->type, XMP_NAME_SIZE, "STM2STX 1.%d", broken ? 0 : 1);
+>>>>>>> db7344ebf (abc)
 
 	MODULE_INFO();
 
@@ -273,7 +292,11 @@ static int stx_load(struct module_data *m, HIO_HANDLE *f, const int start)
 			mod->xxs[i].lpe = 0;
 		mod->xxs[i].flg = mod->xxs[i].lpe > 0 ? XMP_SAMPLE_LOOP : 0;
 		mod->xxi[i].sub[0].vol = sih.vol;
+<<<<<<< HEAD
 		mod->xxi[i].sub[0].pan = 0x80;
+=======
+		mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		mod->xxi[i].sub[0].sid = i;
 		mod->xxi[i].nsm = 1;
 
@@ -286,7 +309,11 @@ static int stx_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		   mod->xxi[i].sub[0].vol, sih.c2spd);
 
 		libxmp_c2spd_to_note(sih.c2spd, &mod->xxi[i].sub[0].xpo,
+<<<<<<< HEAD
 			      &mod->xxi[i].sub[0].fin);
+=======
+				      &mod->xxi[i].sub[0].fin);
+>>>>>>> db7344ebf (abc)
 	}
 
 	if (libxmp_init_pattern(mod) < 0)

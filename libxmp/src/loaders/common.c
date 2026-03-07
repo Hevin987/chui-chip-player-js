@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2025 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,12 +26,20 @@
 
 #include <ctype.h>
 #if defined(HAVE_DIRENT)
+<<<<<<< HEAD
+=======
+#include <sys/types.h>
+>>>>>>> db7344ebf (abc)
 #include <dirent.h>
 #endif
 
 #include "../common.h"
 
 #include "xmp.h"
+<<<<<<< HEAD
+=======
+#include "../path.h"
+>>>>>>> db7344ebf (abc)
 #include "../period.h"
 #include "loader.h"
 
@@ -269,15 +281,31 @@ void libxmp_read_title(HIO_HANDLE *f, char *t, int s)
 
 #ifndef LIBXMP_CORE_PLAYER
 
+<<<<<<< HEAD
 int libxmp_test_name(uint8 *s, int n)
+=======
+int libxmp_test_name(const uint8 *s, int n, int flags)
+>>>>>>> db7344ebf (abc)
 {
 	int i;
 
 	for (i = 0; i < n; i++) {
+<<<<<<< HEAD
 		if (s[i] > 0x7f)
 			return -1;
 		/* ACS_Team2.mod has a backspace in instrument name */
 		if (s[i] > 0 && s[i] < 32 && s[i] != 0x08)
+=======
+		if (s[i] == '\0' && (flags & TEST_NAME_IGNORE_AFTER_0))
+			break;
+		if (s[i] == '\r' && (flags & TEST_NAME_IGNORE_AFTER_CR))
+			break;
+		if (s[i] > 0x7f)
+			return -1;
+		/* ACS_Team2.mod has a backspace in instrument name */
+		/* Numerous ST modules from Music Channel BBS have char 14. */
+		if (s[i] > 0 && s[i] < 32 && s[i] != 0x08 && s[i] != 0x0e)
+>>>>>>> db7344ebf (abc)
 			return -1;
 	}
 
@@ -293,7 +321,11 @@ int libxmp_copy_name_for_fopen(char *dest, const char *name, int n)
 	 * malicious when given to fopen. This should only be used on song files.
 	 */
 	if (!strcmp(name, ".") || strstr(name, "..") ||
+<<<<<<< HEAD
 	    name[0] == '\\' || name[0] == '/' || name[0] == ':')
+=======
+	    name[0] == '\\' || name[0] == '/' || name[0] == ':' || name[0] == '\0')
+>>>>>>> db7344ebf (abc)
 		return -1;
 
 	for (i = 0; i < n - 1; i++) {
@@ -423,6 +455,7 @@ void libxmp_disable_continue_fx(struct xmp_event *event)
     /* case-insensitive file system: directly probe the file */\
     \
    !defined(HAVE_DIRENT) /* or, target does not have dirent. */
+<<<<<<< HEAD
 int libxmp_check_filename_case(const char *dir, const char *name, char *new_name, int size)
 {
 	char path[XMP_MAXPATH];
@@ -448,11 +481,52 @@ int libxmp_check_filename_case(const char *dir, const char *name, char *new_name
 			found = 1;
 			strncpy(new_name, d->d_name, size);
 			break;
+=======
+int libxmp_check_filename_case(struct libxmp_path *sp, const char *dir, const char *name)
+{
+	struct libxmp_path tmp;
+
+	if (dir[0] == '\0')
+		dir = ".";
+
+	libxmp_path_init(&tmp);
+	if (libxmp_path_join(&tmp, dir, name) < 0)
+		return -1;
+
+	if (! (libxmp_get_filetype(tmp.path) & XMP_FILETYPE_FILE)) {
+		libxmp_path_free(&tmp);
+		return -1;
+	}
+	libxmp_path_move(sp, &tmp);
+	return 0;
+}
+#else /* target has dirent */
+int libxmp_check_filename_case(struct libxmp_path *sp, const char *dir, const char *name)
+{
+	int ret = -1;
+	DIR *dirp;
+	struct dirent *d;
+
+	if (dir[0] == '\0')
+		dir = ".";
+
+	dirp = opendir(dir);
+	if (dirp == NULL)
+		return -1;
+
+	while ((d = readdir(dirp)) != NULL) {
+		if (!strcasecmp(d->d_name, name)) {
+			if (libxmp_path_join(sp, dir, name) == 0) {
+				ret = 0;
+				break;
+			}
+>>>>>>> db7344ebf (abc)
 		}
 	}
 
 	closedir(dirp);
 
+<<<<<<< HEAD
 	return found;
 }
 #endif
@@ -466,6 +540,47 @@ void libxmp_get_instrument_path(struct module_data *m, char *path, int size)
 	} else {
 		strncpy(path, ".", size);
 	}
+=======
+	return ret;
+}
+#endif
+
+static const char *libxmp_get_instrument_path(struct module_data *m)
+{
+	const char *env;
+	if (m->instrument_path) {
+		return m->instrument_path;
+	}
+	env = getenv("XMP_INSTRUMENT_PATH");
+	if (env) {
+		return env;
+	}
+	return NULL;
+}
+
+int libxmp_find_instrument_file(struct module_data *m, struct libxmp_path *sp,
+				const char *ins_name)
+{
+	const char *ins_path;
+
+	ins_path = libxmp_get_instrument_path(m);
+	if (ins_path != NULL &&
+	    libxmp_check_filename_case(sp, ins_path, ins_name) == 0) {
+		D_(D_INFO "found: %s", sp->path);
+		return 0;
+	}
+
+	/* Try the module dir if the instrument path didn't work. */
+	if (m->dirname != NULL &&
+	    libxmp_check_filename_case(sp, m->dirname, ins_name) == 0) {
+		D_(D_INFO "found: %s", sp->path);
+		return 0;
+	}
+
+	D_(D_WARN "instrument '%s' not found (ins_path: '%s') (m->dirname: '%s')",
+	   ins_name, ins_path ? ins_path : "NULL", m->dirname ? m->dirname : "NULL");
+	return -1;
+>>>>>>> db7344ebf (abc)
 }
 #endif /* LIBXMP_CORE_PLAYER */
 
@@ -501,7 +616,11 @@ void libxmp_schism_tracker_string(char *buf, size_t size, int s_ver, int l_ver)
 {
 	if (s_ver >= 0x50) {
 		/* time_t epoch_sec = 1256947200; */
+<<<<<<< HEAD
 		int t = schism_tracker_date(2009, 10, 31);
+=======
+		int64 t = schism_tracker_date(2009, 10, 31);
+>>>>>>> db7344ebf (abc)
 		int year, month, day, dayofyear;
 
 		if (s_ver == 0xfff) {
@@ -511,11 +630,19 @@ void libxmp_schism_tracker_string(char *buf, size_t size, int s_ver, int l_ver)
 
 		/* Date algorithm reimplemented from OpenMPT.
 		 */
+<<<<<<< HEAD
 		year = (int)(((int64)t * 10000L + 14780) / 3652425);
 		dayofyear = t - (365 * year + (year / 4) - (year / 100) + (year / 400));
 		if (dayofyear < 0) {
 			year--;
 			dayofyear = t - (365 * year + (year / 4) - (year / 100) + (year / 400));
+=======
+		year = (int)((t * 10000L + 14780) / 3652425);
+		dayofyear = t - (365L * year + (year / 4) - (year / 100) + (year / 400));
+		if (dayofyear < 0) {
+			year--;
+			dayofyear = t - (365L * year + (year / 4) - (year / 100) + (year / 400));
+>>>>>>> db7344ebf (abc)
 		}
 		month = (100 * dayofyear + 52) / 3060;
 		day = dayofyear - (month * 306 + 5) / 10 + 1;
@@ -529,12 +656,71 @@ void libxmp_schism_tracker_string(char *buf, size_t size, int s_ver, int l_ver)
 		snprintf(buf, size, "Schism Tracker 0.%x", s_ver);
 	}
 }
+<<<<<<< HEAD
+=======
+
+/* Old MPT modules (from MPT <=1.16, older versions of OpenMPT) rely on a
+ * pre-amp routine that scales mix volume down. This is based on the module's
+ * channel count and a tracker pre-amp setting that isn't saved in the module.
+ * This setting defaults to 128. When fixed to 128, it can be optimized out.
+ *
+ * In OpenMPT, this pre-amp routine is only available in the MPT and OpenMPT
+ * 1.17 RC1 and RC2 mix modes. Changing a module to the compatible or 1.17 RC3
+ * mix modes will permanently disable it for that module. OpenMPT applies the
+ * old mix modes to MPT <=1.16 modules, "IT 8.88", and in old OpenMPT-made
+ * modules that specify one of these mix modes in their extended properties.
+ *
+ * Set mod->chn and m->mvol first!
+ */
+void libxmp_apply_mpt_preamp(struct module_data *m)
+{
+	/* OpenMPT uses a slightly different table. */
+	static const uint8 preamp_table[16] =
+	{
+		0x60, 0x60, 0x60, 0x70,	/* 0-7 */
+		0x80, 0x88, 0x90, 0x98,	/* 8-15 */
+		0xA0, 0xA4, 0xA8, 0xB0,	/* 16-23 */
+		0xB4, 0xB8, 0xBC, 0xC0,	/* 24-31 */
+	};
+
+	int chn = m->mod.chn;
+	CLAMP(chn, 1, 31);
+
+	m->mvol = (m->mvol * 96) / preamp_table[chn >> 1];
+
+	/* Pre-amp is applied like this in the mixers of libmodplug/libopenmpt
+	 * (still vastly simplified).
+
+	int preamp = 128;
+
+	if (preamp > 128) {
+		preamp = 128 + ((preamp - 128) * (chn + 4)) / 16;
+	}
+	preamp = preamp * m->mvol / 64;
+	preamp = (preamp << 7) / preamp_table[chn >> 1];
+
+	...
+
+	channel_volume_16bit = (channel_volume_16bit * preamp) >> 7;
+	*/
+}
+>>>>>>> db7344ebf (abc)
 #endif
 
 char *libxmp_strdup(const char *src)
 {
+<<<<<<< HEAD
 	size_t len = strlen(src) + 1;
 	char *buf = (char *) malloc(len);
+=======
+	size_t len;
+	char *buf;
+	if (src == NULL) {
+		return NULL;
+	}
+	len = strlen(src) + 1;
+	buf = (char *) malloc(len);
+>>>>>>> db7344ebf (abc)
 	if (buf) {
 		memcpy(buf, src, len);
 	}

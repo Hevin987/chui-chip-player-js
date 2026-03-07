@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2025 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,23 +28,53 @@
 #pragma error_messages (off,E_EMPTY_TRANSLATION_UNIT)
 #endif
 
+<<<<<<< HEAD
 #ifndef LIBXMP_CORE_PLAYER
 
 #if defined(_MSC_VER) || defined(__WATCOMC__)
+=======
+#include "common.h"
+
+#if !(defined(LIBXMP_NO_PROWIZARD) && defined(LIBXMP_NO_DEPACKERS))
+
+#if defined(_WIN32) || defined(_DOS) || defined(__OS2__) || defined(__EMX__)
+>>>>>>> db7344ebf (abc)
 #include <io.h>
 #else
 #include <unistd.h>
 #endif
 #ifdef HAVE_UMASK
+<<<<<<< HEAD
 #include <sys/stat.h>
 #endif
 
 #include "common.h"
+=======
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
+
+#if defined(_MSC_VER) ||  defined(__WATCOMC__) || defined(__EMX__)
+#define XMP_MAXPATH _MAX_PATH
+#elif defined(PATH_MAX)
+#define XMP_MAXPATH  PATH_MAX
+#else
+#define XMP_MAXPATH  1024
+#endif
+
+>>>>>>> db7344ebf (abc)
 #include "tempfile.h"
 
 #ifdef _WIN32
 
+<<<<<<< HEAD
 int mkstemp(char *);
+=======
+#define fdopen _fdopen
+#define close _close
+#define unlink _unlink
+#define umask _umask
+>>>>>>> db7344ebf (abc)
 
 static int get_temp_dir(char *buf, size_t size)
 {

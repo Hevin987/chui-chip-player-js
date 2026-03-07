@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2024 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -32,7 +36,11 @@
 /*
  * Period table from the Protracker V2.1A play routine
  */
+<<<<<<< HEAD
 static uint16 pt_period_table[16][36] = {
+=======
+static const uint16 pt_period_table[16][36] = {
+>>>>>>> db7344ebf (abc)
 	/* Tuning 0, Normal */
 	{
 		856,808,762,720,678,640,604,570,538,508,480,453,
@@ -225,7 +233,11 @@ int libxmp_period_to_bend(struct context_data *ctx, double p, int n, double adj)
 	struct module_data *m = &ctx->m;
 	double d;
 
+<<<<<<< HEAD
 	if (n == 0) {
+=======
+	if (n == 0 || p < 0.1) {
+>>>>>>> db7344ebf (abc)
 		return 0;
 	}
 

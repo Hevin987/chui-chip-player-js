@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -43,12 +47,20 @@ const struct format_loader libxmp_loader_gal5 = {
 
 
 struct local_data {
+<<<<<<< HEAD
     uint8 chn_pan[64];
+=======
+	uint8 chn_pan[64];
+>>>>>>> db7344ebf (abc)
 };
 
 static int gal5_test(HIO_HANDLE *f, char *t, const int start)
 {
+<<<<<<< HEAD
         if (hio_read32b(f) != MAGIC4('R', 'I', 'F', 'F'))
+=======
+	if (hio_read32b(f) != MAGIC4('R', 'I', 'F', 'F'))
+>>>>>>> db7344ebf (abc)
 		return -1;
 
 	hio_read32b(f);
@@ -65,7 +77,11 @@ static int gal5_test(HIO_HANDLE *f, char *t, const int start)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_init(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_init(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct local_data *data = (struct local_data *)parm;
@@ -99,7 +115,11 @@ static int get_init(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_ordr(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_ordr(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	int i;
@@ -113,7 +133,11 @@ static int get_ordr(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_patt_cnt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_patt_cnt(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	int i;
@@ -126,7 +150,11 @@ static int get_patt_cnt(struct module_data *m, int size, HIO_HANDLE *f, void *pa
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_inst_cnt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_inst_cnt(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	int i;
@@ -145,7 +173,11 @@ static int get_inst_cnt(struct module_data *m, int size, HIO_HANDLE *f, void *pa
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
+=======
+static int get_patt(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &m->mod;
 	struct xmp_event *event, dummy;
@@ -214,9 +246,18 @@ static int get_patt(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int get_inst(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 {
 	struct xmp_module *mod = &m->mod;
+=======
+static int get_inst(struct module_data *m, uint32 size, HIO_HANDLE *f, void *parm)
+{
+	struct xmp_module *mod = &m->mod;
+	struct xmp_instrument *xxi;
+	struct xmp_subinstrument *sub;
+	struct xmp_sample *xxs;
+>>>>>>> db7344ebf (abc)
 	int i, srate, finetune, flags;
 	int has_unsigned_sample;
 
@@ -228,6 +269,7 @@ static int get_inst(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	if (mod->xxi[i].nsm != 0)
 		return -1;
 
+<<<<<<< HEAD
 	hio_read(mod->xxi[i].name, 1, 28, f);
 	hio_seek(f, 290, SEEK_CUR);	/* Sample/note map, envelopes */
 	mod->xxi[i].nsm = hio_read16l(f);
@@ -241,6 +283,25 @@ static int get_inst(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 		return -1;
 
 	/* FIXME: Currently reading only the first sample */
+=======
+	xxi = &mod->xxi[i];
+
+	hio_read(xxi->name, 1, 28, f);
+	hio_seek(f, 290, SEEK_CUR);	/* Sample/note map, envelopes */
+	xxi->nsm = hio_read16l(f);
+
+	D_(D_INFO "[%2X] %-28.28s  %2d ", i, xxi->name, xxi->nsm);
+
+	if (xxi->nsm == 0)
+		return 0;
+
+	if (libxmp_alloc_subinstrument(mod, i, xxi->nsm) < 0)
+		return -1;
+
+	/* FIXME: Currently reading only the first sample */
+	sub = &xxi->sub[0];
+	xxs = &mod->xxs[i];
+>>>>>>> db7344ebf (abc)
 
 	hio_read32b(f);	/* RIFF */
 	hio_read32b(f);	/* size */
@@ -249,11 +310,16 @@ static int get_inst(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	hio_read32b(f);	/* size */
 	hio_read32b(f);	/* unknown - usually 0x40000000 */
 
+<<<<<<< HEAD
 	hio_read(mod->xxs[i].name, 1, 28, f);
+=======
+	hio_read(xxs->name, 1, 28, f);
+>>>>>>> db7344ebf (abc)
 
 	hio_read32b(f);	/* unknown - 0x0000 */
 	hio_read8(f);	/* unknown - 0x00 */
 
+<<<<<<< HEAD
 	mod->xxi[i].sub[0].sid = i;
 	mod->xxi[i].vol = hio_read8(f);
 	mod->xxi[i].sub[0].pan = 0x80;
@@ -272,18 +338,44 @@ static int get_inst(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 		mod->xxs[i].flg |= XMP_SAMPLE_LOOP;
 	if (flags & 0x10)
 		mod->xxs[i].flg |= XMP_SAMPLE_LOOP | XMP_SAMPLE_LOOP_BIDIR;
+=======
+	sub->sid = i;
+	xxi->vol = hio_read8(f);
+	sub->pan = XMP_INST_NO_DEFAULT_PAN;
+	sub->vol = (hio_read16l(f) + 1) / 512;
+	flags = hio_read16l(f);
+	hio_read16l(f);			/* unknown - 0x0080 */
+	xxs->len = hio_read32l(f);
+	xxs->lps = hio_read32l(f);
+	xxs->lpe = hio_read32l(f);
+
+	xxs->flg = 0;
+	has_unsigned_sample = 0;
+	if (flags & 0x04)
+		xxs->flg |= XMP_SAMPLE_16BIT;
+	if (flags & 0x08)
+		xxs->flg |= XMP_SAMPLE_LOOP;
+	if (flags & 0x10)
+		xxs->flg |= XMP_SAMPLE_LOOP | XMP_SAMPLE_LOOP_BIDIR;
+>>>>>>> db7344ebf (abc)
 	if (~flags & 0x80)
 		has_unsigned_sample = 1;
 
 	srate = hio_read32l(f);
 	finetune = 0;
+<<<<<<< HEAD
 	libxmp_c2spd_to_note(srate, &mod->xxi[i].sub[0].xpo, &mod->xxi[i].sub[0].fin);
 	mod->xxi[i].sub[0].fin += finetune;
+=======
+	libxmp_c2spd_to_note(srate, &sub->xpo, &sub->fin);
+	sub->fin += finetune;
+>>>>>>> db7344ebf (abc)
 
 	hio_read32l(f);			/* 0x00000000 */
 	hio_read32l(f);			/* unknown */
 
 	D_(D_INFO "  %x: %05x%c%05x %05x %c V%02x %04x %5d",
+<<<<<<< HEAD
 		0, mod->xxs[i].len,
 		mod->xxs[i].flg & XMP_SAMPLE_16BIT ? '+' : ' ',
 		mod->xxs[i].lps,
@@ -295,6 +387,19 @@ static int get_inst(struct module_data *m, int size, HIO_HANDLE *f, void *parm)
 	if (mod->xxs[i].len > 1) {
 		if (libxmp_load_sample(m, f, has_unsigned_sample ?
 				SAMPLE_FLAG_UNS : 0, &mod->xxs[i], NULL) < 0)
+=======
+		0, xxs->len,
+		xxs->flg & XMP_SAMPLE_16BIT ? '+' : ' ',
+		xxs->lps,
+		xxs->lpe,
+		xxs->flg & XMP_SAMPLE_LOOP_BIDIR ? 'B' :
+			xxs->flg & XMP_SAMPLE_LOOP ? 'L' : ' ',
+		sub->vol, flags, srate);
+
+	if (xxs->len > 1) {
+		if (libxmp_load_sample(m, f, has_unsigned_sample ?
+				SAMPLE_FLAG_UNS : 0, xxs, NULL) < 0)
+>>>>>>> db7344ebf (abc)
 			return -1;
 	}
 
@@ -310,6 +415,11 @@ static int gal5_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 	LOAD_INIT();
 
+<<<<<<< HEAD
+=======
+	memset(&data, 0, sizeof(data));
+
+>>>>>>> db7344ebf (abc)
 	hio_read32b(f);	/* Skip RIFF */
 	hio_read32b(f);	/* Skip size */
 	hio_read32b(f);	/* Skip AM   */
@@ -397,7 +507,13 @@ static int gal5_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		mod->xxc[i].pan = data.chn_pan[i] * 2;
 	}
 
+<<<<<<< HEAD
 	m->quirk |= QUIRKS_FT2;
+=======
+	/* TODO: JJ2 1.24 Secret Files shareware does not support fine slides
+	 * from converted XMs. Should be tested with converted S3Ms, though. */
+	m->quirk |= QUIRK_FINEFX;
+>>>>>>> db7344ebf (abc)
 	m->read_event_type = READ_EVENT_FT2;
 
 	return 0;

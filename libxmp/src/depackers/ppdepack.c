@@ -160,10 +160,18 @@ static int test_pp(unsigned char *b)
 	return memcmp(b, "PP20", 4) == 0;
 }
 
+<<<<<<< HEAD
 static int decrunch_pp(HIO_HANDLE *f, void **out, long inlen, long *outlen)
 {
     uint8 *packed;
     int unplen;
+=======
+static int decrunch_pp(HIO_HANDLE *f, void **out, long *outlen)
+{
+    uint8 *packed;
+    int unplen;
+    long inlen;
+>>>>>>> db7344ebf (abc)
 
     /* Amiga longwords are only on even addresses.
      * The pp20 data format has the length stored in a longword
@@ -172,6 +180,11 @@ static int decrunch_pp(HIO_HANDLE *f, void **out, long inlen, long *outlen)
      * reminding me on this! - mld
      */
 
+<<<<<<< HEAD
+=======
+    inlen = hio_size(f);
+
+>>>>>>> db7344ebf (abc)
     if ((inlen != (inlen / 2) * 2)) {
 	 /*fprintf(stderr, "filesize not even\n");*/
          goto err;
@@ -229,7 +242,11 @@ err:
     return -1;
 }
 
+<<<<<<< HEAD
 struct depacker libxmp_depacker_pp = {
+=======
+const struct depacker libxmp_depacker_pp = {
+>>>>>>> db7344ebf (abc)
 	test_pp,
 	NULL,
 	decrunch_pp

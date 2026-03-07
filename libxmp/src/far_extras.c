@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2025 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -149,7 +153,10 @@ static void libxmp_far_update_tempo(struct context_data *ctx, int fine_change)
 	    me->coarse_tempo, &me->fine_tempo, &speed, &bpm) == 0) {
 		p->speed = speed;
 		p->bpm = bpm;
+<<<<<<< HEAD
 		p->frame_time = m->time_factor * m->rrate / p->bpm;
+=======
+>>>>>>> db7344ebf (abc)
 	}
 }
 
@@ -233,7 +240,11 @@ void libxmp_far_release_module_extras(struct module_data *m)
 }
 
 void libxmp_far_extras_process_fx(struct context_data *ctx, struct channel_data *xc,
+<<<<<<< HEAD
 			   int chn, uint8 note, uint8 fxt, uint8 fxp, int fnum)
+=======
+		int chn, uint8 note, uint8 ins, uint8 fxt, uint8 fxp, int fnum)
+>>>>>>> db7344ebf (abc)
 {
 	struct xmp_module *mod = &ctx->m.mod;
 	struct far_module_extras *me = FAR_MODULE_EXTRAS(ctx->m);

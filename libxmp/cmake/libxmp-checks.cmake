@@ -94,6 +94,7 @@ if(MSVC)
     endif()
     # Disable bogus MSVC warnings
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+<<<<<<< HEAD
     # Tune warnings
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4244 /wd4018 /wd4996 /wd4048 /wd4267 /wd4127")
 else()
@@ -103,6 +104,16 @@ else()
     if(NOT HAVE_W_EXTRA)
         xmp_add_warning_flag("-W" W)
     endif()
+=======
+else()
+    xmp_add_warning_flag("-Wall" ALL)
+    xmp_add_warning_flag("-Wextra" EXTRA)
+    xmp_add_warning_flag("-Wwrite-strings" WRITE_STRINGS)
+    xmp_add_warning_flag("-Wdeclaration-after-statement" DECLARATION_AFTER_STATEMENT)
+    xmp_add_warning_flag("-Wmissing-prototypes" MISSING_PROTOTYPES)
+    xmp_add_warning_flag("-Wstrict-prototypes" STRICT_PROTOTYPES)
+    xmp_add_warning_flag("-Wundef" WUNDEF)
+>>>>>>> db7344ebf (abc)
     xmp_disable_warning_flag("unknown-warning-option" NO_UNKNOWN_WARNING)
     xmp_disable_warning_flag("unused-parameter" NO_UNUSED_PARAMETER)
     xmp_disable_warning_flag("sign-compare" NO_SIGN_COMPARE)
@@ -126,6 +137,16 @@ TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 if(WORDS_BIGENDIAN)
     add_definitions(-DWORDS_BIGENDIAN=1)
 endif()
+<<<<<<< HEAD
+=======
+#  to mirror the AC_C_BIGENDIAN behavior of autoconf :
+if(APPLE AND CMAKE_OSX_ARCHITECTURES)
+    list(LENGTH CMAKE_OSX_ARCHITECTURES _num_arches)
+    if(_num_arches GREATER 1)
+        add_definitions(-DAC_APPLE_UNIVERSAL_BUILD=1)
+    endif()
+endif()
+>>>>>>> db7344ebf (abc)
 
 
 cmake_push_check_state()
@@ -135,7 +156,10 @@ endif()
 xmp_check_function(powf "math.h" HAVE_POWF)
 cmake_pop_check_state()
 
+<<<<<<< HEAD
 xmp_check_include(alloca.h HAVE_ALLOCA_H)
+=======
+>>>>>>> db7344ebf (abc)
 xmp_check_function(popen "stdio.h" HAVE_POPEN)
 xmp_check_function(fnmatch "fnmatch.h" HAVE_FNMATCH)
 xmp_check_function(umask "sys/stat.h" HAVE_UMASK)
@@ -165,7 +189,10 @@ endif()
 
 # Symbol visibility attributes check
 if(NOT (WIN32 OR CYGWIN OR AMIGA OR OS2))
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)
     cmake_push_check_state()
     set(CMAKE_REQUIRED_FLAGS "-fvisibility=hidden -Werror")
 
@@ -189,13 +216,25 @@ if(NOT (WIN32 OR CYGWIN OR AMIGA OR OS2))
         # Note: LIBXMP_DEFINES and LIBXMP_DEFINES should be defined externally before to include the "build_pros.cmake"
         list(APPEND LIBXMP_CFLAGS -fvisibility=hidden)
         list(APPEND LIBXMP_DEFINES -DXMP_SYM_VISIBILITY)
+<<<<<<< HEAD
 
         if(HAVE_EXTERNAL_VISIBILITY)
             list(APPEND LIBXMP_DEFINES -DHAVE_EXTERNAL_VISIBILITY)
+=======
+        list(APPEND LIBXMPLITE_DEFINES -DXMP_SYM_VISIBILITY)
+
+        if(HAVE_EXTERNAL_VISIBILITY)
+            list(APPEND LIBXMP_DEFINES -DHAVE_EXTERNAL_VISIBILITY)
+            list(APPEND LIBXMPLITE_DEFINES -DHAVE_EXTERNAL_VISIBILITY)
+>>>>>>> db7344ebf (abc)
         endif()
     endif()
 
     if(HAVE_ATTRIBUTE_SYMVER)
         list(APPEND LIBXMP_DEFINES -DHAVE_ATTRIBUTE_SYMVER)
+<<<<<<< HEAD
+=======
+        list(APPEND LIBXMPLITE_DEFINES -DHAVE_ATTRIBUTE_SYMVER)
+>>>>>>> db7344ebf (abc)
     endif()
 endif()

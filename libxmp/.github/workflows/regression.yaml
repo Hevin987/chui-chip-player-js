@@ -6,6 +6,7 @@ on:
 
 jobs:
   linux:
+<<<<<<< HEAD
     strategy:
        matrix:
          distro: [ubuntu-latest, ubuntu-18.04]
@@ -17,6 +18,16 @@ jobs:
         run: |
           mkdir build
           cmake . -DCMAKE_BUILD_TYPE=Debug -DWITH_UNIT_TESTS=ON -B build
+=======
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: CMake configure
+        run: |
+          mkdir build
+          cmake . -DCMAKE_BUILD_TYPE=Release -DWITH_UNIT_TESTS=ON -B build
+>>>>>>> db7344ebf (abc)
       - name: CMake build
         run: |
           cmake --build build --target all -- -j 3
@@ -43,13 +54,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
+<<<<<<< HEAD
         uses: actions/checkout@v2
+=======
+        uses: actions/checkout@v4
+>>>>>>> db7344ebf (abc)
       - name: Install dependencies
         run: sudo apt update -qq && sudo apt install -y lld
       - name: CMake configure
         run: |
           mkdir build
+<<<<<<< HEAD
           CC=clang cmake . -DCMAKE_BUILD_TYPE=Debug -DWITH_UNIT_TESTS=ON -B build
+=======
+          CC=clang cmake . -DCMAKE_BUILD_TYPE=Release -DWITH_UNIT_TESTS=ON -B build
+>>>>>>> db7344ebf (abc)
       - name: CMake build
         run: |
           cmake --build build --target all -- -j 3
@@ -71,6 +90,7 @@ jobs:
         run: |
           (cd test-dev && autoconf && CC=clang CFLAGS="-fPIE" ./configure)
           (cd test-dev && make -j 3)
+<<<<<<< HEAD
 
   # Simulate Fedora RPM builds, usage of __symver__.
   linux-gcc-10-lto:
@@ -86,6 +106,22 @@ jobs:
           export CFLAGS="-flto"
           export LDFLAGS="-flto"
           cmake . -DCMAKE_BUILD_TYPE=Debug -DWITH_UNIT_TESTS=ON -B build
+=======
+      - name: Fuzzers
+        run: (cd test-dev && make fuzzers -j3)
+
+  # Simulate Fedora RPM builds, usage of __symver__.
+  linux-lto:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: CMake configure
+        run: |
+          export CFLAGS="-flto"
+          export LDFLAGS="-flto"
+          cmake . -DCMAKE_BUILD_TYPE=Release -DWITH_UNIT_TESTS=ON -B build
+>>>>>>> db7344ebf (abc)
       - name: CMake build
         run: |
           cmake --build build --target all -- -j 3
@@ -95,7 +131,10 @@ jobs:
           ctest --output-on-failure
       - name: Create and run configure script
         run: |
+<<<<<<< HEAD
           export CC=gcc-10
+=======
+>>>>>>> db7344ebf (abc)
           export CFLAGS="-flto"
           export LDFLAGS="-flto"
           autoconf
@@ -115,7 +154,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
+<<<<<<< HEAD
         uses: actions/checkout@v2
+=======
+        uses: actions/checkout@v4
+>>>>>>> db7344ebf (abc)
       - name: Install dependencies
         run: sudo apt update && sudo apt install autoconf
       - name: Install emscripten
@@ -128,7 +171,11 @@ jobs:
       - name: CMake configure
         run: |
           source ../emsdk/emsdk_env.sh
+<<<<<<< HEAD
           emcmake cmake . -DCMAKE_BUILD_TYPE=Debug -B build
+=======
+          emcmake cmake . -DCMAKE_BUILD_TYPE=Release -B build
+>>>>>>> db7344ebf (abc)
       - name: CMake build
         run: |
           source ../emsdk/emsdk_env.sh
@@ -137,7 +184,11 @@ jobs:
         run: |
           source ../emsdk/emsdk_env.sh
           cd test
+<<<<<<< HEAD
           emcc test.c ../src/md5.c -o test.js -O3 -Wall -I../include -I../src -L../build/ --embed-file test.itz -lxmp
+=======
+          emcc test.c ../src/md5.c -o test.js -O3 -Wall -I../include -I../src -L../build/ --embed-file test.xm --embed-file test.it --embed-file test.itz -lxmp
+>>>>>>> db7344ebf (abc)
           node test.js
           rm test.js
       - name: Create and run Autotools configure script
@@ -153,17 +204,94 @@ jobs:
         run: |
           source ../emsdk/emsdk_env.sh
           cd test
+<<<<<<< HEAD
           emcc test.c ../src/md5.c -o test.js -O3 -Wall -I../include -I../src -L../lib/ --embed-file test.itz -lxmp
           node test.js
 
+=======
+          emcc test.c ../src/md5.c -o test.js -O3 -Wall -I../include -I../src -L../lib/ --embed-file test.xm --embed-file test.it --embed-file test.itz -lxmp
+          node test.js
+
+  bsd:
+    runs-on: ubuntu-latest
+    name: '${{ matrix.platform.name }} ${{ matrix.platform.os-version }}'
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        platform:
+          - { name: freebsd,  os: freebsd,  os-version: 14.3, os-arch: x86-64,
+              setup_cmd: 'sudo pkg update',
+              install_cmd: 'sudo pkg install -y cmake',
+            }
+          - { name: openbsd,  os: openbsd, os-version: 7.7,  os-arch: x86-64,
+              setup_cmd: 'sudo pkg_add -u',
+              install_cmd: 'sudo pkg_add cmake',
+            }
+          - { name: netbsd,   os: netbsd,  os-version: 10.1, os-arch: x86-64,
+              setup_cmd: 'export PATH="/usr/pkg/sbin:/usr/pkg/bin:/sbin:$PATH";export PKG_PATH="https://cdn.netBSD.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r|cut -f "1 2" -d.)/All/";echo "PKG_PATH=$PKG_PATH";echo "uname -a -> \"$(uname -a)\"";sudo -E sysctl -w security.pax.aslr.enabled=0;sudo -E sysctl -w security.pax.aslr.global=0;sudo -E pkgin clean;sudo -E pkgin update',
+              install_cmd: 'sudo -E pkgin -y install cmake',
+            }
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      uses: cross-platform-actions/action@v0.30.0
+      with:
+        operating_system: ${{ matrix.platform.os }}
+        architecture: ${{ matrix.platform.os-arch }}
+        version: ${{ matrix.platform.os-version }}
+        run: |
+          ${{ matrix.platform.setup_cmd }}
+          ${{ matrix.platform.install_cmd }}
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED=ON  \
+            -DBUILD_STATIC=OFF \
+            -DBUILD_LITE=ON    \
+            -DWITH_UNIT_TESTS=ON
+          cmake --build build
+          (cd build && ctest --output-on-failure)
+
+  haiku:
+    runs-on: ubuntu-latest
+    name: haiku
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      uses: cross-platform-actions/action@v0.30.0
+      with:
+        operating_system: haiku
+        architecture: x86-64
+        version: r1beta5
+        run: |
+          pkgman install -y cmake
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED=ON  \
+            -DBUILD_STATIC=OFF \
+            -DBUILD_LITE=ON    \
+            -DWITH_UNIT_TESTS=ON
+          cmake --build build
+          (cd build && ctest --output-on-failure)
+
+>>>>>>> db7344ebf (abc)
   macos:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
+<<<<<<< HEAD
         uses: actions/checkout@v2
       - name: CMake configure for Intel
         run: |
           cmake . -DCMAKE_BUILD_TYPE=Debug -DWITH_UNIT_TESTS=ON -B build
+=======
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: brew install autoconf
+      - name: CMake configure for Intel
+        run: |
+          cmake . -DCMAKE_BUILD_TYPE=Release -DWITH_UNIT_TESTS=ON -B build
+>>>>>>> db7344ebf (abc)
       - name: CMake build for Intel
         run: |
           cmake --build build --target all -- -j 4
@@ -173,7 +301,11 @@ jobs:
           ctest --output-on-failure
       - name: CMake configure for M1
         run: |
+<<<<<<< HEAD
           cmake . -DCMAKE_OSX_ARCHITECTURES="arm64" -DCMAKE_BUILD_TYPE=Debug -DWITH_UNIT_TESTS=OFF -B build-m1
+=======
+          cmake . -DCMAKE_OSX_ARCHITECTURES="arm64" -DCMAKE_BUILD_TYPE=Release -DWITH_UNIT_TESTS=OFF -B build-m1
+>>>>>>> db7344ebf (abc)
       - name: CMake build for M1
         run: |
           cmake --build build-m1 --target all
@@ -187,6 +319,7 @@ jobs:
       - name: Autotools check
         run: |
           make check
+<<<<<<< HEAD
       # FIXME: parallel builds crash newer Clang versions?!
       - name: Autotools devcheck
         run: |
@@ -207,10 +340,35 @@ jobs:
       - name: CMake build
         run: |
           cmake --build build --config Debug --target ALL_BUILD
+=======
+      - name: Autotools devcheck
+        run: |
+          (cd test-dev && autoconf && ./configure)
+          (cd test-dev && make -j 4)
+
+  windows-vc:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include: [
+          {targetplatform: "x86", cmakeflags: "-A Win32" },
+          {targetplatform: "amd64", cmakeflags: "-A x64" },
+        ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: CMake configure
+        run: |
+          cmake . -DCMAKE_BUILD_TYPE=Release -DWITH_UNIT_TESTS=ON -B build ${{ matrix.cmakeflags }}
+      - name: CMake build
+        run: |
+          cmake --build build --target ALL_BUILD
+>>>>>>> db7344ebf (abc)
       - name: CMake checks
         run: |
           cd build
           ctest -C Debug --output-on-failure
+<<<<<<< HEAD
       - name: NMake Build
         run: |
           cmd.exe /C "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" ${{ matrix.targetplatform }} "&&" nmake -f Makefile.vc
@@ -220,6 +378,22 @@ jobs:
       - name: NMake devcheck
         run: |
           cmd.exe /C "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" ${{ matrix.targetplatform }} "&&" cd test-dev "&&" nmake -f Makefile.vc
+=======
+      - name: Preparing NMake
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.targetplatform }}
+      - name: NMake Build
+        run: |
+          nmake -f Makefile.vc
+      - name: NMake check
+        run: |
+          nmake -f Makefile.vc check
+      - name: NMake devcheck
+        run: |
+          cd test-dev
+          nmake -f Makefile.vc
+>>>>>>> db7344ebf (abc)
 
   windows-msys2:
     runs-on: windows-latest
@@ -240,7 +414,11 @@ jobs:
           update: true
           install: base-devel git autoconf ${{ matrix.pkg }}
       - name: Checkout repository
+<<<<<<< HEAD
         uses: actions/checkout@v2
+=======
+        uses: actions/checkout@v4
+>>>>>>> db7344ebf (abc)
       - name: Create and run Autotools configure script
         run: |
           autoconf
@@ -259,7 +437,11 @@ jobs:
         run: (cd test-dev && make distclean) && make distclean
       - name: CMake configure
         run: |
+<<<<<<< HEAD
           cmake . -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DWITH_UNIT_TESTS=ON -B build
+=======
+          cmake . -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DWITH_UNIT_TESTS=ON -B build
+>>>>>>> db7344ebf (abc)
       - name: CMake build
         run: |
           cmake --build build --target all -- -j 3
@@ -268,6 +450,65 @@ jobs:
           cd build
           ctest --output-on-failure
 
+<<<<<<< HEAD
+=======
+  openwatcom:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup OpenWatcom
+        uses: open-watcom/setup-watcom@v0
+        with:
+          version: "2.0"
+      - name: WMake Build (Win32)
+        run: |
+          wmake -f Makefile.w32
+      - name: WMake check (Win32)
+        run: |
+          wmake -f Makefile.w32 check
+      - name: WMake distclean (Win32)
+        run: |
+          wmake -f Makefile.w32 distclean
+      - name: WMake Build (OS/2)
+        run: |
+          wmake -f Makefile.os2
+      - name: WMake check (OS/2)
+        run: |
+          wmake -f Makefile.os2 check-build
+      - name: WMake distclean (OS/2)
+        run: |
+          wmake -f Makefile.os2 distclean
+      - name: WMake Build (MS-DOS)
+        run: |
+          wmake -f Makefile.dos
+      - name: WMake check (MS-DOS)
+        run: |
+          wmake -f Makefile.dos check-build
+      - name: WMake distclean (MS-DOS)
+        run: |
+          wmake -f Makefile.dos distclean
+
+  watcom-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup OpenWatcom
+        uses: open-watcom/setup-watcom@v0
+        with:
+          version: "2.0"
+      - name: WMake Build (Linux)
+        run: |
+          wmake -f Makefile.lnx
+      - name: WMake check (Linux)
+        run: |
+          wmake -f Makefile.lnx check
+      - name: WMake distclean (Linux)
+        run: |
+          wmake -f Makefile.lnx distclean
+
+>>>>>>> db7344ebf (abc)
   amiga:
     strategy:
        matrix:
@@ -279,7 +520,11 @@ jobs:
     container: amigadev/crosstools:${{ matrix.host }}
     steps:
       - name: Checkout repository
+<<<<<<< HEAD
         uses: actions/checkout@v2
+=======
+        uses: actions/checkout@v4
+>>>>>>> db7344ebf (abc)
       - name: Create and run Autotools configure script
         run: |
           autoconf
@@ -292,13 +537,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
+<<<<<<< HEAD
         uses: actions/checkout@v2
+=======
+        uses: actions/checkout@v4
+>>>>>>> db7344ebf (abc)
       - name: Install dependencies
         run: sudo apt install unrar
       - name: Create and run configure script
         run: |
           export CC=clang
+<<<<<<< HEAD
           export CFLAGS="-fsanitize=address -fno-omit-frame-pointer -g"
+=======
+          export CFLAGS="-fsanitize=address,undefined -fno-sanitize-recover=all -fno-sanitize=shift-base -fno-omit-frame-pointer -g"
+>>>>>>> db7344ebf (abc)
           export LDFLAGS="$CFLAGS"
           autoconf; ./configure
           (cd test-dev; autoconf; ./configure)
@@ -313,7 +566,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
+<<<<<<< HEAD
         uses: actions/checkout@v2
+=======
+        uses: actions/checkout@v4
+>>>>>>> db7344ebf (abc)
       - name: Install dependencies
         run: sudo apt install unrar
       - name: Create and run configure script
@@ -329,6 +586,7 @@ jobs:
         run: make check
       - name: Build and run regression tests
         run: (cd test-dev && make -j 3)
+<<<<<<< HEAD
 
   UndefinedBehaviorSanitizer:
     runs-on: ubuntu-latest
@@ -350,3 +608,5 @@ jobs:
         run: make check
       - name: Build and run regression tests
         run: (cd test-dev && make -j 3)
+=======
+>>>>>>> db7344ebf (abc)

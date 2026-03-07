@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -106,6 +110,7 @@ static int amf_load(struct module_data *m, HIO_HANDLE *f, const int start)
 	if (ver == 0x09 || ver == 0x0a)
 		hio_read(buf, 1, 16, f);	/* channel remap table */
 
+<<<<<<< HEAD
 	if (ver >= 0x0d) {
 		if (hio_read(buf, 1, 32, f) != 32)	/* panning table */
 			return -1;
@@ -117,6 +122,22 @@ static int amf_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		mod->spd = hio_read8(f);
 	} else if (ver >= 0x0b) {
 		hio_read(buf, 1, 16, f);
+=======
+	if (ver >= 0x0b) {
+		int pan_len = ver >= 0x0c ? 32 : 16;
+
+		if (hio_read(buf, 1, pan_len, f) != pan_len)	/* panning table */
+			return -1;
+
+		for (i = 0; i < pan_len; i++) {
+			mod->xxc[i].pan = 0x80 + 2 * (int8)buf[i];
+		}
+	}
+
+	if (ver >= 0x0d) {
+		mod->bpm = hio_read8(f);
+		mod->spd = hio_read8(f);
+>>>>>>> db7344ebf (abc)
 	}
 
 	m->c4rate = C4_NTSC_RATE;
@@ -243,7 +264,11 @@ static int amf_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 		mod->xxi[i].nsm = 1;
 		mod->xxi[i].sub[0].sid = i;
+<<<<<<< HEAD
 		mod->xxi[i].sub[0].pan = 0x80;
+=======
+		mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 
 		if (ver >= 0x0a) {
 			mod->xxs[i].len = hio_read32l(f);

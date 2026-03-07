@@ -34,7 +34,10 @@ h2 {
 	font-size:115%;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)
 h3 {
 	font-size:105%;
 }
@@ -75,7 +78,10 @@ ul {
 	list-style-type: square;
 	color: #404040;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)
 /*
 table {
 	margin-left: 2.5em;
@@ -95,7 +101,10 @@ thead {
 	background: #c0d0ff;
 }
 */
+<<<<<<< HEAD
 
+=======
+>>>>>>> db7344ebf (abc)
 .literal-block {
 	background-color: #e0e0e0;
 }
@@ -109,4 +118,8 @@ thead {
 	padding: 1em;
 	border-radius: 0.6em;
 	-moz-border-radius: 0.6em;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> db7344ebf (abc)

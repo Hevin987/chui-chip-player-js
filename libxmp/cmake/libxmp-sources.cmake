@@ -15,18 +15,33 @@ set(LIBXMP_SRC_LIST
     src/med_extras.c
     src/filter.c
     src/effects.c
+<<<<<<< HEAD
     src/mixer.c
     src/mix_all.c
+=======
+    src/flow.c
+    src/mixer.c
+    src/mix_all.c
+    src/rng.c
+>>>>>>> db7344ebf (abc)
     src/load_helpers.c
     src/load.c
     src/hio.c
     src/hmn_extras.c
     src/extras.c
     src/smix.c
+<<<<<<< HEAD
+=======
+    src/path.c
+>>>>>>> db7344ebf (abc)
     src/filetype.c
     src/memio.c
     src/tempfile.c
     src/mix_paula.c
+<<<<<<< HEAD
+=======
+    src/miniz_tinfl.c
+>>>>>>> db7344ebf (abc)
     src/win32.c
     src/loaders/common.c
     src/loaders/iff.c
@@ -60,8 +75,13 @@ set(LIBXMP_SRC_LIST
     src/loaders/liq_load.c
     src/loaders/ims_load.c
     src/loaders/masi_load.c
+<<<<<<< HEAD
     src/loaders/amf_load.c
     src/loaders/psm_load.c
+=======
+    src/loaders/masi16_load.c
+    src/loaders/amf_load.c
+>>>>>>> db7344ebf (abc)
     src/loaders/stim_load.c
     src/loaders/mmd_common.c
     src/loaders/mmd1_load.c
@@ -82,11 +102,19 @@ set(LIBXMP_SRC_LIST
     src/loaders/gal4_load.c
     src/loaders/mfp_load.c
     src/loaders/asylum_load.c
+<<<<<<< HEAD
+=======
+    src/loaders/muse_load.c
+>>>>>>> db7344ebf (abc)
     src/loaders/hmn_load.c
     src/loaders/mgt_load.c
     src/loaders/chip_load.c
     src/loaders/abk_load.c
     src/loaders/coco_load.c
+<<<<<<< HEAD
+=======
+    src/loaders/xmf_load.c
+>>>>>>> db7344ebf (abc)
 )
 
 set(LIBXMP_SRC_LIST_PROWIZARD 
@@ -138,19 +166,32 @@ set(LIBXMP_SRC_LIST_DEPACKERS
     src/depackers/unsqsh.c
     src/depackers/mmcmp.c
     src/depackers/s404_dec.c
+<<<<<<< HEAD
     src/depackers/unarc.c
     src/depackers/arcfs.c
     src/depackers/readrle.c
     src/depackers/readlzw.c
     src/depackers/muse.c
     src/depackers/miniz_tinfl.c
+=======
+    src/depackers/arc.c
+    src/depackers/arcfs.c
+    src/depackers/arc_unpack.c
+    src/depackers/lzx.c
+    src/depackers/lzx_unpack.c
+    src/depackers/ice.c
+    src/depackers/ice_unpack.c
+>>>>>>> db7344ebf (abc)
     src/depackers/miniz_zip.c
     src/depackers/unzip.c
     src/depackers/gunzip.c
     src/depackers/uncompress.c
     src/depackers/bunzip2.c
     src/depackers/unlha.c
+<<<<<<< HEAD
     src/depackers/unlzx.c
+=======
+>>>>>>> db7344ebf (abc)
     src/depackers/unxz.c
     src/depackers/xz_dec_lzma2.c
     src/depackers/xz_dec_stream.c
@@ -159,4 +200,58 @@ set(LIBXMP_SRC_LIST_DEPACKERS
     src/depackers/ptpopen.c
     src/depackers/xfd.c
     src/depackers/xfd_link.c
+<<<<<<< HEAD
+=======
+    src/depackers/lhasa/ext_header.c
+    src/depackers/lhasa/lha_file_header.c
+    src/depackers/lhasa/lha_input_stream.c
+    src/depackers/lhasa/lha_decoder.c
+    src/depackers/lhasa/lha_reader.c
+    src/depackers/lhasa/lha_basic_reader.c
+    src/depackers/lhasa/lh1_decoder.c
+    src/depackers/lhasa/lh5_decoder.c
+    src/depackers/lhasa/lh6_decoder.c
+    src/depackers/lhasa/lh7_decoder.c
+    src/depackers/lhasa/lhx_decoder.c
+    src/depackers/lhasa/lk7_decoder.c
+    src/depackers/lhasa/lz5_decoder.c
+    src/depackers/lhasa/lzs_decoder.c
+    src/depackers/lhasa/null_decoder.c
+    src/depackers/lhasa/pm1_decoder.c
+    src/depackers/lhasa/pm2_decoder.c
+    src/depackers/lhasa/macbinary.c
+)
+
+set(LIBXMP_SRC_LIST_LITE 
+    src/lite/lite-virtual.c
+    src/lite/lite-format.c
+    src/lite/lite-period.c
+    src/lite/lite-player.c
+    src/lite/lite-read_event.c
+    src/lite/lite-misc.c
+    src/lite/lite-dataio.c
+    src/lite/lite-lfo.c
+    src/lite/lite-scan.c
+    src/lite/lite-control.c
+    src/lite/lite-filter.c
+    src/lite/lite-effects.c
+    src/lite/lite-mixer.c
+    src/lite/lite-mix_all.c
+    src/lite/lite-load_helpers.c
+    src/lite/lite-load.c
+    src/lite/lite-filetype.c
+    src/lite/lite-hio.c
+    src/lite/lite-smix.c
+    src/lite/lite-memio.c
+    src/lite/lite-rng.c
+    src/lite/lite-win32.c
+    src/lite/lite-flow.c
+    src/lite/lite-common.c
+    src/lite/lite-itsex.c
+    src/lite/lite-sample.c
+    src/lite/lite-xm_load.c
+    src/lite/lite-mod_load.c
+    src/lite/lite-s3m_load.c
+    src/lite/lite-it_load.c
+>>>>>>> db7344ebf (abc)
 )

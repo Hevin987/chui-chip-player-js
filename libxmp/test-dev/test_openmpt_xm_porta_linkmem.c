@@ -1,8 +1,14 @@
 #include "test.h"
 
 /*
+<<<<<<< HEAD
  E1x, E2x, X1x and X2x memory should not be shared. Both channels should
  sound identical if effect memory is applied correctly.
+=======
+   1xx, 2xx, E1x, E2x, X1x and X2x memory should not be
+   shared. Both channels should sound identical if effect memory is
+   applied correctly.
+>>>>>>> db7344ebf (abc)
 */
 
 TEST(test_openmpt_xm_porta_linkmem)

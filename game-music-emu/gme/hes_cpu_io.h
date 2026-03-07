@@ -27,27 +27,44 @@ inline byte const* Hes_Emu::cpu_set_mmr( int page, int bank )
 {
 	write_pages [page] = 0;
 	if ( bank < 0x80 )
+<<<<<<< HEAD
 		return rom.at_addr( bank * (blargg_long) page_size );
 	
+=======
+		return rom.at_addr( bank * (int32_t) page_size );
+
+>>>>>>> db7344ebf (abc)
 	byte* data = 0;
 	switch ( bank )
 	{
 		case 0xF8:
 			data = cpu::ram;
 			break;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		case 0xF9:
 		case 0xFA:
 		case 0xFB:
 			data = &sgx [(bank - 0xF9) * page_size];
 			break;
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> db7344ebf (abc)
 		default:
 			if ( bank != 0xFF )
 				debug_printf( "Unmapped bank $%02X\n", bank );
 			return rom.unmapped();
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> db7344ebf (abc)
 	write_pages [page] = data;
 	return data;
 }

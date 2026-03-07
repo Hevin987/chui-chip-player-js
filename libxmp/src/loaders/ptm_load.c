@@ -1,5 +1,9 @@
 /* Extended Module Player
+<<<<<<< HEAD
  * Copyright (C) 1996-2021 Claudio Matsuoka and Hipolito Carraro Jr
+=======
+ * Copyright (C) 1996-2026 Claudio Matsuoka and Hipolito Carraro Jr
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -48,6 +52,17 @@ struct ptm_file_header {
 };
 
 struct ptm_instrument_header {
+<<<<<<< HEAD
+=======
+#define PTM_INS_NONE		0
+#define PTM_INS_SAMPLE		1
+#define PTM_INS_OPL		2 /* unused */
+#define PTM_INS_MIDI		3 /* unused */
+#define PTM_INS_TYPE(x)		((x) & 3)
+#define PTM_INS_LOOP		(1 << 2)
+#define PTM_INS_LOOP_BIDIR	(1 << 3)
+#define PTM_INS_LOOP_16BIT	(1 << 4)
+>>>>>>> db7344ebf (abc)
 	uint8 type;		/* Sample type */
 	uint8 dosname[12];	/* DOS file name */
 	uint8 vol;		/* Volume */
@@ -190,9 +205,12 @@ static int ptm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 			return -1;
 		}
 
+<<<<<<< HEAD
 		if ((pih.type & 3) != 1)
 			continue;
 
+=======
+>>>>>>> db7344ebf (abc)
 		if (libxmp_alloc_subinstrument(mod, i, 1) < 0) {
 			return -1;
 		}
@@ -204,11 +222,17 @@ static int ptm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		xxs->lps = pih.loopbeg;
 		xxs->lpe = pih.loopend;
 
+<<<<<<< HEAD
 		if (mod->xxs[i].len > 0) {
+=======
+		if (mod->xxs[i].len > 0 &&
+		    PTM_INS_TYPE(pih.type) == PTM_INS_SAMPLE) {
+>>>>>>> db7344ebf (abc)
 			mod->xxi[i].nsm = 1;
 		}
 
 		xxs->flg = 0;
+<<<<<<< HEAD
 		if (pih.type & 0x04) {
 			xxs->flg |= XMP_SAMPLE_LOOP;
 		}
@@ -216,6 +240,15 @@ static int ptm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 			xxs->flg |= XMP_SAMPLE_LOOP | XMP_SAMPLE_LOOP_BIDIR;
 		}
 		if (pih.type & 0x10) {
+=======
+		if (pih.type & PTM_INS_LOOP) {
+			xxs->flg |= XMP_SAMPLE_LOOP;
+		}
+		if (pih.type & PTM_INS_LOOP_BIDIR) {
+			xxs->flg |= XMP_SAMPLE_LOOP | XMP_SAMPLE_LOOP_BIDIR;
+		}
+		if (pih.type & PTM_INS_LOOP_16BIT) {
+>>>>>>> db7344ebf (abc)
 			xxs->flg |= XMP_SAMPLE_16BIT;
 			xxs->len >>= 1;
 			xxs->lps >>= 1;
@@ -223,7 +256,11 @@ static int ptm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		}
 
 		sub->vol = pih.vol;
+<<<<<<< HEAD
 		sub->pan = 0x80;
+=======
+		sub->pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
 		sub->sid = i;
 		pih.magic = 0;
 
@@ -231,7 +268,11 @@ static int ptm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 
 		D_(D_INFO "[%2X] %-28.28s %05x%c%05x %05x %c V%02x %5d",
 		   i, mod->xxi[i].name, mod->xxs[i].len,
+<<<<<<< HEAD
 		   pih.type & 0x10 ? '+' : ' ',
+=======
+		   pih.type & PTM_INS_LOOP_16BIT ? '+' : ' ',
+>>>>>>> db7344ebf (abc)
 		   xxs->lps, xxs->lpe, xxs->flg & XMP_SAMPLE_LOOP ? 'L' : ' ',
 		   sub->vol, pih.c4spd);
 
@@ -307,6 +348,12 @@ static int ptm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 					event->fxt = event->fxp = 0;
 
 				switch (event->fxt) {
+<<<<<<< HEAD
+=======
+				case 0x0d:	/* Break (hex parameter) */
+					event->fxt = FX_IT_BREAK;
+					break;
+>>>>>>> db7344ebf (abc)
 				case 0x0e:	/* Extended effect */
 					if (MSN(event->fxp) == 0x8) {	/* Pan set */
 						event->fxt = FX_SETPAN;
@@ -366,6 +413,17 @@ static int ptm_load(struct module_data *m, HIO_HANDLE *f, const int start)
 		mod->xxc[i].pan = pfh.chset[i] << 4;
 
 	m->quirk |= QUIRKS_ST3;
+<<<<<<< HEAD
+=======
+	/* Has none of ST3's loop quirks; loop jumps unset prior breaks.
+	 * TODO: pattern jump is handled every tick, causing some strange bugs:
+	 * - At speed 1, loop jump unsets position jump (FLOW_LOOP_UNSET_JUMP),
+	 *   but at higher speeds, position jump overwrites the loop jump.
+	 * - At speed 1, Bxx Dyy jumps to pattern X at row Y, but at higher
+	 *   speeds, position jump overwrites the break row with 0.
+	 */
+	m->flow_mode = FLOW_LOOP_GLOBAL | FLOW_LOOP_UNSET_BREAK;
+>>>>>>> db7344ebf (abc)
 	m->read_event_type = READ_EVENT_ST3;
 
 	return 0;

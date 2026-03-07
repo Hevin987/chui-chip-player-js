@@ -1,6 +1,10 @@
 /* Extended Module Player
  * AMOS/STOS Music Bank Loader
+<<<<<<< HEAD
  * Copyright (C) 2014 Stephen J Leary and Claudio Matsuoka
+=======
+ * Copyright (C) 2014-2026 Stephen J Leary and Claudio Matsuoka
+>>>>>>> db7344ebf (abc)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -322,7 +326,11 @@ static int read_abk_pattern(HIO_HANDLE *f, struct xmp_event *events, uint32 patt
             {
                 /* old note format.*/
                 /* old note format is 2 x 2 byte words with bit 14 set on the first word */
+<<<<<<< HEAD
                 /* WORD 1: 0x4XDD | X = dont care, D = delay to apply after note. (Usually in 7FDD form).
+=======
+                /* WORD 1: 0x4XDD | X = don't care, D = delay to apply after note. (Usually in 7FDD form).
+>>>>>>> db7344ebf (abc)
                  * WORD 2: 0xXPPP | PPP = Amiga Period */
 
                 delay = patdata & 0xff;
@@ -364,7 +372,11 @@ static int read_abk_pattern(HIO_HANDLE *f, struct xmp_event *events, uint32 patt
             break;
         }
     }
+<<<<<<< HEAD
     if (position < 64) {
+=======
+    if (position >= 1 && position < 64) {
+>>>>>>> db7344ebf (abc)
 	events[position - 1].f2t = FX_BREAK;
     }
 
@@ -565,7 +577,11 @@ static int abk_load(struct module_data *m, HIO_HANDLE *f, const int start)
 /*printf("%02x lps=%04x lpe=%04x\n", i,  mod->xxs[i].lps, mod->xxs[i].lpe);*/
 
         mod->xxi[i].sub[0].vol = ci[i].sample_volume;
+<<<<<<< HEAD
         mod->xxi[i].sub[0].pan = 0x80;
+=======
+        mod->xxi[i].sub[0].pan = XMP_INST_NO_DEFAULT_PAN;
+>>>>>>> db7344ebf (abc)
         mod->xxi[i].sub[0].sid = i;
 
         libxmp_instrument_name(mod, i, (uint8*)ci[i].sample_name, 16);
