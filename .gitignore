@@ -3,6 +3,7 @@
 .env.*.local
 .idea/
 node_modules/
+emsdk
 <<<<<<< HEAD
 cmake-build-debug/
 
