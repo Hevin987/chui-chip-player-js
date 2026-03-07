@@ -4,6 +4,7 @@
 .idea/
 node_modules/
 emsdk/
+.emsdk
 <<<<<<< HEAD
 cmake-build-debug/
 
