@@ -217,6 +217,9 @@ class App extends React.Component {
           // from the same origin (works with any static file server, no API needed).
           playPath = window.location.origin + (playPath.startsWith('/') ? '' : '/') + playPath;
         }
+        // Resume AudioContext — Chrome transfers user activation from the
+        // page that triggered the navigation, allowing immediate playback.
+        this.audioCtx.resume();
         this.sequencer.playSonglist([playPath]);
       }
     });
@@ -702,7 +705,11 @@ class App extends React.Component {
                       playContext={this.playContexts['local']}
                       currContext={currContext}
                       currIdx={currIdx}
-                      listing={this.state.localFiles}/>
+                      listing={this.state.localFiles}
+                      title={title}
+                      subtitle={subtitle}
+                      ejected={this.state.ejected}
+                      metadata={this.state.currentSongMetadata}/>
                   }
                 </div>
                 {showPlayerSettings &&

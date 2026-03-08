@@ -3,9 +3,6 @@ import { FORMATS } from '../config';
 import bytes from 'bytes';
 
 const formatList = FORMATS.filter(f => f !== 'miniusf').map(f => `.${f}`);
-const splitPoint = Math.floor(formatList.length / 2);
-const formatsLine1 = formatList.slice(0, splitPoint).join(' ');
-const formatsLine2 = formatList.slice(splitPoint).join(' ');
 
 export default memo(LocalFiles);
 
@@ -19,6 +16,10 @@ function LocalFiles(props) {
     onDelete,
     onAddFiles,
     loading,
+    title,
+    subtitle,
+    ejected,
+    metadata,
   } = props;
   const fileInputRef = useRef(null);
 
@@ -51,48 +52,51 @@ function LocalFiles(props) {
 
   return (
     <div>
-      <h3 className="Browse-topRow">
-        Local Files ({listing.length})
-        <div className='button-container'>
-          <button className='box-button' onClick={handleAddClick} title='Add files'>
-            Add Files...
-          </button>
-          {' '}
-          {listing.length > 0 &&
+      {listing.length > 0 &&
+        <h3 className="Browse-topRow">
+          Local Files ({listing.length})
+          <div className='button-container'>
+            <button className='box-button' onClick={handleAddClick} title='Add files'>
+              Add Files...
+            </button>
+            {' '}
             <button className='box-button' onClick={handleClear} title='Remove all local files'>
               Clear
             </button>
-          }
-        </div>
-        <input
-          ref={fileInputRef}
-          type="file"
-          multiple
-          accept={formatList.join(',')}
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-        />
-      </h3>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept={formatList.join(',')}
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+        </h3>
+      }
       {loading ?
         "Loading local files..."
         :
         listing.length === 0 ?
-          <div>
-            <p>
-              You don't have any Local Files yet.
-            </p>
-            <p>
-              Files dropped here will be persisted in your local browser.<br/>
-              (Keep a copy - your browser might lose this data.)<br/>
-              Local Files can't be added to Favorites.
-            </p>
-            <p>
-              Supported formats:
-            </p>
-            <p>
-              {formatsLine1}<br/>
-              {formatsLine2}<br/>
-            </p>
+          <div style={{ padding: '1.5em 1em' }}>
+            {(!ejected && title) &&
+              <>
+                <h2 style={{ margin: '0 0 0.25em' }}>{title}</h2>
+                {subtitle && <p style={{ margin: '0 0 1.5em', opacity: 0.65, fontSize: '0.9em' }}>{subtitle}</p>}
+                {[
+                  ['Title',     metadata?.title],
+                  ['Artist',    metadata?.artist],
+                  ['Game',      metadata?.game],
+                  ['System',    metadata?.system],
+                  ['Copyright', metadata?.copyright],
+                ].filter(([, v]) => v).map(([label, value]) => (
+                  <div key={label} style={{ display: 'flex', gap: '0.5em', marginBottom: '0.4em', fontSize: '0.85em' }}>
+                    <span style={{ minWidth: '5.5em', opacity: 0.55, textAlign: 'right' }}>{label}:</span>
+                    <span>{value}</span>
+                  </div>
+                ))}
+              </>
+            }
           </div>
           :
           <div>

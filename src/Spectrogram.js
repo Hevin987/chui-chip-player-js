@@ -8,14 +8,14 @@ const MODE_CONSTANT_Q = 2;
 const WEIGHTING_NONE = 0;
 const WEIGHTING_A = 1;
 const colorMap = new chroma.scale([
-  '#000000',
-  '#0000a0',
-  '#6000a0',
-  '#962761',
-  '#dd1440',
-  '#f0b000',
-  '#ffffa0',
-  '#ffffff',
+  '#1B2F4B',
+  '#2A4A70',
+  '#39A9E0',
+  '#5EC0EC',
+  '#7ACFF2',
+  '#FFD171',
+  '#FFE4A0',
+  '#FFF8E7',
 ]).domain([0, 255]);
 const _debug = window.location.search.indexOf('debug=true') !== -1;
 let _aWeightingLUT;
@@ -139,9 +139,9 @@ export default class Spectrogram {
     const freqCtx = this.freqCtx;
     //const specCtx = this.specCtx;
     const tempCtx = this.tempCtx;
-    freqCtx.fillStyle = 'black';
+    freqCtx.fillStyle = '#D8EFF9';
     freqCtx.fillRect(0, 0, this.freqCanvas.width, this.freqCanvas.height);
-    tempCtx.fillStyle = '#000033';
+    tempCtx.fillStyle = '#EBF5FC';
     tempCtx.fillRect(0, 0, this.tempCanvas.width, specSpeed);
     const _start = performance.now();
     const dataHeap = new Float32Array(this.core.HEAPF32.buffer, this.dataPtr, this.cqtSize);

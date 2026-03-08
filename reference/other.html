@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Others | Schale Residence</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/@esotericsoftware/spine-player@4.1.19/dist/spine-player.css">
+    <script src="dist/vendors.js"></script>
+    <script src="dist/bundle.js"></script>
+    <style>
+        .file-explorer {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(18, 137, 240, 0.15);
+            height: calc(100vh - 180px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .explorer-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: linear-gradient(90deg, #1289F0 0%, #0056b3 100%);
+            color: white;
+        }
+        
+        .explorer-toolbar button {
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+        
+        .explorer-toolbar button:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        .explorer-toolbar button:active {
+            transform: translateY(0);
+        }
+        
+        .explorer-toolbar button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .breadcrumb {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 14px;
+            border-radius: 20px;
+            overflow-x: auto;
+            min-height: 36px;
+            font-weight: 500;
+        }
+        
+        .breadcrumb::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .breadcrumb::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.4);
+            border-radius: 2px;
+        }
+        
+        .breadcrumb span {
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        
+        .breadcrumb span:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .breadcrumb span.current {
+            font-weight: 700;
+            cursor: default;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .breadcrumb span.current:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .explorer-view {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: linear-gradient(180deg, #f8fbff 0%, #eef6fc 100%);
+        }
+        
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 16px;
+        }
+        
+        .file-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            background: white;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .file-item:hover {
+            background: #e3f2fd;
+            border-color: #64b5f6;
+            transform: translateY(-4px);
+        }
+        
+        .file-item.selected {
+            background: #bbdefb;
+            border-color: #1289F0;
+            }
+        
+        .file-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .file-item:hover .file-icon {
+            transform: scale(1.1);
+        }
+        
+        .file-icon.folder { color: #ffb300; }
+        .file-icon.image { color: #4CAF50; }
+        .file-icon.video { color: #E91E63; }
+        .file-icon.audio { color: #9C27B0; }
+        .file-icon.document { color: #2196F3; }
+        .file-icon.archive { color: #795548; }
+        .file-icon.code { color: #00BCD4; }
+        .file-icon.file { color: #90A4AE; }
+        
+        .file-name {
+            font-size: 12px;
+            font-weight: 600;
+            word-break: break-word;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            color: #37474F;
+        }
+        
+        .file-size {
+            font-size: 10px;
+            color: #78909C;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        
+        .explorer-status {
+            padding: 10px 16px;
+            background: white;
+            border-top: 2px solid #e3f2fd;
+            font-size: 12px;
+            color: #546E7A;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+        
+        .empty-folder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #90A4AE;
+            padding: 40px;
+        }
+        
+        .empty-folder i {
+            font-size: 72px;
+            margin-bottom: 20px;
+            color: #B0BEC5;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            margin-left: 8px;
+        }
+        
+        .view-toggle button {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+        
+        .view-toggle button.active {
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .file-list {
+            display: none;
+        }
+        
+        .file-list.show {
+            display: block;
+        }
+        
+        .file-list .file-item {
+            flex-direction: row;
+            justify-content: flex-start;
+            padding: 14px 20px;
+            gap: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .file-list .file-item i {
+            margin-bottom: 0;
+            font-size: 24px;
+        }
+        
+        .file-list .file-name {
+            flex: 1;
+            text-align: left;
+            -webkit-line-clamp: 1;
+        }
+        
+        .file-list .file-size {
+            width: 80px;
+            text-align: right;
+            margin-top: 0;
+        }
+        
+        .list-header {
+            display: flex;
+            padding: 12px 20px;
+            background: linear-gradient(90deg, #e3f2fd 0%, #bbdefb 100%);
+            border-bottom: 2px solid #90CAF9;
+            font-weight: 700;
+            font-size: 13px;
+            color: #1565C0;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 8px;
+        }
+        
+        .list-header .name-col {
+            flex: 1;
+        }
+        
+        .list-header .size-col {
+            width: 80px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <header class="top-bar">
+        <div class="logo">
+            <span class="logo-icon"><i class="fas fa-cube"></i></span>
+            <span class="logo-text">SCHALE</span>
+        </div>
+        <div class="user-info">
+            <span class="rank">Rank 75</span>
+            <span class="username">Sensei</span>
+            <div class="ap-bar">
+                <i class="fas fa-bolt"></i> 120/120
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <nav class="side-menu">
+            <div class="menu-item" onclick="location.href='index.html'">
+                <i class="fas fa-home"></i>
+                <span>LOBBY</span>
+            </div>
+            <div class="menu-item" onclick="location.href='students.html'">
+                <i class="fas fa-users"></i>
+                <span>STUDENTS</span>
+            </div>
+            <div class="menu-item" onclick="location.href='mission.html'">
+                <i class="fas fa-bullseye"></i>
+                <span>MISSION</span>
+            </div>
+            <div class="menu-item active" onclick="location.href='other.html'">
+                <i class="fas fa-folder-open"></i>
+                <span>OTHER</span>
+            </div>
+        </nav>
+
+        <div class="main-split">
+        <section class="content-area view-section active">
+            <div class="file-explorer">
+                <div class="explorer-toolbar">
+                    <button id="btn-back" onclick="goBack()" disabled><i class="fas fa-arrow-left"></i></button>
+                    <button id="btn-forward" onclick="goForward()" disabled><i class="fas fa-arrow-right"></i></button>
+                    <button onclick="goUp()"><i class="fas fa-arrow-up"></i></button>
+                    <button onclick="refreshExplorer()"><i class="fas fa-redo"></i></button>
+                    <div class="breadcrumb" id="breadcrumb"></div>
+                    <div class="view-toggle">
+                        <button id="view-grid" class="active" onclick="setView('grid')"><i class="fas fa-th"></i></button>
+                        <button id="view-list" onclick="setView('list')"><i class="fas fa-list"></i></button>
+                    </div>
+                </div>
+                <div class="explorer-view" id="explorer-view">
+                    <div class="file-grid" id="file-grid"></div>
+                    <div class="file-list" id="file-list">
+                        <div class="list-header">
+                            <div class="name-col">Name</div>
+                            <div class="size-col">Size</div>
+                        </div>
+                        <div id="file-list-content"></div>
+                    </div>
+                </div>
+                <div class="explorer-status">
+                    <span id="item-count">0 items</span>
+                    <span id="selection-info"></span>
+                </div>
+            </div>
+        </section>
+            <div id="character-container" class="character-area">
+            <iframe 
+                id="spine-viewer-iframe"
+                class="spine-viewer-iframe"
+                src="spine-viewer-v8.html"
+                title="Spine Character Viewer"
+                allowtransparency="true"
+            ></iframe>
+            </div> <!-- end .main-split -->
+    </main>
+    <script>
+        // URL of the chip player (same origin, root index.html).
+        const CHIP_PLAYER_URL = '/vgmPlayer.html';
+
+        // Audio formats supported by chip-player-js.
+        const AUDIO_FORMATS = new Set(['vgm','vgz','nsf','nsfe','spc','mod','s3m','it','xm','mid','midi','ay','gbs','mdx','v2m','smf','miniusf']);
+
+        const fileSystem = {
+            '/': {
+                type: 'folder',
+                children: [
+                    'index.html', 'students.html', 'mission.html', 'other.html',
+                    'style.css', 'script.js', 'script.js', 'script(reference).js', 'script(copy).js',
+                    'live2d_viewer.tsx', 'live2d_initializer.js',
+                    'spine-viewer-v8.js', 'spine-viewer-v8.html',
+                    'webpack.config.js', 'package.json', 'package-lock.json', 'readme.md',
+                    'RoGSanSrfStd-Bd_latin.woff2',
+                    'images', 'font', 'src', 'BlueArchiveLive2D', 'catalog'
+                ]
+            },
+            '/catalog': {
+                type: 'folder',
+                children: [
+                    'Sonic the Hedgehog 2 - 01 - Opening Demo.vgm',
+                    'Sonic the Hedgehog 2 - 02 - Title Screen.vgm',
+                    'Sonic the Hedgehog 2 - 03 - Act Start.vgm',
+                    'Sonic the Hedgehog 2 - 04 - Underground Zone.vgm',
+                    'Sonic the Hedgehog 2 - 05 - Boss Theme (Master System).vgm',
+                    'Sonic the Hedgehog 2 - 06 - Act Complete.vgm',
+                    'Sonic the Hedgehog 2 - 07 - Sky High Zone.vgm',
+                    'Sonic the Hedgehog 2 - 08 - Invincible.vgm',
+                    'Sonic the Hedgehog 2 - 09 - Aqua Lake Zone.vgm',
+                    'Sonic the Hedgehog 2 - 10 - Power Sneakers (Master System).vgm',
+                    'Sonic the Hedgehog 2 - 11 - Green Hills Zone.vgm',
+                    'Sonic the Hedgehog 2 - 12 - Found Emerald!.vgm',
+                    'Sonic the Hedgehog 2 - 13 - Gimmick Mountain Zone.vgm',
+                    'Sonic the Hedgehog 2 - 14 - Death.vgm',
+                    'Sonic the Hedgehog 2 - 15 - Scrambled Egg Zone.vgm',
+                    'Sonic the Hedgehog 2 - 16 - Boss Theme (Game Gear).vgm',
+                    'Sonic the Hedgehog 2 - 17 - Bad Ending (Game Gear).vgm',
+                    'Sonic the Hedgehog 2 - 18 - Crystal Egg Zone.vgm',
+                    'Sonic the Hedgehog 2 - 19 - Ending (Master System).vgm',
+                    'Sonic the Hedgehog 2 - 20 - Good Ending (Game Gear).vgm',
+                    'Sonic the Hedgehog 2 - 22 - Unused (Master System).vgm',
+                    'Sonic the Hedgehog 2 - 23 - Game Over.vgm',
+                    'Sonic the Hedgehog 2 - 24 - Continue Screen.vgm',
+                    'Super Mario Bros. 3 (1988-10-23)(Nintendo EAD)(Nintendo).nsf'
+                ]
+            },
+            '/images': {
+                type: 'folder',
+                children: ['Arona_00.png', 'Ibuki_00.png_00.png']
+            },
+            '/font': {
+                type: 'folder',
+                children: ['MapleMonoNormal.ttf', 'GoogleSansCode-VariableFont_wght.ttf', 'Doto-VariableFont_ROND,wght.ttf']
+            },
+            '/src': {
+                type: 'folder',
+                children: ['live2d_viewer.tsx']
+            },
+            '/BlueArchiveLive2D': {
+                type: 'folder',
+                children: ['yuuka']
+            },
+            '/BlueArchiveLive2D/yuuka': {
+                type: 'folder',
+                children: ['Yuuka_Home', 'Yuuka_Spr']
+            },
+            '/BlueArchiveLive2D/yuuka/Yuuka_Home': {
+                type: 'folder',
+                children: ['Yuuka_home.atlas', 'Yuuka_home.skel', 'Yuuka_home.png', 'Yuuka_home2.png', 'Yuuka_home_Voice.json', 'yuuka_home_monobehaviour.json']
+            },
+            '/BlueArchiveLive2D/yuuka/Yuuka_Spr': {
+                type: 'folder',
+                children: ['yuuka_spr.atlas', 'yuuka_spr.skel', 'yuuka_spr.png', 'yuuka_spr_Voice.json', 'yuuka_spr_monobehaviour.json', 'MonoBehaviour']
+            },
+            '/BlueArchiveLive2D/yuuka/Yuuka_Spr/MonoBehaviour': {
+                type: 'folder',
+                children: ['yuuka_spr_Atlas.json', 'yuuka_spr_SkeletonData.json', 'yuuka_spr-Idle_01.json', 'yuuka_spr-Eye_Close_01.json', 'yuuka_spr-00.json', 'yuuka_spr-01.json', 'yuuka_spr-02.json', 'yuuka_spr-03.json', 'yuuka_spr-04.json', 'yuuka_spr-05.json', 'yuuka_spr-06.json', 'yuuka_spr-07.json', 'yuuka_spr-99.json']
+            }
+        };
+
+        const fileIcons = {
+            folder: { icon: 'fa-folder', class: 'folder' },
+            html: { icon: 'fa-code', class: 'code' },
+            htm: { icon: 'fa-code', class: 'code' },
+            css: { icon: 'fa-palette', class: 'code' },
+            js: { icon: 'fa-file-code', class: 'code' },
+            ts: { icon: 'fa-file-code', class: 'code' },
+            tsx: { icon: 'fa-file-code', class: 'code' },
+            json: { icon: 'fa-file-code', class: 'code' },
+            png: { icon: 'fa-image', class: 'image' },
+            jpg: { icon: 'fa-image', class: 'image' },
+            jpeg: { icon: 'fa-image', class: 'image' },
+            gif: { icon: 'fa-image', class: 'image' },
+            ttf: { icon: 'fa-font', class: 'document' },
+            otf: { icon: 'fa-font', class: 'document' },
+            woff: { icon: 'fa-font', class: 'document' },
+            woff2: { icon: 'fa-font', class: 'document' },
+            md: { icon: 'fa-file-lines', class: 'document' },
+            txt: { icon: 'fa-file-lines', class: 'document' },
+            xml: { icon: 'fa-file-code', class: 'code' },
+            skel: { icon: 'fa-microchip', class: 'code' },
+            atlas: { icon: 'fa-file-lines', class: 'document' },
+            config: { icon: 'fa-file-code', class: 'code' },
+            package: { icon: 'fa-file-lines', class: 'document' },
+            // Audio formats
+            vgm:  { icon: 'fa-music', class: 'audio' },
+            vgz:  { icon: 'fa-music', class: 'audio' },
+            nsf:  { icon: 'fa-music', class: 'audio' },
+            nsfe: { icon: 'fa-music', class: 'audio' },
+            spc:  { icon: 'fa-music', class: 'audio' },
+            mod:  { icon: 'fa-music', class: 'audio' },
+            s3m:  { icon: 'fa-music', class: 'audio' },
+            it:   { icon: 'fa-music', class: 'audio' },
+            xm:   { icon: 'fa-music', class: 'audio' },
+            mid:  { icon: 'fa-music', class: 'audio' },
+            midi: { icon: 'fa-music', class: 'audio' },
+            ay:   { icon: 'fa-music', class: 'audio' },
+            gbs:  { icon: 'fa-music', class: 'audio' },
+            mdx:  { icon: 'fa-music', class: 'audio' },
+            v2m:  { icon: 'fa-music', class: 'audio' },
+            m3u:  { icon: 'fa-list-music', class: 'audio' }
+        };
+
+        let currentPath = '/';
+        let history = ['/'];
+        let historyIndex = 0;
+        let selectedItem = null;
+        let currentView = 'grid';
+
+        function getFileIcon(filename, isDirectory) {
+            if (isDirectory) {
+                return { icon: 'fa-folder', class: 'folder' };
+            }
+            const ext = filename.split('.').pop().toLowerCase();
+            if (fileIcons[ext]) {
+                return fileIcons[ext];
+            }
+            if (fileIcons[filename]) {
+                return fileIcons[filename];
+            }
+            return { icon: 'fa-file', class: 'file' };
+        }
+
+        function isFolder(path) {
+            return fileSystem[path] && fileSystem[path].type === 'folder';
+        }
+
+        function getParentPath(path) {
+            if (path === '/') return '/';
+            const parts = path.split('/').filter(p => p);
+            parts.pop();
+            return '/' + parts.join('/');
+        }
+
+        function navigateTo(path) {
+            if (!isFolder(path)) return;
+            
+            if (historyIndex < history.length - 1) {
+                history = history.slice(0, historyIndex + 1);
+            }
+            history.push(path);
+            historyIndex = history.length - 1;
+            currentPath = path;
+            selectedItem = null;
+            renderExplorer();
+            updateNavButtons();
+        }
+
+        function goBack() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                currentPath = history[historyIndex];
+                selectedItem = null;
+                renderExplorer();
+                updateNavButtons();
+            }
+        }
+
+        function goForward() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                currentPath = history[historyIndex];
+                selectedItem = null;
+                renderExplorer();
+                updateNavButtons();
+            }
+        }
+
+        function goUp() {
+            const parentPath = getParentPath(currentPath);
+            if (parentPath !== currentPath) {
+                navigateTo(parentPath);
+            }
+        }
+
+        function refreshExplorer() {
+            renderExplorer();
+        }
+
+        function updateNavButtons() {
+            document.getElementById('btn-back').disabled = historyIndex <= 0;
+            document.getElementById('btn-forward').disabled = historyIndex >= history.length - 1;
+        }
+
+        function updateBreadcrumb() {
+            const breadcrumb = document.getElementById('breadcrumb');
+            const parts = currentPath.split('/').filter(p => p);
+            
+            let html = '<span onclick="navigateTo(\'/\')">Root</span>';
+            let buildPath = '';
+            
+            for (let i = 0; i < parts.length; i++) {
+                buildPath += '/' + parts[i];
+                const isLast = i === parts.length - 1;
+                html += ` <i class="fas fa-chevron-right" style="font-size:10px;opacity:0.6"></i> `;
+                html += `<span class="${isLast ? 'current' : ''}" onclick="navigateTo('${buildPath}')">${parts[i]}</span>`;
+            }
+            
+            breadcrumb.innerHTML = html;
+        }
+
+        function renderExplorer() {
+            const grid = document.getElementById('file-grid');
+            const listContent = document.getElementById('file-list-content');
+            const currentFolder = fileSystem[currentPath];
+            
+            if (!currentFolder || currentFolder.type !== 'folder') {
+                grid.innerHTML = '<div class="empty-folder"><i class="fas fa-folder-open"></i><p>Folder not found</p></div>';
+                listContent.innerHTML = '';
+                return;
+            }
+
+            const children = currentFolder.children || [];
+            
+            if (children.length === 0) {
+                grid.innerHTML = '<div class="empty-folder"><i class="fas fa-folder-open"></i><p>This folder is empty</p></div>';
+                listContent.innerHTML = '';
+            } else {
+                const folders = children.filter(name => isFolder(currentPath + (currentPath === '/' ? '' : '/') + name));
+                const files = children.filter(name => !isFolder(currentPath + (currentPath === '/' ? '' : '/') + name));
+                
+                let gridHtml = '';
+                let listHtml = '';
+                
+                [...folders, ...files].sort((a, b) => {
+                    const aIsFolder = isFolder(currentPath + (currentPath === '/' ? '' : '/') + a);
+                    const bIsFolder = isFolder(currentPath + (currentPath === '/' ? '' : '/') + b);
+                    if (aIsFolder && !bIsFolder) return -1;
+                    if (!aIsFolder && bIsFolder) return 1;
+                    return a.localeCompare(b);
+                }).forEach(name => {
+                    const itemPath = currentPath === '/' ? '/' + name : currentPath + '/' + name;
+                    const iconInfo = getFileIcon(name, isFolder(itemPath));
+                    const isSelected = selectedItem === name;
+                    const isDir = isFolder(itemPath);
+                    
+                    gridHtml += `
+                        <div class="file-item ${isSelected ? 'selected' : ''}" 
+                             data-name="${name}" 
+                             data-path="${itemPath}"
+                             onclick="selectItem('${name}', '${itemPath}', this)" 
+                             ondblclick="${isDir ? `navigateTo('${itemPath}')` : `openFile('${name}')`}">
+                            <i class="fas ${iconInfo.icon} file-icon ${iconInfo.class}"></i>
+                            <div class="file-name">${name}</div>
+                        </div>
+                    `;
+                    
+                    listHtml += `
+                        <div class="file-item ${isSelected ? 'selected' : ''}" 
+                             data-name="${name}" 
+                             data-path="${itemPath}"
+                             onclick="selectItem('${name}', '${itemPath}', this)" 
+                             ondblclick="${isDir ? `navigateTo('${itemPath}')` : `openFile('${name}')`}">
+                            <i class="fas ${iconInfo.icon} file-icon ${iconInfo.class}"></i>
+                            <div class="file-name">${name}</div>
+                            <div class="file-size">${isDir ? 'Folder' : 'File'}</div>
+                        </div>
+                    `;
+                });
+                
+                grid.innerHTML = gridHtml;
+                listContent.innerHTML = listHtml;
+            }
+
+            document.getElementById('item-count').textContent = children.length + ' items';
+            updateBreadcrumb();
+            
+            if (currentView === 'list') {
+                document.getElementById('file-grid').style.display = 'none';
+                document.getElementById('file-list').classList.add('show');
+            }
+        }
+
+        function selectItem(name, path, element) {
+            selectedItem = name;
+            const items = document.querySelectorAll('.file-item');
+            items.forEach(item => item.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const isDir = isFolder(path);
+            document.getElementById('selection-info').textContent = isDir ? `Folder: ${name}` : `File: ${name}`;
+        }
+
+        function openFile(filename) {
+            const filePath = currentPath === '/' ? '/' + filename : currentPath + '/' + filename;
+            const ext = filename.split('.').pop().toLowerCase();
+            if (AUDIO_FORMATS.has(ext)) {
+                // Open chip player and auto-play this file.
+                window.location.href = CHIP_PLAYER_URL + '?play=' + encodeURIComponent(filePath);
+            } else {
+                window.open(filePath, '_blank');
+            }
+        }
+
+        function setView(view) {
+            currentView = view;
+            const grid = document.getElementById('file-grid');
+            const list = document.getElementById('file-list');
+            
+            document.getElementById('view-grid').classList.toggle('active', view === 'grid');
+            document.getElementById('view-list').classList.toggle('active', view === 'list');
+            
+            if (view === 'grid') {
+                grid.style.display = 'grid';
+                list.classList.remove('show');
+            } else {
+                grid.style.display = 'none';
+                list.classList.add('show');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderExplorer();
+            updateNavButtons();
+        });
+    </script>
+</body>
+</html>
