@@ -107,7 +107,10 @@ function LocalFiles(props) {
                       <span className='inline-icon icon-trash'/>
                     </button>
                     <div className="BrowseList-colName">
-                      <a onClick={onSongClick(href, playContext, i)} href={href}>{title}</a>
+                      <a
+                        onClick={onSongClick(href, playContext, i)}
+                        href={href}
+                      >{title}</a>
                     </div>
                     <div className="BrowseList-colMtime">
                       {item.mtime}

@@ -16,7 +16,7 @@ const ThemeHandler = () => {
 // Apply the theme to the DOM
 function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
-  setThemeColor(theme === "winamp" ? "#1e1e2f" : "#000088");
+  setThemeColor(theme === "winamp" ? "#1e1e2f" : theme === "bluearchive" ? "#1289F0" : "#000088");
 }
 
 // Set theme color in meta tag

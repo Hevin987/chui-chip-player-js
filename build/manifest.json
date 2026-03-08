@@ -21,5 +21,22 @@
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#000088"
+  "background_color": "#000088",
+  "file_handlers": [
+    {
+      "action": "/",
+      "accept": {
+        "audio/x-vgm": [".vgm", ".vgz"],
+        "audio/nsf": [".nsf", ".nsfe"],
+        "audio/x-mod": [".mod", ".xm", ".it", ".s3m"],
+        "audio/midi": [".mid", ".midi", ".smf"],
+        "audio/x-spc": [".spc"],
+        "audio/x-gbs": [".gbs"],
+        "audio/x-ay": [".ay"],
+        "audio/x-mdx": [".mdx"],
+        "application/x-v2m": [".v2m"],
+        "application/x-miniusf": [".miniusf"]
+      }
+    }
+  ]
 }

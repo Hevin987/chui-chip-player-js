@@ -10,7 +10,11 @@ const themes = [
   {
     value: 'winamp',
     label: 'Winamp',
-  }
+  },
+  {
+    value: 'bluearchive',
+    label: 'Blue Archive',
+  },
 ];
 
 function Settings(props) {

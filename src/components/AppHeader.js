@@ -1,30 +1,18 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { UserContext } from './UserProvider';
+import React from 'react';
 
-const AppHeader = () => {
-  const { user, handleLogout, handleLogin } = useContext(UserContext);
-
+const AppHeader = ({ onToggleSettings, showPlayerSettings }) => {
   return (
     <header className="AppHeader">
-      <Link className="AppHeader-title" to={{ pathname: "/" }}>Chip Player JS</Link>
-      {user ?
-        <>
-          {' • '}
-          Logged in as {user.displayName}.
-          {' '}
-          <a href="#" onClick={handleLogout}>Logout</a>
-        </>
-        :
-        <>
-          {' • '}
-          <a href="#" onClick={handleLogin}>Login/Sign Up</a> to Save Favorites
-        </>
-      }
-      {' • '}
-      <a href="https://twitter.com/messages/compose?recipient_id=587634572" target="_blank" rel="noopener noreferrer">
-        Feedback
-      </a>
+      <span className="AppHeader-title">Chip Player JS</span>
+      <div style={{ marginLeft: 'auto', display: 'flex', gap: '1em', alignItems: 'center' }}>
+        <button
+          className={`tab tab-settings ${showPlayerSettings ? 'tab-selected' : ''}`}
+          onClick={onToggleSettings}
+          style={{ margin: 0 }}
+        >
+          Settings
+        </button>
+      </div>
     </header>
   );
 }
