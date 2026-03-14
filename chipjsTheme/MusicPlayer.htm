@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script src="./pixel-perfect.js" type="module"></script>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Game Development Dept. Music Player</title>
+  <!-- Tailwind CSS CDN with Plugins -->
+  <!-- Google Font for Pixel Art feel (approximate) -->
+  <link href="./Game Development Dept. Music Player_files/css2" rel="stylesheet" />
+  <style data-purpose="global-typography">
+    body {
+      background: transparent;
+      /* Muted grey-blue background from the image */
+      font-family: roboto, monospace;
+      image-rendering: pixelated;
+      color: #333;
+      --charH:       19px;
+    --charW1:       8px;
+    --charW2:      16px;
+    --charW2neg:  -16px;
+    --railH:        3px;
+    --knobW:        8px;
+    --knobH:       19px;
+    --buttonHeight: var(--charH);
+    --rowHeight:    var(--charH);
+    }
+    .volume-slider {
+      -webkit-appearance: none;
+      width: 100px;
+      height: 10px;
+      background-color: rgb(73, 91, 105);
+      color:aqua;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .Slider-rail {
+    width: calc(100% + var(--knobW));
+    height: var(--railH);
+    background: none;
+    position: absolute;
+    top: calc((var(--charH) - var(--railH)) / 2);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid var(--clickable);
+    }
+
+    .Slider-knob {
+    height: var(--knobH);
+    width: var(--knobW);
+    top: calc((var(--charH) - var(--knobH)) / 2);
+    margin: 0;
+    border-radius: 0px;
+    background-color: var(--clickable);
+    position: absolute;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+    .TimeSlider-labels, .VolumeSlider-labels {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    gap: var(--charW2);
+}
+    .pixel-perfect {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .pixel-title {
+      font-family: "vt323";
+      font-size: 22px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #cddce3;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #8fa7b2;
+      border: 2px solid #cddce3;
+    }
+
+    /* 1. Layout & Containers */
+    .app-body {
+      display: inline-block;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      min-height: 5vh;
+    }
+
+    .player-interface {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    @media (min-width: 976px) {
+      .player-interface {
+        flex-direction: row;
+      }
+
+      .track-info-panel {
+        width: 18rem;
+      }
+    }
+
+    .tab {
+      width: 48%;
+      height: 100%;
+    }
+
+    .tab_selected {
+      background-color: #cddce3 !important;
+      color: rgba(67, 84, 102, 1) !important;
+      border-radius: 10px 10px 0 0 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .retro-window {
+      background: #cddce3;
+      border: 3px solid #6d8591;
+      box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+      display: block;
+      border-radius: 10px;
+    }
+
+    .main-player-window {
+      width: 100%;
+      max-width: 60rem;
+      aspect-ratio: 3/2;
+      /* enforce 3:2 (w:h) */
+      overflow: hidden;
+    }
+
+    .retro-header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .retro-header {
+      background: rgba(67, 84, 102, 1);
+      padding: 4px 8px 0px 8px;
+    }
+
+    .retro-header-center {
+      text-align: center;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .retro-header button:not(.close-btn) {
+      background: none;
+      border: none;
+      color: #cddce3;
+      font-family: "vt323";
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .player-content {
+      background-color: rgb(208, 225, 232);
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      height: 95%;
+      /* fill the aspect-ratio container */
+    }
+
+    .visualization-area {
+      background-color: rgb(170, 195, 197);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+      margin: 1px 1px 0px 1px;
+      border-radius: 10px;
+      flex: 1 1 auto;
+      border-bottom: 2px solid #6d8591;
+      border-radius: 5px;
+      /* allow height to be set by parent aspect-ratio */
+    }
+
+    /* 2. Visualization Area */
+    .album {
+      display: flex;
+      width: 50%;
+      flex: 1;
+      border-radius: 10px;
+      height: 100%;
+      margin-top: 2%;
+      margin-right: 2%;
+      margin-bottom: 2%;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .album-sticker-wrapper {
+
+      z-index: 10;
+      height: 98%;
+      aspect-ratio: 1/1;
+    }
+
+    .album-sticker {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgb(149, 170, 175);
+      flex: 1;
+      border-radius: 5px;
+    }
+
+    .album-sticker-img {
+      width: 80%;
+      height: 80%;
+      object-fit: cover;
+      background-color: #fff;
+    }
+
+    .album-label {
+      position: absolute;
+      bottom: 15px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 10px;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .waveform-bg {
+      display: flex;
+      flex: 1;
+      width: 50%;
+      aspect-ratio: 1/1;
+      background-color: rgb(205, 220, 227);
+      justify-content: center;
+      align-items: center;
+      height: 98%;
+      border-radius: 10px;
+      aspect-ratio: 1/1;
+      margin: 2% 2% 2% 1%;
+    }
+
+    .waveform-wrapper {
+      width: 100%;
+      opacity: 0.8;
+      display: flex;
+    }
+
+    .waveform-svg {
+      width: 100%;
+      height: 8rem;
+
+    }
+
+    .control-container {
+      display: flex;
+      flex-direction: column;
+      background-color: rgb(170, 195, 197);
+      padding: 1rem;
+      border-radius: 10px;
+      margin: 0px 1px 5px 1px;
+      border-top: 2px solid #6d8591;
+    }
+
+    /* 3. Transport Controls */
+    .transport-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .control-group {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .control-group-small {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .control-btn {
+
+      transition: all 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .control-btn:active {
+      transform: translate(1px, 1px);
+    }
+
+    .btn-large {
+      height: 200%;
+      width: auto;
+    }
+
+    .btn-medium {
+      margin: 0.25rem;
+    }
+
+    .btn-medium img {
+      height: 150%;
+      width: auto;
+    }
+
+    .btn-icon {
+      min-width: 75px;
+      min-height: 75px;
+    }
+
+    .volume-area {
+      flex-shrink: 0;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .knob {
+      width: 4rem;
+      height: 4rem;
+      background: #8fa7b2;
+      border-radius: 50%;
+      border: 4px solid #6d8591;
+      position: relative;
+      box-shadow: inset -4px -4px 0px #6d8591;
+    }
+
+    .knob::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      width: 4px;
+      height: 12px;
+      background: #333;
+      transform: translateX(-50%);
+    }
+
+    .vol-text {
+      display: none;
+      font-size: 10px;
+      color: #4b5563;
+      font-weight: bold;
+    }
+
+    @media (min-width: 640px) {
+      .vol-text {
+        display: block;
+      }
+    }
+
+    /* 4. Seek Bar */
+    .seek-bar-container {
+      align-items: center;
+      flex-grow: 1;
+      gap: 1rem;
+      margin-top: 3%;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+
+    .seek-track {
+      flex: 1 1 0%;
+      height: 0.75rem;
+      background-color: rgb(73, 91, 105);
+      border-radius: 99px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .seek-fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      background-color: white;
+      width: 25%;
+    }
+
+    .seek-thumb {
+      position: absolute;
+      top: 50%;
+      left: 25%;
+      transform: translate(0, -50%);
+      width: 1rem;
+      height: 1rem;
+      background-color: white;
+      border: 2px solid #6d8591;
+      border-radius: 50%;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      overflow: visible;
+    }
+
+    /* 5. Sidebar / Typography */
+    .track-info-panel {
+      max-width: 60rem;
+    }
+
+    .track-panel-scroll {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-y: auto;
+    }
+
+    .track {
+      position: relative;
+
+    }
+
+    .setting {
+      position: relative;
+    }
+
+    .PlayerParams-param {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+
+    .main-thumbnail {
+      background-color: white;
+      aspect-ratio: 3 / 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .color-picker {
+      position: absolute;
+      right: 0.5rem;
+      top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .color-box {
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid black;
+    }
+
+    .color-blue {
+      background-color: #dbeafe;
+    }
+
+    .color-gray {
+      background-color: #e5e7eb;
+      opacity: 0.5;
+    }
+
+    .metadata-container {
+      border-top: 1px solid #8fa7b2;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      border-bottom: 1px solid #8fa7b2;
+      padding-bottom: 1rem;
+    }
+
+    .font-bold {
+      font-weight: bold;
+    }
+
+    .text-small {
+      font-size: 12px;
+      opacity: 0.75;
+    }
+
+    .albums-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    .album-thumb {
+      border: 1px solid black;
+      width: 100%;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .toggle-switch {
+      width: 2.5rem;
+      height: 1.25rem;
+      background-color: #8fa7b2;
+      border: 1px solid #6d8591;
+      border-radius: 9999px;
+      position: relative;
+      padding: 0 0.25rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .toggle-knob {
+      width: 0.75rem;
+      height: 0.75rem;
+      background-color: white;
+      border-radius: 50%;
+    }
+
+    .toggle-knob-active {
+      margin-left: auto;
+    }
+
+    .close-btn {
+      background-color: rgba(167, 117, 114, 1);
+      color: rgb(102, 56, 57);
+      border-radius: 5px;
+      transition: color 0.1s;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      color: rgb(254, 202, 202);
+    }
+
+    .close-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      fill: currentColor;
+    }
+
+    .text-header:not(.tab_selected span) {
+      color: rgba(188, 217, 223, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    @font-face {
+      font-family: 'vt323';
+      src: url('./VT323.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+  </style>
+</head>
+
+<body class="app-body">
+  <!-- BEGIN: Main Application Container -->
+  <main class="player-interface">
+    <!-- BEGIN: Central Player Window -->
+    <section class="retro-window main-player-window">
+      <div class="retro-header retro-header-container">
+        <span class="pixel-title text-header">Battle Theme: Aris</span>
+        <button class="close-btn">
+          <svg class="close-icon" viewBox="0 0 20 20">
+            <path clip-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              fill-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="player-content">
+        <!-- Visualization Area -->
+        <div class="visualization-area">
+          <!-- Album Art / Character Sticker -->
+          <div class="album">
+            <div class="album-sticker-wrapper">
+              <div class="album-sticker">
+                <img alt="Album Art" class="album-sticker-img"
+                  src="./Game Development Dept. Music Player_files/unnamed.png" />
+                <div class="album-label">MillenniumQuest Vol. 1</div>
+              </div>
+            </div>
+          </div>
+          <div class="waveform-bg">
+            <!-- The Waveform Visualization -->
+            <div class="waveform-wrapper" data-purpose="waveform">
+              <svg class="waveform-svg" viewBox="0 0 400 100">
+                <path
+                  d="M0,50 Q10,20 20,80 T40,50 T60,20 T80,80 T100,50 T120,30 T140,70 T160,50 T180,40 T200,60 T220,50 T240,20 T260,80 T280,50 T300,30 T320,70 T340,50 T360,40 T380,60 T400,50"
+                  fill="none" stroke="#6d8591" stroke-width="2"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="control-container">
+          <!-- Transport Controls -->
+          <div class="transport-controls">
+            <div class="control-group">
+              <!-- Play/Pause -->
+              <button class="control-btn btn-large">
+                <img src=./play.png class="btn-icon" />
+              </button>
+            </div>
+            <div class="control-group">
+              <div class="control-group-small"></div>
+              <!-- Back -->
+              <button class="control-btn btn-medium">
+                <img src=./previous.png class="" />
+              </button>
+              <!-- Next -->
+              <button class="control-btn btn-medium">
+                <img src=./next.png class="" />
+              </button>
+            </div>
+            <div class="control-group">
+              <!-- Loop -->
+              <button class="control-btn btn-medium">
+                <img src=./loop.png class="" />
+                </img>
+              </button>
+              <!-- Shuffle -->
+              <button class="control-btn btn-medium">
+                <img src=./shuffle.png class="" />
+              </button>
+            </div>
+
+            <!-- Volume Knob Area -->
+          </div>
+          <div style="display: flex;">
+          <!-- Seek Bar -->
+          <div class="seek-bar-container">
+            <div class="TimeSlider"><div class="Slider"><div class="Slider-rail"></div><div class="Slider-knob" style="left: 43.4786%;"></div></div><div class="TimeSlider-labels"><div>0:18.2</div><div>0:42.0</div></div></div>
+          </div>
+          <div class="volume-area">
+            <input type="range" class="volume-slider" id="volume" name="volume" min="0" max="100" value="50">
+            <div class="VolumeSlider-labels"><div>Volume</div><div>100%</div></div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- END: Central Player Window -->
+    <!-- BEGIN: Selected Track Panel -->
+    <section class="retro-window track-info-panel">
+      <div class="retro-header retro-header-center">
+        <button class="tab tab_selected"><span class="pixel-title text-header">Track</span></button>
+        <button class="tab"><span class="pixel-title text-header">Settings</span></button>
+      </div>
+      <div class="track-panel-scroll custom-scrollbar track" style="display: block;">
+        <!-- Main Artist/Track Thumbnail -->
+        <div class="main-thumbnail">
+          <img alt="Aris Thumbnail" class="album-sticker-img"
+            src="./Game Development Dept. Music Player_files/unnamed(1).png" />
+          <!-- Small variant picker on the side -->
+          <div class="color-picker">
+            <div class="color-box color-blue"></div>
+            <div class="color-box color-gray"></div>
+            <div class="color-box color-gray"></div>
+          </div>
+        </div>
+        <!-- Track Metadata -->
+        <div class="metadata-container">
+          <div>
+            <span class="font-bold">Track Name:</span> Battle Theme: Aris.mp3
+          </div>
+          <div><span class="font-bold">Type:</span> Combat Music</div>
+          <div>
+            <span class="font-bold">Artist:</span> Game Dev Dept. (Aris
+            Playtesting)
+          </div>
+          <div class="text-small">
+            <span class="font-bold">Tags:</span> #JRPG, #Combat, #Epic,
+            #MillenniumQuest_NQQQ_Track
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="track-panel-scroll custom-scrollbar setting" style="display: none;">
+        <!-- Main Artist/Track Thumbnail -->
+        <div class="preference">
+          <div class="PlayerParams-param">
+            <label>no setting right now</label>
+          </div>
+        </div>
+        <!-- Track Metadata -->
+        <div>
+          <div class="global-preference">
+            <!-- Toggles -->
+            <div class="PlayerParams-param">
+              <label class="Visualizer-toggle">Visualizer <input id="vis-on" type="radio" name="visualizer-enabled"
+                  value="true" checked=""><label for="vis-on" class="inline">On</label><input id="vis-off" type="radio"
+                  name="visualizer-enabled" value="false"><label for="vis-off" class="inline">Off</label></label>
+            </div>
+            <div class="PlayerParams-param">
+              <div class="theme">
+                <label for="theme">Theme:</label>
+                <select id="theme">
+                  <option>MS-DOS</option>
+                  <option>Winamp</option>
+                  <option>Blue Archive</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+    <!-- END: Selected Track Panel -->
+  </main>
+  <script>
+    const tabs = document.querySelectorAll('button.tab');
+    const trackPanel = document.querySelector('.track');
+    const settingPanel = document.querySelector('.setting');
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        if (index === 0) {
+          trackPanel.style.display = 'block';
+          settingPanel.style.display = 'none';
+          tabs[0].classList.add('tab_selected');
+          tabs[1].classList.remove('tab_selected');
+        } else {
+          trackPanel.style.display = 'none';
+          settingPanel.style.display = 'block';
+          tabs[1].classList.add('tab_selected');
+          tabs[0].classList.remove('tab_selected');
+        }
+      });
+    });
+  </script>
+  <!-- END: Main Application Container -->
+</body>
+
+</html>

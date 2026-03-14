@@ -80,22 +80,11 @@ function LocalFiles(props) {
         listing.length === 0 ?
           <div style={{ padding: '1.5em 1em' }}>
             {(!ejected && title) &&
-              <>
-                <h2 style={{ margin: '0 0 0.25em' }}>{title}</h2>
-                {subtitle && <p style={{ margin: '0 0 1.5em', opacity: 0.65, fontSize: '0.9em' }}>{subtitle}</p>}
-                {[
-                  ['Title',     metadata?.title],
-                  ['Artist',    metadata?.artist],
-                  ['Game',      metadata?.game],
-                  ['System',    metadata?.system],
-                  ['Copyright', metadata?.copyright],
-                ].filter(([, v]) => v).map(([label, value]) => (
-                  <div key={label} style={{ display: 'flex', gap: '0.5em', marginBottom: '0.4em', fontSize: '0.85em' }}>
-                    <span style={{ minWidth: '5.5em', opacity: 0.55, textAlign: 'right' }}>{label}:</span>
-                    <span>{value}</span>
-                  </div>
-                ))}
-              </>
+              <div className="metadata-container">
+                <div><span className="font-bold">Track Name:</span> {title}</div>
+                <div><span className="font-bold">Artist:</span> {subtitle || 'Unknown'}</div>
+                {metadata?.system && <div><span className="font-bold">System:</span> {metadata.system}</div>}
+              </div>
             }
           </div>
           :

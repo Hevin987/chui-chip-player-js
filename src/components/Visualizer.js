@@ -32,7 +32,7 @@ export default class Visualizer extends PureComponent {
       weightingMode: 1,
       fftSize: 2048,
       speed: 2,
-      enabled: false,
+      
     };
 
     this.freqCanvasRef = React.createRef();
@@ -55,7 +55,11 @@ export default class Visualizer extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    this.spectrogram.setPaused(this.state.enabled ? this.props.paused : true);
+    if (this.props.enabled !== prevProps.enabled) {
+      this.spectrogram.setPaused(this.props.enabled ? this.props.paused : true);
+    } else {
+      this.spectrogram.setPaused(this.props.enabled ? this.props.paused : true);
+    }
   }
 
   handleModeClick = (e) => {
@@ -82,36 +86,16 @@ export default class Visualizer extends PureComponent {
     this.spectrogram.setSpeed(speed);
   }
 
-  handleToggleVisualizer = (e) => {
-    const enabled = e.target.value === 'true';
-    this.setState({enabled: enabled});
-  };
-
+  
   render() {
     const enabledStyle = {
-      display: this.state.enabled ? 'block' : 'none',
+      display: this.props.enabled ? 'block' : 'none',
       width: VIS_WIDTH,
       boxSizing: 'border-box',
     };
     return (
       <div className='Visualizer'>
-        <h3 className='Visualizer-toggle'>
-          Visualizer{' '}
-          <input onClick={this.handleToggleVisualizer}
-                 id='vis-on'
-                 type='radio'
-                 value={true}
-                 defaultChecked={this.state.enabled === true}
-                 name='visualizer-enabled'/>
-          <label htmlFor='vis-on' className='inline'>On</label>
-          <input onClick={this.handleToggleVisualizer}
-                 id='vis-off'
-                 type='radio'
-                 value={false}
-                 defaultChecked={this.state.enabled === false}
-                 name='visualizer-enabled'/>
-          <label htmlFor='vis-off' className='inline'>Off</label>
-        </h3>
+        
         <div className='Visualizer-options' style={enabledStyle}>
           <div>
             <span className='VisualizerParams-label'>Mode:</span>
@@ -187,7 +171,7 @@ export default class Visualizer extends PureComponent {
              ref={this.pianoKeysRef}
              alt='Piano keys'
              style={{
-               display: (this.state.enabled && this.state.vizMode === 2) ? 'block' : 'none',
+               display: (this.props.enabled && this.state.vizMode === 2) ? 'block' : 'none',
                width: VIS_WIDTH,
              }}/>
       </div>

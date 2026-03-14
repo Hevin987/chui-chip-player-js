@@ -79,81 +79,86 @@ function AppFooter(props) {
   const playPauseClass = paused ? 'icon-play' : 'icon-pause';
 
   return (
-    <div className="AppFooter">
-      <div className="AppFooter-main">
-        <div className="AppFooter-top-row">
-          <button onClick={prevSong}
-                  title="Previous"
-                  className="box-button"
-                  disabled={ejected}>
-            <span className="inline-icon icon-prev"/>
-          </button>
-          <button onClick={togglePause}
-                  title={playPauseTitle}
-                  className="box-button"
-                  disabled={ejected}>
-            <span className={`inline-icon ${playPauseClass}`}/>
-          </button>
-          <button onClick={nextSong}
-                  title="Next"
-                  className="box-button"
-                  disabled={ejected}>
-            <span className="inline-icon icon-next"/>
-          </button>
-          {currentSongNumSubtunes > 1 &&
-            <>
-              {songPath ?
-                <a style={{ color: 'var(--neutral4)' }}
-                   href={getCurrentSongLink(/*subtune=*/true)}
-                   title="Copy subtune link to clipboard"
-                   onClick={handleCopySubtuneLink}>
-                  {subtuneText}
-                  <span className="inline-icon icon-copy"/>
-                </a>
-                :
-                subtuneText
-              }
-              <button
-                className="AppFooter-back box-button"
-                disabled={ejected}
-                onClick={prevSubtune}>
-                <span className="inline-icon icon-back"/>
-              </button>
-              <button
-                className="AppFooter-forward box-button"
-                disabled={ejected}
-                onClick={nextSubtune}>
-                <span className="inline-icon icon-forward"/>
-              </button>
-            </>}
-          <button title="Cycle Repeat (repeat off, repeat all songs in the context, or repeat one song)"
-                  style={{ marginLeft: 'auto' }}
-                  className="AppFooter-repeat box-button" onClick={handleCycleRepeat}>
-            <span className="inline-icon icon-repeat"/>
-            {REPEAT_LABELS[repeat]}
-          </button>
-          <button title="Toggle shuffle mode"
-                  className="AppFooter-shuffle box-button" onClick={handleCycleShuffle}>
-            <span className="inline-icon icon-shuffle"/>
-            {SHUFFLE_LABELS[shuffle]}
+    <div className="control-container-inner" style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '0.5rem' }}>
+      <div className="transport-controls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+        <div className="control-group">
+          {/* Play/Pause */}
+          <button className="control-btn btn-large box-button" onClick={togglePause} title={playPauseTitle} disabled={ejected}>
+            <img src={`${process.env.PUBLIC_URL || ''}/${paused ? 'play.png' : 'pause.png'}`} className="btn-icon" alt={playPauseTitle} style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <span style={{ display: 'none', fontSize: '2rem' }} className={`inline-icon ${playPauseClass}`} />
           </button>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--charW2)' }}>
+
+        <div className="control-group">
+          <div className="control-group-small" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {/* Download and Share and info buttons */}
+            <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
+              {songPath &&
+                <a href={songUrl} title="Download song" className="box-button" style={{ padding: '2px 4px' }}>
+                  <span className="inline-icon icon-download" style={{ fontSize: '12px' }}/>
+                </a>
+              }
+              {songPath &&
+                <a href={getCurrentSongLink()} title="Copy song link" onClick={handleCopySongLink} className="box-button" style={{ padding: '2px 4px' }}>
+                  <span className="inline-icon icon-copy" style={{ fontSize: '12px' }}/>
+                </a>
+              }
+            </div>
+            {currentSongNumSubtunes > 1 && (
+              <div style={{ display: 'flex', gap: '4px', fontSize: '10px' }}>
+                <button className="control-btn box-button" disabled={ejected} onClick={prevSubtune} style={{ padding: '0px 4px' }}>
+                  <span className="inline-icon icon-back"/>
+                </button>
+                <div style={{ padding: '2px 4px' }}>{currentSongSubtune + 1}/{currentSongNumSubtunes}</div>
+                <button className="control-btn box-button" disabled={ejected} onClick={nextSubtune} style={{ padding: '0px 4px' }}>
+                  <span className="inline-icon icon-forward"/>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Back */}
+          <button className="control-btn btn-medium box-button" onClick={prevSong} title="Previous" disabled={ejected}>
+            <img src={`${process.env.PUBLIC_URL || ''}/previous.png`} alt="Previous" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <span style={{ display: 'none', fontSize: '1.5rem' }} className="inline-icon icon-prev" />
+          </button>
+          {/* Next */}
+          <button className="control-btn btn-medium box-button" onClick={nextSong} title="Next" disabled={ejected}>
+            <img src={`${process.env.PUBLIC_URL || ''}/next.png`} alt="Next" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <span style={{ display: 'none', fontSize: '1.5rem' }} className="inline-icon icon-next" />
+          </button>
+        </div>
+
+        <div className="control-group" style={{ display: 'flex', gap: '0.5rem' }}>
+          {/* Loop */}
+          <button className={`control-btn btn-medium box-button ${repeat !== 0 ? 'active' : ''}`} onClick={handleCycleRepeat} title={`Repeat: ${REPEAT_LABELS[repeat]}`}>
+            <img src={`${process.env.PUBLIC_URL || ''}/loop.png`} alt="Loop" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <span style={{ display: 'none', fontSize: '1.5rem' }} className="inline-icon icon-repeat" />
+          </button>
+          {/* Shuffle */}
+          <button className={`control-btn btn-medium box-button ${shuffle !== 0 ? 'active' : ''}`} onClick={handleCycleShuffle} title={`Shuffle: ${SHUFFLE_LABELS[shuffle]}`}>
+            <img src={`${process.env.PUBLIC_URL || ''}/shuffle.png`} alt="Shuffle" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <span style={{ display: 'none', fontSize: '1.5rem' }} className="inline-icon icon-shuffle" />
+          </button>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', width: '100%', gap: '1rem', alignItems: 'center' }}>
+        <div className="seek-bar-container" style={{ flexGrow: 1, margin: 0, display: 'flex' }}>
           <TimeSlider
             paused={paused}
             currentSongDurationMs={currentSongDurationMs}
             getCurrentPositionMs={() => {
-              // TODO: reevaluate this approach
               if (sequencer && sequencer.getPlayer()) {
                 return sequencer.getPlayer().getPositionMs();
               }
               return 0;
             }}
             onChange={handleTimeSliderChange}/>
+        </div>
+        <div className="volume-area" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <VolumeSlider
-            onChange={(e) => {
-              handleVolumeChange(e.target.value);
-            }}
+            onChange={(e) => handleVolumeChange(e.target.value)}
             handleReset={(e) => {
               handleVolumeChange(100);
               e.preventDefault();
@@ -162,47 +167,7 @@ function AppFooter(props) {
             title="Double-click or right-click to reset to 100%."
             value={volume}/>
         </div>
-        {!ejected &&
-          <div className="SongDetails">
-            {faves && songPath &&
-              <FavoriteButton item={{
-                path: songPath,
-                songId: songId,
-              }}/>}
-            <div className="SongDetails-title">
-              {songPath ?
-                <>
-                  <a href={getCurrentSongLink()}
-                     title="Copy song link to clipboard"
-                     onClick={handleCopySongLink}>
-                    {title}{' '}
-                    <span className="inline-icon icon-copy"/>
-                  </a>
-                  <a href={songUrl}
-                     title="Download song">
-                    <span className="inline-icon icon-download"/>
-                  </a>
-                </>
-                :
-                title
-              }
-              {infoTexts.length > 0 &&
-                <a onClick={handleToggleInfo} href="#" title="Display song information">
-                  тхт
-                </a>
-              }
-              {md5 &&
-                <a href={`https://modsamplemaster.thegang.nu/module.php?md5=${md5}`}
-                   title="Look up this song on Mod Sample Master" target="_blank">
-                  msm
-                </a>
-              }
-            </div>
-            <div className="SongDetails-subtitle">{subtitle}</div>
-            <div className="SongDetails-filepath">{directoryLink}</div>
-          </div>}
       </div>
-      {imageUrl && <img alt="Cover art" className="AppFooter-art" src={imageUrl}/>}
     </div>
   );
 }

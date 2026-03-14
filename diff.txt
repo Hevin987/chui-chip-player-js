@@ -1,0 +1,572 @@
+diff --git a/src/index.css b/src/index.css
+index 4b60f9ba7..d22078b35 100644
+--- a/src/index.css
++++ b/src/index.css
+@@ -199,6 +199,47 @@ button:disabled { background: var(--neutral1); color: var(--neutral3); }
+     height: var(--charH); /* Firefox */
+ }
+ 
++/* MS-DOS: revert footer to the original flex layout — art on the right */
++[data-theme="msdos"] .AppFooter {
++    height: 210px;
++    display: flex;
++    align-items: stretch;
++}
++[data-theme="msdos"] .AppFooter-nowplaying {
++    order: 10;
++    flex-shrink: 0;
++    width: 210px;
++    padding: 0;
++    gap: 0;
++    border-right: none;
++    overflow: hidden;
++}
++[data-theme="msdos"] .AppFooter-nowplaying .SongDetails { display: none; }
++[data-theme="msdos"] .AppFooter-art {
++    width: 210px;
++    height: 210px;
++    flex-shrink: 0;
++    object-fit: scale-down;
++    border-left: 1px solid var(--clickable);
++}
++[data-theme="msdos"] .AppFooter-main {
++    flex-grow: 1;
++    height: 100%;
++    gap: 0;
++    overflow: auto;
++    justify-content: flex-start;
++    container-type: size;
++}
++[data-theme="msdos"] .AppFooter-extra {
++    border-left: none;
++    flex-direction: row;
++    align-items: center;
++    gap: var(--charW1);
++    padding: 0 var(--charW1);
++    width: auto;
++    height: 100%;
++}
++
+ .inline { display: inline-block; margin-right: var(--charW1);   }
+ .inline:last-child { margin-right: 0; }
+ 
+@@ -263,6 +304,9 @@ body,#root {
+ }
+ 
+ .AppHeader {
++    display: flex;
++    align-items: center;
++    gap: var(--charW2);
+     padding: var(--charH) var(--charW2);
+     margin: 0 var(--charW2neg);
+     flex-grow: 0;
+@@ -336,37 +380,68 @@ body,#root {
+     border-top: 1px solid var(--clickable);
+     margin: 0 var(--charW2neg);
+     flex-shrink: 0;
+-    height: 210px;
++    height: 90px;
++    display: grid;
++    grid-template-columns: 280px 1fr 200px;
++    align-items: center;
++}
++
++/* LEFT column: album art + now-playing info */
++.AppFooter-nowplaying {
+     display: flex;
++    align-items: center;
++    gap: var(--charW1);
++    padding: 0 var(--charW2);
++    overflow: hidden;
++    height: 100%;
++    border-right: 1px solid var(--clickable);
++    box-sizing: border-box;
+ }
+ 
+ .AppFooter-art {
+-    width: 210px;
+-    height: 210px;
++    width: 70px;
++    height: 70px;
++    flex-shrink: 0;
++    object-fit: cover;
+     background-color: var(--neutral0);
+-    object-fit: scale-down;
+     image-rendering: unset;
++}
++
++/* CENTER column: transport buttons + progress bar */
++.AppFooter-main {
++    display: flex;
++    flex-direction: column;
++    justify-content: center;
++    gap: 4px;
++    padding: var(--charH) var(--charW2);
++    box-sizing: border-box;
++    container-type: size;
++    height: 100%;
++    overflow: hidden;
++}
++
++/* RIGHT column: volume control */
++.AppFooter-extra {
++    display: flex;
++    flex-direction: column;
++    align-items: flex-end;
++    justify-content: center;
++    padding: 0 var(--charW2);
++    height: 100%;
+     border-left: 1px solid var(--clickable);
+-    flex-shrink: 0;
++    box-sizing: border-box;
+ }
+ 
+ [data-theme="msdos"] {
+     @media screen and (max-width: 600px) {
+-        .AppFooter-art, .AppFooter-shuffle, .AppFooter-repeat { display: none; }
++        .AppFooter-nowplaying, .AppFooter-extra,
++        .AppFooter-shuffle, .AppFooter-repeat { display: none; }
+     }
+ }
+ 
+ button.box-button.AppFooter-forward,
+ button.box-button.AppFooter-back { padding: 0 var(--charW1); }
+ 
+-.AppFooter-main {
+-    flex-grow: 1;
+-    overflow: auto;
+-    padding: var(--charH) var(--charW2);
+-    box-sizing: border-box;
+-    container-type: size;
+-}
+-
+ .AppFooter-settings {
+     border-left: 1px solid var(--clickable);
+     padding: var(--charH) var(--charW2);
+@@ -529,7 +604,7 @@ button.IconButton {
+     margin-left: 1px; /* Don't cover the right border of App-main-inner */
+ }
+ 
+-.TimeSlider { flex-grow: 1; margin: var(--charH) 0; }
++.TimeSlider { width: 100%; margin: 0; }
+ .TimeSlider-labels, .VolumeSlider-labels { display: flex; justify-content: space-between; gap: var(--charW2); }
+ 
+ .VolumeSlider { flex-shrink: 0; margin: var(--charH) 0; }
+@@ -738,3 +813,417 @@ button.IconButton {
+ [data-theme="msdos"] ::-webkit-scrollbar-corner {
+     background-color: var(--neutral2);
+ }
++.hi {
++    position: absolute;
++    top: calc((var(--charH) - var(--railH)) / 2);
++    -webkit-box-sizing: border-box;
++    box-sizing: border-box;
++    border: 1px solid var(--clickable);
++    }
++
++    .Slider-knob {
++    height: var(--knobH);
++    width: var(--knobW);
++    top: calc((var(--charH) - var(--knobH)) / 2);
++    margin: 0;
++    border-radius: 0px;
++    background-color: var(--clickable);
++    position: absolute;
++    -webkit-box-shadow: none;
++    box-shadow: none;
++    -webkit-box-sizing: border-box;
++    box-sizing: border-box;
++}
++    .TimeSlider-labels, .VolumeSlider-labels {
++    display: -ms-flexbox;
++    display: flex;
++    -ms-flex-pack: justify;
++    justify-content: space-between;
++    gap: var(--charW2);
++}
++    .pixel-perfect {
++      image-rendering: pixelated;
++      image-rendering: crisp-edges;
++    }
++
++    .pixel-title {
++      font-family: "vt323";
++      font-size: 22px;
++    }
++
++    .custom-scrollbar::-webkit-scrollbar {
++      width: 8px;
++    }
++
++    .custom-scrollbar::-webkit-scrollbar-track {
++    }
++
++    .custom-scrollbar::-webkit-scrollbar-thumb {
++    }
++
++    /* 1. Layout & Containers */
++    .app-body {
++      display: inline-block;
++      align-items: center;
++      justify-content: center;
++      padding: 1rem;
++      min-height: 5vh;
++    }
++
++    .player-interface {
++      display: flex;
++      flex-direction: column;
++      gap: 1rem;
++      width: 100%;
++    }
++
++    @media (min-width: 976px) {
++      .player-interface {
++        flex-direction: row;
++      }
++
++      .track-info-panel {
++        width: 18rem;
++      }
++    }
++
++    .tab {
++      width: 48%;
++      height: 100%;
++    }
++
++    .tab_selected {
++      border-radius: 10px 10px 0 0 !important;
++      text-transform: uppercase;
++      letter-spacing: 0.05em;
++    }
++
++    .retro-window {
++      
++      
++      
++      display: block;
++      
++    }
++
++    .main-player-window {
++      width: 100%;
++      max-width: 60rem;
++      /* aspect-ratio: 3/2; */
++      /* enforce 3:2 (w:h) */
++      overflow: hidden;
++    }
++
++    .retro-header-container {
++      display: flex;
++      justify-content: space-between;
++      align-items: center;
++    }
++
++    .retro-header {
++      
++      padding: 4px 8px 0px 8px;
++    }
++
++    .retro-header-center {
++      text-align: center;
++      
++    }
++
++    .retro-header button:not(.close-btn) {
++      background: none;
++      border: none;
++      
++      font-family: "vt323";
++      font-size: 18px;
++      cursor: pointer;
++    }
++
++    .player-content {
++      
++      display: flex;
++      flex-direction: column;
++      
++      height: 95%;
++      /* fill the aspect-ratio container */
++    }
++
++    .visualization-area {
++      
++      overflow: hidden;
++      position: relative;
++      display: flex;
++      align-items: center;
++      justify-content: center;
++      flex-direction: row;
++      margin: 1px 1px 0px 1px;
++      
++      flex: 1 1 auto;
++      
++      
++      /* allow height to be set by parent aspect-ratio */
++    }
++
++    /* 2. Visualization Area */
++    .album {
++      display: flex;
++      width: 50%;
++      flex: 1;
++      
++      height: 100%;
++      margin-top: 2%;
++      margin-right: 2%;
++      margin-bottom: 2%;
++      align-items: center;
++      justify-content: center;
++    }
++
++    .album-sticker-wrapper {
++
++      z-index: 10;
++      height: 98%;
++      aspect-ratio: 1/1;
++    }
++
++    .album-sticker {
++      position: relative;
++      width: 100%;
++      height: 100%;
++      display: flex;
++      align-items: center;
++      justify-content: center;
++      
++      flex: 1;
++      
++    }
++
++    .album-sticker-img {
++      width: 80%;
++      height: 80%;
++      object-fit: cover;
++    }
++
++    .album-label {
++      position: absolute;
++      bottom: 15px;
++      
++      font-size: 10px;
++      padding: 0.25rem 0.5rem;
++    }
++
++    .waveform-bg {
++      display: flex;
++      flex: 1;
++      width: 50%;
++      aspect-ratio: 1/1;
++      
++      justify-content: center;
++      align-items: center;
++      height: 98%;
++      
++      aspect-ratio: 1/1;
++      margin: 2% 2% 2% 1%;
++    }
++
++    .waveform-wrapper {
++      width: 100%;
++      opacity: 0.8;
++      display: flex;
++    }
++
++    .waveform-svg {
++      width: 100%;
++      height: 8rem;
++
++    }
++
++    .control-container {
++      display: flex;
++      flex-direction: column;
++      
++      padding: 1rem;
++      
++      margin: 0px 1px 5px 1px;
++      
++    }
++
++    /* 3. Transport Controls */
++    .transport-controls {
++      display: flex;
++      align-items: center;
++      justify-content: space-between;
++    }
++
++    .control-group {
++      display: flex;
++      gap: 1.25rem;
++    }
++
++    .control-group-small {
++      display: flex;
++      gap: 0.6rem;
++    }
++
++    .control-btn {
++
++      transition: all 0.1s;
++      display: flex;
++      align-items: center;
++      justify-content: center;
++      cursor: pointer;
++      background: none;
++      border: none;
++    }
++
++    .control-btn:active {
++      transform: translate(1px, 1px);
++    }
++
++    .btn-large {
++      height: 200%;
++      width: auto;
++    }
++
++    .btn-medium {
++      margin: 0.25rem;
++    }
++
++    .btn-medium img {
++      height: 150%;
++      width: auto;
++    }
++
++    .btn-icon {
++      min-width: 75px;
++      min-height: 75px;
++    }
++
++    .volume-area {
++      flex-shrink: 0;
++      align-items: center;
++      gap: 0.5rem;
++    }
++
++    .knob {
++      width: 4rem;
++      height: 4rem;
++      
++      position: relative;
++      
++    }
++
++    .knob::after {
++      content: "";
++      position: absolute;
++      top: 10px;
++      left: 50%;
++      width: 4px;
++      height: 12px;
++      transform: translateX(-50%);
++    }
++
++    .vol-text {
++      display: none;
++      font-size: 10px;
++      font-weight: bold;
++    }
++
++    @media (min-width: 640px) {
++      .vol-text {
++        display: block;
++      }
++    }
++
++    /* 4. Seek Bar */
++    .seek-bar-container {
++      align-items: center;
++      flex-grow: 1;
++      gap: 1rem;
++      margin-top: 3%;
++      font-size: 0.875rem;
++      font-weight: bold;
++    }
++
++    .seek-track {
++      flex: 1 1 0%;
++      height: 0.75rem;
++      
++      
++      position: relative;
++      overflow: hidden;
++    }
++
++    .seek-fill {
++      position: absolute;
++      top: 0;
++      bottom: 0;
++      left: 0;
++      width: 25%;
++    }
++
++    .seek-thumb {
++      position: absolute;
++      top: 50%;
++      left: 25%;
++      transform: translate(0, -50%);
++      width: 1rem;
++      height: 1rem;
++      
++      
++      cursor: pointer;
++      overflow: visible;
++    }
++
++    /* 5. Sidebar / Typography */
++    .track-info-panel {
++      max-width: 60rem;
++    }
++
++    .track-panel-scroll {
++      padding: 1rem;
++      display: flex;
++      flex-direction: column;
++      gap: 1rem;
++      overflow-y: auto;
++    }
++
++    .track {
++      position: relative;
++
++    }
++
++    .setting {
++      position: relative;
++    }
++
++    .PlayerParams-param {
++      display: -ms-flexbox;
++      display: flex;
++      -ms-flex-wrap: wrap;
++      flex-wrap: wrap;
++      -ms-flex-align: center;
++      align-items: center;
++    }
++
++    .main-thumbnail {
++      aspect-ratio: 3 / 2;
++      display: flex;
++      align-items: center;
++      justify-content: center;
++      position: relative;
++    }
++
++
++[data-theme="msdos"] .control-btn img {
++  display: none !important;
++}
++
++[data-theme="msdos"] .control-btn span.inline-icon {
++  display: inline-block !important;
++  color: var(--clickable);
++}
++
++[data-theme="msdos"] .retro-window {
++  border: 1px solid var(--clickable); /* basic ms-dos box */
++  margin: 4px;
++}

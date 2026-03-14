@@ -4,6 +4,7 @@ export default memo(VolumeSlider);
 function VolumeSlider(props) {
   return <div className="VolumeSlider">
     <input type='range'
+           className='volume-slider'
            title={"Volume"}
            min={0} max={150} step={1}
            onChange={props.onChange}

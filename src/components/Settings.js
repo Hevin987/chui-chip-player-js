@@ -42,6 +42,10 @@ function Settings(props) {
     updateSettings({ theme: e.target.value });
   }, [updateSettings]);
 
+  const handleToggleVisualizer = useCallback((e) => {
+    updateSettings({ visualizerEnabled: e.target.value === 'true' });
+  }, [updateSettings]);
+
   return (
     <div className='Settings'>
       <h3>{sequencer?.getPlayer()?.name || 'Player'} Settings</h3>
@@ -65,6 +69,25 @@ function Settings(props) {
         :
         <div>(No active player)</div>}
       <h3>Global Settings</h3>
+      <span className='PlayerParams-param'>
+        <label className='PlayerParams-label'>
+          Visualizer:{' '}
+        </label>
+        <input onClick={handleToggleVisualizer}
+               id='vis-on'
+               type='radio'
+               value="true"
+               defaultChecked={settings?.visualizerEnabled !== false}
+               name='visualizer-enabled'/>
+        <label htmlFor='vis-on' className='inline'>On</label>
+        <input onClick={handleToggleVisualizer}
+               id='vis-off'
+               type='radio'
+               value="false"
+               defaultChecked={settings?.visualizerEnabled === false}
+               name='visualizer-enabled'/>
+        <label htmlFor='vis-off' className='inline'>Off</label>
+      </span>
       <span className='PlayerParams-param'>
         <label htmlFor='theme' className="PlayerParams-label">
           Theme:{' '}

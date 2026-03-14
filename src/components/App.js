@@ -681,101 +681,144 @@ class App extends React.Component {
         disableClick
         style={{}} // Required to clear Dropzone styles
         onDrop={this.onDrop}>{dropzoneProps => (
-        <div className="App">
+        <div className="App app-body">
+          <main className="player-interface">
           <DropMessage dropzoneProps={dropzoneProps}/>
           <MessageBox showInfo={this.state.showInfo}
                       infoTexts={this.state.infoTexts}
                       toggleInfo={this.toggleInfo}/>
           <Toast/>
-          <AppHeader onToggleSettings={this.handleToggleSettings} showPlayerSettings={showPlayerSettings}/>
-          <div className="App-main">
-            <div className="App-main-inner">
-              <div className="App-main-content-and-settings">
-                <div className="App-main-content-area"
-                     ref={this.contentAreaRef}>
-                  {this.state.loading ?
-                    <p style={{ padding: '1em' }}>Loading player engine...</p>
-                    :
-                    <LocalFiles
-                      loading={this.state.loadingLocalFiles}
-                      onAddFiles={this.handleFiles}
-                      handleShufflePlay={this.handleShufflePlay}
-                      onSongClick={this.handleSongClick}
-                      onDelete={this.handleLocalFileDelete}
-                      playContext={this.playContexts['local']}
-                      currContext={currContext}
-                      currIdx={currIdx}
-                      listing={this.state.localFiles}
-                      title={title}
-                      subtitle={subtitle}
-                      ejected={this.state.ejected}
-                      metadata={this.state.currentSongMetadata}/>
-                  }
-                </div>
-                {showPlayerSettings &&
-                  <div className="App-main-content-area settings">
-                    <Settings
-                      ejected={this.state.ejected}
-                      tempo={this.state.tempo}
-                      numVoices={this.state.currentSongNumVoices}
-                      voiceMask={this.state.voiceMask}
-                      voiceNames={this.state.voiceNames}
-                      voiceGroups={this.state.voiceGroups}
-                      onVoiceMaskChange={this.handleSetVoiceMask}
-                      onTempoChange={this.handleTempoChange}
-                      paramDefs={this.state.paramDefs}
-                      paramValues={this.state.paramValues}
-                      onParamChange={this.handleParamChange}
-                      onPinParam={this.handlePinParam}
-                      persistedSettings={settings}
-                      sequencer={this.sequencer}
-                    />
+
+          {/* BEGIN: Main Player Window */}
+          <section className="retro-window main-player-window" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+            <div className="retro-header retro-header-container">
+              <span className="pixel-title text-header" style={{textTransform: 'uppercase'}}>{title || 'CHIP PLAYER JS'}</span>
+              <button className="close-btn">
+                <svg className="close-icon" viewBox="0 0 20 20" style={{ width: '1.25rem', height: '1.25rem', fill: 'currentColor' }}>
+                  <path clipRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" fillRule="evenodd"></path>
+                </svg>
+              </button>
+            </div>
+            <div className="player-content" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+              <div className="visualization-area" style={{ flexGrow: 1, minHeight: 0 }}>
+                <div className="album">
+                  <div className="album-sticker-wrapper">
+                    <div className="album-sticker">
+                      {this.state.imageUrl ? 
+                        <img alt="Album Art" className="album-sticker-img" src={this.state.imageUrl} />
+                        :
+                        <div className="album-sticker-img" style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>No Art</div>
+                      }
+                      <div className="album-label">{subtitle || 'Unknown'}</div>
+                    </div>
                   </div>
+                </div>
+                <div className="waveform-bg">
+                  <div className="waveform-wrapper" style={{ width: '100%', height: '100%', position: 'relative' }}>
+                    {!isMobile.phone && !this.state.loading &&
+                      <Visualizer audioCtx={this.audioCtx}
+                                  sourceNode={this.playerNode}
+                                  chipCore={this.chipCore}
+                                  enabled={settings?.visualizerEnabled !== false}
+                                  paused={this.state.ejected || this.state.paused}/>}
+                  </div>
+                </div>
+              </div>
+              <div className="control-container">
+                <AppFooter
+                  currentSongDurationMs={this.state.currentSongDurationMs}
+                  currentSongNumSubtunes={this.state.currentSongNumSubtunes}
+                  currentSongNumVoices={this.state.currentSongNumVoices}
+                  currentSongSubtune={this.state.currentSongSubtune}
+                  ejected={this.state.ejected}
+                  getCurrentSongLink={() => null}
+                  handleCopyLink={this.handleCopyLink}
+                  handleCycleRepeat={this.handleCycleRepeat}
+                  handleCycleShuffle={this.handleCycleShuffle}
+                  handleSetVoiceMask={this.handleSetVoiceMask}
+                  handleTempoChange={this.handleTempoChange}
+                  handleTimeSliderChange={this.handleTimeSliderChange}
+                  handleVolumeChange={this.handleVolumeChange}
+                  imageUrl={this.state.imageUrl}
+                  infoTexts={this.state.infoTexts}
+                  md5={this.state.md5}
+                  nextSong={this.nextSong}
+                  nextSubtune={this.nextSubtune}
+                  paused={this.state.paused}
+                  prevSong={this.prevSong}
+                  prevSubtune={this.prevSubtune}
+                  repeat={this.state.repeat}
+                  shuffle={this.state.shuffle}
+                  sequencer={this.sequencer}
+                  songId={null}
+                  songPath={this.state.songPath}
+                  subtitle={subtitle}
+                  tempo={this.state.tempo}
+                  title={title}
+                  toggleInfo={this.toggleInfo}
+                  togglePause={this.togglePause}
+                  voiceNames={this.state.voiceNames}
+                  voiceMask={this.state.voiceMask}
+                  volume={this.state.volume}
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* BEGIN: Selected Track Panel */}
+          <section className="retro-window track-info-panel" style={{ display: 'flex', flexDirection: 'column', flexShrink: 0, width: '22rem' }}>
+            <div className="retro-header retro-header-center">
+              <button className={`tab ${!showPlayerSettings ? 'tab_selected' : ''}`} onClick={() => this.props.userContext.updateSettings({ showPlayerSettings: false })}>
+                <span className="pixel-title text-header">Track</span>
+              </button>
+              <button className={`tab ${showPlayerSettings ? 'tab_selected' : ''}`} onClick={() => this.props.userContext.updateSettings({ showPlayerSettings: true })}>
+                <span className="pixel-title text-header">Settings</span>
+              </button>
+            </div>
+
+            <div className="track-panel-scroll custom-scrollbar track" style={{ display: !showPlayerSettings ? 'flex' : 'none', flexDirection: 'column', flex: 1 }}>
+              <div style={{ flex: 1, marginTop: '1rem', minHeight: 0, overflowY: 'auto' }}>
+                {this.state.loading ?
+                  <p style={{ padding: '1em' }}>Loading player engine...</p>
+                  :
+                  <LocalFiles
+                    loading={this.state.loadingLocalFiles}
+                    onAddFiles={this.handleFiles}
+                    handleShufflePlay={this.handleShufflePlay}
+                    onSongClick={this.handleSongClick}
+                    onDelete={this.handleLocalFileDelete}
+                    playContext={this.playContexts['local']}
+                    currContext={currContext}
+                    currIdx={currIdx}
+                    listing={this.state.localFiles}
+                    title={title}
+                    subtitle={subtitle}
+                    ejected={this.state.ejected}
+                    metadata={this.state.currentSongMetadata}/>
                 }
               </div>
             </div>
-            {!isMobile.phone && !this.state.loading &&
-              <Visualizer audioCtx={this.audioCtx}
-                          sourceNode={this.playerNode}
-                          chipCore={this.chipCore}
-                          paused={this.state.ejected || this.state.paused}/>}
-          </div>
-          <AppFooter
-            currentSongDurationMs={this.state.currentSongDurationMs}
-            currentSongNumSubtunes={this.state.currentSongNumSubtunes}
-            currentSongNumVoices={this.state.currentSongNumVoices}
-            currentSongSubtune={this.state.currentSongSubtune}
-            ejected={this.state.ejected}
-            getCurrentSongLink={() => null}
-            handleCopyLink={this.handleCopyLink}
-            handleCycleRepeat={this.handleCycleRepeat}
-            handleCycleShuffle={this.handleCycleShuffle}
-            handleSetVoiceMask={this.handleSetVoiceMask}
-            handleTempoChange={this.handleTempoChange}
-            handleTimeSliderChange={this.handleTimeSliderChange}
-            handleVolumeChange={this.handleVolumeChange}
-            imageUrl={this.state.imageUrl}
-            infoTexts={this.state.infoTexts}
-            md5={this.state.md5}
-            nextSong={this.nextSong}
-            nextSubtune={this.nextSubtune}
-            paused={this.state.paused}
-            prevSong={this.prevSong}
-            prevSubtune={this.prevSubtune}
-            repeat={this.state.repeat}
-            shuffle={this.state.shuffle}
-            sequencer={this.sequencer}
-            songId={null}
-            songPath={this.state.songPath}
-            subtitle={subtitle}
-            tempo={this.state.tempo}
-            title={title}
-            toggleInfo={this.toggleInfo}
-            togglePause={this.togglePause}
-            voiceNames={this.state.voiceNames}
-            voiceMask={this.state.voiceMask}
-            volume={this.state.volume}
-          />
+
+            <div className="track-panel-scroll custom-scrollbar setting" style={{ display: showPlayerSettings ? 'flex' : 'none', flexDirection: 'column', flex: 1 }}>
+              <Settings
+                ejected={this.state.ejected}
+                tempo={this.state.tempo}
+                numVoices={this.state.currentSongNumVoices}
+                voiceMask={this.state.voiceMask}
+                voiceNames={this.state.voiceNames}
+                voiceGroups={this.state.voiceGroups}
+                onVoiceMaskChange={this.handleSetVoiceMask}
+                onTempoChange={this.handleTempoChange}
+                paramDefs={this.state.paramDefs}
+                paramValues={this.state.paramValues}
+                onParamChange={this.handleParamChange}
+                onPinParam={this.handlePinParam}
+                persistedSettings={settings}
+                sequencer={this.sequencer}
+              />
+            </div>
+          </section>
+          </main>
         </div>
       )}</Dropzone>
     );

@@ -19,6 +19,7 @@ const UserContext = createContext({
 const DEFAULT_SETTINGS = {
   showPlayerSettings: false,
   theme: 'msdos',
+  visualizerEnabled: true,
 };
 
 // User management and server sync disabled in this build.
