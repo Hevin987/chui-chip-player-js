@@ -10,7 +10,6 @@ cmake-build-debug/
 
 =======
 dist/
-build/
 cmake-build-debug/
 *.a
 *.wasm

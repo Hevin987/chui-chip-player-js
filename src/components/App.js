@@ -692,7 +692,7 @@ class App extends React.Component {
           {/* BEGIN: Main Player Window */}
           <section className="retro-window main-player-window" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             <div className="retro-header retro-header-container">
-              <span className="pixel-title text-header" style={{textTransform: 'uppercase'}}>{title || 'CHIP PLAYER JS'}</span>
+              <span className="pixel-title text-header mTitle" style={{textTransform: 'uppercase'}}>{title || 'CHIP PLAYER JS'}</span>
               <button className="close-btn">
                 <svg className="close-icon" viewBox="0 0 20 20" style={{ width: '1.25rem', height: '1.25rem', fill: 'currentColor' }}>
                   <path clipRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" fillRule="evenodd"></path>
@@ -768,10 +768,10 @@ class App extends React.Component {
           {/* BEGIN: Selected Track Panel */}
           <section className="retro-window track-info-panel" style={{ display: 'flex', flexDirection: 'column', flexShrink: 0, width: '22rem' }}>
             <div className="retro-header retro-header-center">
-              <button className={`tab ${!showPlayerSettings ? 'tab_selected' : ''}`} onClick={() => this.props.userContext.updateSettings({ showPlayerSettings: false })}>
+              <button className={`tab ${!showPlayerSettings ? 'tab-selected' : ''}`} onClick={() => this.props.userContext.updateSettings({ showPlayerSettings: false })}>
                 <span className="pixel-title text-header">Track</span>
               </button>
-              <button className={`tab ${showPlayerSettings ? 'tab_selected' : ''}`} onClick={() => this.props.userContext.updateSettings({ showPlayerSettings: true })}>
+              <button className={`tab ${showPlayerSettings ? 'tab-selected' : ''}`} onClick={() => this.props.userContext.updateSettings({ showPlayerSettings: true })}>
                 <span className="pixel-title text-header">Settings</span>
               </button>
             </div>

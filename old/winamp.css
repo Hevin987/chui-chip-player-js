@@ -117,54 +117,8 @@
 
     .App-main-content-area:not(.settings) { border-right: var(--grooveBorder); }
     .tab-container { padding-bottom: 16px; border-bottom: var(--grooveBorder); }
-
-    /* Revert footer to the original flex layout for winamp — art on the right */
-    .AppFooter {
-        border-top: 2px ridge var(--darkPurple);
-        height: 170px;
-        display: flex;
-        align-items: stretch;
-    }
-    .AppFooter-nowplaying {
-        order: 10;    /* push the nowplaying panel to the far right */
-        flex-shrink: 0;
-        width: 170px;
-        padding: 0;
-        gap: 0;
-        border-right: none;
-        overflow: hidden;
-        flex-direction: column;
-        justify-content: flex-start;
-    }
-    .AppFooter-nowplaying .SongDetails { display: none; } /* song info shown in center col below slider */
-    .AppFooter-art {
-        border: 2px ridge var(--darkPurple);
-        position: relative;
-        top: -40px;
-        width: 170px;
-        height: 170px;
-        flex-shrink: 0;
-    }
-    .AppFooter-main {
-        flex-grow: 1;
-        height: 100%;
-        gap: 0;
-        overflow: auto;
-        container-type: size;
-    }
-    /* Show song details below the slider inside AppFooter-main via a pseudo-element isn't possible,
-       so we add a SongDetails clone via CSS visibility trick — details rendered in nowplaying but
-       visible after main via display override for larger screens */
-    .AppFooter-extra {
-        border-left: none;
-        flex-direction: row;
-        align-items: center;
-        gap: var(--charW1);
-        padding: 0 var(--charW1);
-        width: auto;
-        height: 100%;
-    }
-
+    .AppFooter { border-top: 2px ridge var(--darkPurple); height: 170px; }
+    .AppFooter-art { border: 2px ridge var(--darkPurple); position: relative; top: -40px; }
     .BrowseList-colDir { display: none; }
 
     @container (max-width: 400px) {
@@ -174,15 +128,12 @@
     }
     @media screen and (max-width: 500px) {
         .BrowseList-colMtime { display: none }
-        .AppFooter-nowplaying { display: none }
+        .AppFooter-art { display: none }
     }
     @container (max-width: 500px) { button.AppFooter-shuffle, button.AppFooter-repeat { display: none; } }
     @media screen and (max-width: 800px) {
         .AppFooter-art { top: 0; width: 170px; height: 170px; }
     }
-
-    .control-btn img { display: none !important; }
-    .control-btn span.inline-icon { display: inline-block !important; }
 
     .box-button .icon-prev    { background: url(images/winamp/prev.png) center no-repeat; mask-image: none; }
     .box-button .icon-next    { background: url(images/winamp/next.png) center no-repeat; mask-image: none; }

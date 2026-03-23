@@ -105,13 +105,15 @@ function AppFooter(props) {
               }
             </div>
             {currentSongNumSubtunes > 1 && (
-              <div style={{ display: 'flex', gap: '4px', fontSize: '10px' }}>
-                <button className="control-btn box-button" disabled={ejected} onClick={prevSubtune} style={{ padding: '0px 4px' }}>
-                  <span className="inline-icon icon-back"/>
+              <div className="back-forward-controls" style={{ display: 'flex', gap: '4px', fontSize: '10px', alignItems: 'center' }}>
+                <button className="control-btn box-button" disabled={ejected} onClick={prevSubtune} style={{ padding: '0px 4px', display: 'flex', alignItems: 'center' }}>
+                  <img src={`${process.env.PUBLIC_URL || ''}/backward.png`} alt="Previous Subtune" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='inline-block'; }}/>
+                  <span style={{ display: 'none' }} className="inline-icon icon-back"/>
                 </button>
-                <div style={{ padding: '2px 4px' }}>{currentSongSubtune + 1}/{currentSongNumSubtunes}</div>
-                <button className="control-btn box-button" disabled={ejected} onClick={nextSubtune} style={{ padding: '0px 4px' }}>
-                  <span className="inline-icon icon-forward"/>
+                <div style={{ padding: '2px 4px', display: 'flex', alignItems: 'center' }}>{currentSongSubtune + 1}/{currentSongNumSubtunes}</div>
+                <button className="control-btn box-button" disabled={ejected} onClick={nextSubtune} style={{ padding: '0px 4px', display: 'flex', alignItems: 'center' }}>
+                  <img src={`${process.env.PUBLIC_URL || ''}/forward.png`} alt="Next" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='inline-block'; }}/>
+                  <span style={{ display: 'none' }} className="inline-icon icon-forward"/>
                 </button>
               </div>
             )}
