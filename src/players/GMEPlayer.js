@@ -97,35 +97,64 @@ export default class GMEPlayer extends Player {
     }
 
     if (core._gme_track_ended(this.gmeCtx) !== 1) {
-      // We read 16 samples per frame (8 stereo voices)
-      core._gme_play(this.gmeCtx, this.bufferSize * 16, this.buffer);
+      if (this.isMultiChannel) {
+        // We read 16 samples per frame (8 stereo voices)
+        core._gme_play(this.gmeCtx, this.bufferSize * 16, this.buffer);
 
-      // Expose voice waveforms for the UI Oscilloscope
-      if (typeof window !== "undefined") {
-        if (!window.voiceBuffers) window.voiceBuffers = [];
-        for (let v = 0; v < 8; v++) {
-          if (!window.voiceBuffers[v]) window.voiceBuffers[v] = new Float32Array(this.bufferSize);
+        // Expose voice waveforms for the UI Oscilloscope
+        if (typeof window !== "undefined") {
+          if (!window.voiceBuffers) window.voiceBuffers = [];
+          for (let v = 0; v < 8; v++) {
+            if (!window.voiceBuffers[v]) window.voiceBuffers[v] = new Float32Array(this.bufferSize);
+          }
         }
-      }
 
-      for (i = 0; i < this.bufferSize; i++) {
-        channels[0][i] = 0;
-        channels[1][i] = 0;
+        for (i = 0; i < this.bufferSize; i++) {
+          channels[0][i] = 0;
+          channels[1][i] = 0;
 
-        for (let v = 0; v < 8; v++) {
-          // Frame offset: i * (16 channels * 2 bytes = 32)
-          // Voice offset: v * (2 stereo * 2 bytes =  4)
-          const baseOffset = this.buffer + (i * 32) + (v * 4);
+          for (let v = 0; v < 8; v++) {
+            // Frame offset: i * (16 channels * 2 bytes = 32)
+            // Voice offset: v * (2 stereo * 2 bytes =  4)
+            const baseOffset = this.buffer + (i * 32) + (v * 4);
+            let vL = core.getValue(baseOffset, 'i16') / 32768.0;
+            let vR = core.getValue(baseOffset + 2, 'i16') / 32768.0;
+
+            // Mix into main speaker output
+            channels[0][i] += vL;
+            channels[1][i] += vR;
+
+            // Store mixed mono for UI Oscilloscope view
+            if (typeof window !== "undefined" && window.voiceBuffers) {
+              window.voiceBuffers[v][i] = (vL + vR) / 2.0;
+            }
+          }
+        }
+      } else {
+        // Fallback for chips without hardware multi-channel mapping (e.g. SNES SPC)
+        // Requests standard 2-channel stereo interleaved
+        core._gme_play(this.gmeCtx, this.bufferSize * 2, this.buffer);
+        
+        if (typeof window !== "undefined") {
+          if (!window.voiceBuffers) window.voiceBuffers = [];
+          if (!window.voiceBuffers[0]) window.voiceBuffers[0] = new Float32Array(this.bufferSize);
+          // clear previous buffers so they render empty
+          for (let v = 1; v < 8; v++) {
+            if (window.voiceBuffers[v]) window.voiceBuffers[v].fill(0);
+          }
+        }
+
+        for (i = 0; i < this.bufferSize; i++) {
+          const baseOffset = this.buffer + (i * 4);
           let vL = core.getValue(baseOffset, 'i16') / 32768.0;
           let vR = core.getValue(baseOffset + 2, 'i16') / 32768.0;
+          
+          channels[0][i] = vL;
+          channels[1][i] = vR;
 
-          // Mix into main speaker output
-          channels[0][i] += vL;
-          channels[1][i] += vR;
-
-          // Store mixed mono for UI Oscilloscope view
+          // Render only the master mix to channel 0 in UI Oscilloscope
           if (typeof window !== "undefined" && window.voiceBuffers) {
-            window.voiceBuffers[v][i] = (vL + vR) / 2.0;
+             window.voiceBuffers[0][i] = (vL + vR) / 2.0;
           }
         }
       }
@@ -213,6 +242,7 @@ export default class GMEPlayer extends Player {
       throw Error('gme_open_data failed');
     }
     this.gmeCtx = core.getValue(this.emuPtr, "i32");
+    this.isMultiChannel = core._gme_multi_channel(this.gmeCtx) === 1;
     this.voiceMask = Array(core._gme_voice_count(this.gmeCtx)).fill(true);
 
     core._gme_ignore_silence(this.gmeCtx, 0);

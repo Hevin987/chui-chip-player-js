@@ -78,6 +78,7 @@ const chipModules = [
     ],
     exportedFunctions: [
       '_gme_open_data_multi_channel',
+      '_gme_multi_channel',
       '_gme_open_data',
       '_gme_play',
       '_gme_delete',

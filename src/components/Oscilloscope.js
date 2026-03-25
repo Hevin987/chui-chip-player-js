@@ -4,6 +4,7 @@ export default class Oscilloscope extends Component {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
+    this.wrapperRef = React.createRef();
     this.animFrameId = null;
   }
 
@@ -17,6 +18,18 @@ export default class Oscilloscope extends Component {
     }
   }
 
+  toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      if (this.wrapperRef.current) {
+        this.wrapperRef.current.requestFullscreen().catch(err => {
+          console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+        });
+      }
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
   draw = () => {
     this.animFrameId = requestAnimationFrame(this.draw);
 
@@ -24,6 +37,14 @@ export default class Oscilloscope extends Component {
 
     const canvas = this.canvasRef.current;
     if (!canvas) return;
+
+    // Dynamically adjust internal resolution to keep crisp rendering when fullscreen
+    if (canvas.width !== canvas.clientWidth && canvas.clientWidth > 0) {
+      canvas.width = canvas.clientWidth;
+    }
+    if (canvas.height !== canvas.clientHeight && canvas.clientHeight > 0) {
+      canvas.height = canvas.clientHeight;
+    }
 
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
@@ -121,12 +142,23 @@ export default class Oscilloscope extends Component {
 
   render() {
     return (
-      <div className="Oscilloscope" style={{ display: this.props.enabled ? 'block' : 'none', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+      <div className="Oscilloscope" 
+           ref={this.wrapperRef}
+           onDoubleClick={this.toggleFullscreen}
+           style={{ display: this.props.enabled ? 'block' : 'none', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+        <button
+          className="box-button"
+          onClick={this.toggleFullscreen}
+          title="Toggle Fullscreen"
+          style={{ position: 'absolute', bottom: 8, right: 8, zIndex: 10, padding: '2px 8px', fontSize: '10px' }}
+        >
+          [ ]
+        </button>
         <canvas
           ref={this.canvasRef}
           width={800}
           height={600}
-          style={{ width: '100%', height: '100%', display: 'block' }}
+          style={{ width: '100%', height: '100%', display: 'block', cursor: 'pointer' }}
         />
       </div>
     );
