@@ -682,11 +682,45 @@
   text-transform: uppercase;
 }
 
+[data-theme="bluearchive"] .Visualizer-options {
+  text-align: left;
+  padding-bottom: 8px;
+}
+
+[data-theme="bluearchive"] .Visualizer-options > div {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  height: 24px;
+}
+
+[data-theme="bluearchive"] .VisualizerParams-label {
+  width: 75px;
+  display: inline-block;
+  color: white;
+}
+
+[data-theme="bluearchive"] .Visualizer-options label {
+  color: white;
+  margin-right: 12px;
+}
+
 [data-theme="bluearchive"] .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
 
+[data-theme="bluearchive"] .Visualizer-overlay {
+  top: 60px;
+}
 
+[data-theme="bluearchive"] .VisualizerParams-label {
+  color: #333;
+}
+
+[data-theme="bluearchive"] label.inline {
+  color: #333;
+}
 
 
 
@@ -2205,4 +2239,4 @@ button.IconButton {
 }
 
 
-/*# sourceMappingURL=main.4a46fdde.css.map*/
+/*# sourceMappingURL=main.ef3661c8.css.map*/

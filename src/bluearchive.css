@@ -28,7 +28,9 @@
     color: white;
 }
 
-
+[data-theme="bluearchive"] body{
+  color: black;
+}
 
 
 
@@ -195,13 +197,49 @@
   text-transform: uppercase;
 }
 
+[data-theme="bluearchive"] .Visualizer-options {
+  text-align: left;
+  padding-bottom: 8px;
+}
+
+[data-theme="bluearchive"] .Visualizer-options > div {
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+[data-theme="bluearchive"] .VisualizerParams-label {
+  width: 80px;
+  display: inline-block;
+  color: #333;
+}
+
+[data-theme="bluearchive"] .Visualizer-options label {
+  color: #333;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+}
+
 [data-theme="bluearchive"] .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
 
+[data-theme="bluearchive"] .Visualizer-overlay {
+  top: 26%;
+}
 
+[data-theme="bluearchive"] .VisualizerParams-label {
+  color: #333;
+}
 
+[data-theme="bluearchive"] label.inline {
+  color: #333;
+}
 
+[data-theme="bluearchive"] h3 {
+  color: #333;
+}
 
 [data-theme="bluearchive"] input[type=range] {
     -webkit-appearance: none;
