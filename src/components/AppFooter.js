@@ -1,9 +1,7 @@
 import React, { memo, useCallback, useContext } from 'react';
 import TimeSlider from './TimeSlider';
 import VolumeSlider from './VolumeSlider';
-import FavoriteButton from './FavoriteButton';
 import { REPEAT_LABELS, SHUFFLE_LABELS } from '../Sequencer';
-import { UserContext } from './UserProvider';
 import DirectoryLink from './DirectoryLink';
 import { getUrlFromFilepath, pathJoin } from '../util';
 
@@ -24,16 +22,10 @@ function AppFooter(props) {
     currentSongNumSubtunes,
     currentSongSubtune,
     ejected,
-    imageUrl,
-    infoTexts,
-    md5,
     paused,
     repeat,
     shuffle,
-    songId,
     songPath,
-    subtitle,
-    title,
     volume,
 
     // this.
@@ -52,27 +44,11 @@ function AppFooter(props) {
     togglePause,
   } = props;
 
-  const {
-    faves,
-  } = useContext(UserContext);
-
-  const directoryLink = directoryLinkFromFilepath(songPath);
   const songUrl = getUrlFromFilepath(songPath);
-  const subtuneText = `Tune ${currentSongSubtune + 1} of ${currentSongNumSubtunes}`;
-
-  const handleToggleInfo = useCallback((e) => {
-    e.preventDefault();
-    toggleInfo();
-  }, [toggleInfo]);
 
   const handleCopySongLink = useCallback((e) => {
     e.preventDefault();
     handleCopyLink(getCurrentSongLink());
-  }, [getCurrentSongLink, handleCopyLink]);
-
-  const handleCopySubtuneLink = useCallback((e) => {
-    e.preventDefault();
-    handleCopyLink(getCurrentSongLink(/*withSubtune=*/true));
   }, [getCurrentSongLink, handleCopyLink]);
 
   const playPauseTitle = paused ? 'Play' : 'Pause';

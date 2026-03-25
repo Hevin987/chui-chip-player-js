@@ -6,7 +6,6 @@ import autoBind from 'auto-bind';
 
 let core = null;
 
-const INT16_MAX = 65535;
 // "timesliced" seek in increments to prevent blocking UI/audio callback.
 const TIMESLICED_SEEK_MS_MAP = {
   '.spc': 10000,
@@ -76,7 +75,7 @@ export default class GMEPlayer extends Player {
     this.seekTargetMs = null;
     this.currentFileExt = null;
 
-    this.buffer = core._malloc(this.bufferSize * 16); // i16
+    this.buffer = core._malloc(this.bufferSize * 32);     // i16 * 16 channels (8 stereo pairs) = 32 bytes per frame
     this.emuPtr = core._malloc(4); // i32
 
     this.subBass = new SubBass(this.sampleRate);
@@ -98,15 +97,36 @@ export default class GMEPlayer extends Player {
     }
 
     if (core._gme_track_ended(this.gmeCtx) !== 1) {
-      core._gme_play(this.gmeCtx, this.bufferSize * 2, this.buffer);
+      // We read 16 samples per frame (8 stereo voices)
+      core._gme_play(this.gmeCtx, this.bufferSize * 16, this.buffer);
 
-      for (ch = 0; ch < channels.length; ch++) {
-        for (i = 0; i < this.bufferSize; i++) {
-          channels[ch][i] = core.getValue(this.buffer +
-            // Interleaved channel format
-            i * 2 * 2 +             // frame offset   * bytes per sample * num channels +
-            ch * 2,                 // chhannel offset * bytes per sample
-            'i16') / INT16_MAX;     // convert int16 to float
+      // Expose voice waveforms for the UI Oscilloscope
+      if (typeof window !== "undefined") {
+        if (!window.voiceBuffers) window.voiceBuffers = [];
+        for (let v = 0; v < 8; v++) {
+          if (!window.voiceBuffers[v]) window.voiceBuffers[v] = new Float32Array(this.bufferSize);
+        }
+      }
+
+      for (i = 0; i < this.bufferSize; i++) {
+        channels[0][i] = 0;
+        channels[1][i] = 0;
+
+        for (let v = 0; v < 8; v++) {
+          // Frame offset: i * (16 channels * 2 bytes = 32)
+          // Voice offset: v * (2 stereo * 2 bytes =  4)
+          const baseOffset = this.buffer + (i * 32) + (v * 4);
+          let vL = core.getValue(baseOffset, 'i16') / 32768.0;
+          let vR = core.getValue(baseOffset + 2, 'i16') / 32768.0;
+
+          // Mix into main speaker output
+          channels[0][i] += vL;
+          channels[1][i] += vR;
+
+          // Store mixed mono for UI Oscilloscope view
+          if (typeof window !== "undefined" && window.voiceBuffers) {
+            window.voiceBuffers[v][i] = (vL + vR) / 2.0;
+          }
         }
       }
 
@@ -182,7 +202,10 @@ export default class GMEPlayer extends Player {
     this.filepathMeta = Player.metadataFromFilepath(filepath);
 
     const dataPtr = this.copyToHeap(data);
-    const err = core._gme_open_data(dataPtr, data.length, this.emuPtr, this.sampleRate);
+    
+    // Use our new custom multi-channel opening function instead!
+    const err = core._gme_open_data_multi_channel(dataPtr, data.length, this.emuPtr, this.sampleRate);
+    
     core._free(dataPtr);
 
     if (err !== 0) {

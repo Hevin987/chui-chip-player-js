@@ -88,7 +88,6 @@ const UserProvider = ({ children }) => {
 
   const handleToggleFavorite = async (path, songId) => {
     // User management disabled: operate on local favorites only.
-    const oldFaves = faves;
     const isFavorite = faves.find(fave => fave.path === path);
 
     const fave = {

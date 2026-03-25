@@ -47,7 +47,7 @@ public:
 // Implementation
 public:
 	Hes_Apu_Adpcm();
-	typedef BOOST::uint8_t byte;
+	typedef unsigned char byte;
 
 private:
 	enum { amp_range = 2048 };
@@ -74,7 +74,7 @@ private:
 		int            fadecount;
 	};
 	State state;
-	Blip_Synth_Fast synth;
+	Blip_Synth<blip_med_quality,1> synth;
 
 	Blip_Buffer* output;
 	blip_time_t  last_time;

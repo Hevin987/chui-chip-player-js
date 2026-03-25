@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 // Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
 
->>>>>>> db7344ebf (abc)
 // Konami VRC7 sound chip emulator
 
 #ifndef NES_VRC7_APU_H
@@ -16,27 +13,13 @@ struct vrc7_snapshot_t;
 class Nes_Vrc7_Apu {
 public:
 	blargg_err_t init();
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> db7344ebf (abc)
 	// See Nes_Apu.h for reference
 	void reset();
 	void volume( double );
 	void treble_eq( blip_eq_t const& );
 	void set_output( Blip_Buffer* );
 	enum { osc_count = 6 };
-<<<<<<< HEAD
-	void set_output( int index, Blip_Buffer* );
-	void end_frame( blip_time_t );
-	void save_snapshot( vrc7_snapshot_t* ) const;
-	void load_snapshot( vrc7_snapshot_t const& );
-	
-	void write_reg( int reg );
-	void write_data( blip_time_t, int data );
-	
-=======
 	void osc_output( int index, Blip_Buffer* );
 	void end_frame( blip_time_t );
 	void save_snapshot( vrc7_snapshot_t* ) const;
@@ -45,7 +28,6 @@ public:
 	void write_reg( int reg );
 	void write_data( blip_time_t, int data );
 
->>>>>>> db7344ebf (abc)
 public:
 	Nes_Vrc7_Apu();
 	~Nes_Vrc7_Apu();
@@ -57,21 +39,14 @@ private:
 
 	struct Vrc7_Osc
 	{
-<<<<<<< HEAD
-		BOOST::uint8_t regs [3];
-=======
 		uint8_t regs [3];
->>>>>>> db7344ebf (abc)
 		Blip_Buffer* output;
 		int last_amp;
 	};
 
 	Vrc7_Osc oscs [osc_count];
-<<<<<<< HEAD
-=======
 	uint8_t kon;
 	uint8_t inst [8];
->>>>>>> db7344ebf (abc)
 	void* opll;
 	int addr;
 	blip_time_t next_time;
@@ -79,30 +54,15 @@ private:
 		Blip_Buffer* output;
 		int last_amp;
 	} mono;
-<<<<<<< HEAD
-	
-	Blip_Synth_Fast synth;
-	
-=======
 
 	Blip_Synth<blip_med_quality,1> synth;
 
->>>>>>> db7344ebf (abc)
 	void run_until( blip_time_t );
 	void output_changed();
 };
 
 struct vrc7_snapshot_t
 {
-<<<<<<< HEAD
-	BOOST::uint8_t latch;
-	BOOST::uint8_t inst [8];
-	BOOST::uint8_t regs [6] [3];
-	BOOST::uint8_t delay;
-};
-
-inline void Nes_Vrc7_Apu::set_output( int i, Blip_Buffer* buf )
-=======
 	uint8_t latch;
 	uint8_t inst [8];
 	uint8_t regs [6] [3];
@@ -110,7 +70,6 @@ inline void Nes_Vrc7_Apu::set_output( int i, Blip_Buffer* buf )
 };
 
 inline void Nes_Vrc7_Apu::osc_output( int i, Blip_Buffer* buf )
->>>>>>> db7344ebf (abc)
 {
 	assert( (unsigned) i < osc_count );
 	oscs [i].output = buf;

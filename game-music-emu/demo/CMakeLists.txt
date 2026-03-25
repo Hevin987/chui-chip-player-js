@@ -5,29 +5,19 @@
 include_directories(${CMAKE_SOURCE_DIR}/gme ${CMAKE_SOURCE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/gme)
 
-<<<<<<< HEAD
-=======
 set (CMAKE_C_STANDARD 99)
 
->>>>>>> db7344ebf (abc)
 add_executable(demo Wave_Writer.cpp basics.c)
 
 # Add command to copy build file over.
 add_custom_command(TARGET demo
     POST_BUILD
     COMMAND cmake -E copy "${CMAKE_SOURCE_DIR}/test.nsf" ${CMAKE_CURRENT_BINARY_DIR}
-<<<<<<< HEAD
-    COMMENT "Add convenience copy of test.nsf file for demo application"
-    VERBATIM) # VERBATIM is essentially required, "please use correct command line kthx"
-
-target_link_libraries(demo gme)
-=======
     COMMAND cmake -E copy "${CMAKE_SOURCE_DIR}/test/checksums" ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Add convenience copy of test.nsf file for demo application"
     VERBATIM) # VERBATIM is essentially required, "please use correct command line kthx"
 
 target_link_libraries(demo gme::gme)
->>>>>>> db7344ebf (abc)
 
 
 add_executable(demo_mem Wave_Writer.cpp basics_mem.c)
@@ -35,12 +25,6 @@ add_executable(demo_mem Wave_Writer.cpp basics_mem.c)
 add_custom_command(TARGET demo_mem
     POST_BUILD
     COMMAND cmake -E copy "${CMAKE_SOURCE_DIR}/test.vgz" ${CMAKE_CURRENT_BINARY_DIR}
-<<<<<<< HEAD
-    COMMENT "Add convenience copy of test.nsf file for demo application"
-    VERBATIM) # VERBATIM is essentially required, "please use correct command line kthx"
-
-target_link_libraries(demo_mem gme)
-=======
     COMMENT "Add convenience copy of test.vgz file for demo application"
     VERBATIM) # VERBATIM is essentially required, "please use correct command line kthx"
 
@@ -60,4 +44,3 @@ if(GME_BUILD_TESTING)
     add_test(NAME check_proper_NSF_output
         COMMAND sha256sum -c "${CMAKE_CURRENT_BINARY_DIR}/checksums")
 endif()
->>>>>>> db7344ebf (abc)

@@ -2,11 +2,8 @@
 
 // Based on Gens 2.10 ym2612.c
 
-<<<<<<< HEAD
-=======
 #ifdef VGM_YM2612_GENS
 
->>>>>>> db7344ebf (abc)
 #include "Ym2612_GENS.h"
 
 #include <assert.h>
@@ -41,11 +38,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 	#include BLARGG_ENABLE_OPTIMIZER
 #endif
 
-<<<<<<< HEAD
-const int output_bits = 14;
-=======
 static const int output_bits = 14;
->>>>>>> db7344ebf (abc)
 
 struct slot_t
 {
@@ -188,11 +181,7 @@ struct state_t
 #define S2             1
 #define S3             3
 
-<<<<<<< HEAD
-inline void set_seg( slot_t& s, int seg )
-=======
 static inline void set_seg( slot_t& s, int seg )
->>>>>>> db7344ebf (abc)
 {
 	s.env_xor = 0;
 	s.env_max = INT_MAX;
@@ -266,11 +255,7 @@ static const unsigned char LFO_FMS_TAB [8] =
 	LFO_FMS_BASE * 12, LFO_FMS_BASE * 24
 };
 
-<<<<<<< HEAD
-inline void YM2612_Special_Update() { }
-=======
 static inline void YM2612_Special_Update() { }
->>>>>>> db7344ebf (abc)
 
 struct Ym2612_GENS_Impl
 {
@@ -1041,11 +1026,7 @@ static void update_envelope_( slot_t* sl )
 	}
 }
 
-<<<<<<< HEAD
-inline void update_envelope( slot_t& sl )
-=======
 static inline void update_envelope( slot_t& sl )
->>>>>>> db7344ebf (abc)
 {
 	int ecmp = sl.Ecmp;
 	if ( (sl.Ecnt += sl.Einc) >= ecmp )
@@ -1338,8 +1319,5 @@ void Ym2612_GENS_Impl::run( int pair_count, Ym2612_GENS_Emu::sample_t* out )
 }
 
 void Ym2612_GENS_Emu::run( int pair_count, sample_t* out ) { impl->run( pair_count, out ); }
-<<<<<<< HEAD
-=======
 
 #endif /* VGM_YM2612_GENS */
->>>>>>> db7344ebf (abc)

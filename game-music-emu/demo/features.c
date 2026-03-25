@@ -21,11 +21,7 @@ Music_Emu* load_file( const char* path, long sample_rate )
 	Music_Emu* emu;
 	char* data;
 	long  size;
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> db7344ebf (abc)
 	/* Read file data into memory. You might read the data from a zip file or
 	other compressed format. */
 	FILE* in = fopen( path, "rb" );
@@ -34,22 +30,14 @@ Music_Emu* load_file( const char* path, long sample_rate )
 	fseek( in, 0, SEEK_END );
 	size = ftell( in );
 	rewind( in );
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> db7344ebf (abc)
 	data = malloc( size );
 	if ( !data )
 		handle_error( "Out of memory" );
 	if ( fread( data, size, 1, in ) <= 0 )
 		handle_error( "Read error" );
 	fclose( in );
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> db7344ebf (abc)
 	handle_error( gme_open_data( data, size, &emu, sample_rate ) );
 	free( data ); /* a copy is made of the data */
 	return emu;
@@ -76,17 +64,6 @@ int main()
 	long sample_rate = 44100;
 	int track = 0; /* index of track to play (0 = first) */
 	int i;
-<<<<<<< HEAD
-	
-	/* Load file into emulator */
-	Music_Emu* emu = load_file( filename, sample_rate );
-	print_warning( emu );
-	
-	/* Register cleanup function and confirmation string as data */
-	gme_set_user_data( emu, my_data );
-	gme_set_user_cleanup( emu, my_cleanup );
-	
-=======
 
 	/* Load file into emulator */
 	Music_Emu* emu = load_file( filename, sample_rate );
@@ -96,25 +73,16 @@ int main()
 	gme_set_user_data( emu, my_data );
 	gme_set_user_cleanup( emu, my_cleanup );
 
->>>>>>> db7344ebf (abc)
 	/* Load .m3u playlist file. All tracks are assumed to use current file.
 	We ignore error here in case there is no m3u file present. */
 	gme_load_m3u( emu, playlist );
 	print_warning( emu );
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> db7344ebf (abc)
 	/* Get and print main info for track */
 	{
 		gme_info_t* info;
 		handle_error( gme_track_info( emu, &info, track ) );
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> db7344ebf (abc)
 		printf( "System   : %s\n", info->system );
 		printf( "Game     : %s\n", info->game );
 		printf( "Author   : %s\n", info->author );
@@ -130,22 +98,6 @@ int main()
 		if ( info->loop_length != 0 )
 			printf( " (endless)" );
 		printf( "\n\n" );
-<<<<<<< HEAD
-		
-		gme_free_info( info );
-	}
-	
-	/* Print voice names */
-	for ( i = 0; i < gme_voice_count( emu ); i++ )
-		printf( "Voice %d: %s\n", i, gme_voice_name( emu, i ) );
-	
-	/* Enable most accurate sound emulation */
-	gme_enable_accuracy( emu, 1 );
-	
-	/* Add some stereo enhancement */
-	gme_set_stereo_depth( emu, 0.20 );
-	
-=======
 
 		gme_free_info( info );
 	}
@@ -160,7 +112,6 @@ int main()
 	/* Add some stereo enhancement */
 	gme_set_stereo_depth( emu, 0.20 );
 
->>>>>>> db7344ebf (abc)
 	/* Adjust equalizer for crisp, bassy sound */
 	{
 		gme_equalizer_t eq;
@@ -169,20 +120,12 @@ int main()
 		eq.bass   = 20;
 		gme_set_equalizer( emu, &eq );
 	}
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> db7344ebf (abc)
 	/* Start track and begin fade at 10 seconds */
 	handle_error( gme_start_track( emu, track ) );
 	print_warning( emu );
 	gme_set_fade( emu, 10 * 1000L );
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> db7344ebf (abc)
 	/* Record track until it ends */
 	wave_open( sample_rate, "out.wav" );
 	wave_enable_stereo();
@@ -194,19 +137,11 @@ int main()
 		print_warning( emu );
 		wave_write( buf, buf_size );
 	}
-<<<<<<< HEAD
-	
-	/* Cleanup */
-	gme_delete( emu );
-	wave_close();
-	
-=======
 
 	/* Cleanup */
 	gme_delete( emu );
 	wave_close();
 
->>>>>>> db7344ebf (abc)
 	getchar();
 	return 0;
 }

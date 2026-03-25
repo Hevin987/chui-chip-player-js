@@ -77,6 +77,7 @@ const chipModules = [
       './game-music-emu/build/gme/libgme.a',
     ],
     exportedFunctions: [
+      '_gme_open_data_multi_channel',
       '_gme_open_data',
       '_gme_play',
       '_gme_delete',
@@ -187,7 +188,7 @@ const chipModules = [
       '_fluid_synth_get_polyphony',
       '_fluid_synth_set_polyphony',
       '_fluid_synth_bank_select',
-      '_fluid_synth_get_active_voice_count',
+      
     ],
     flags: [],
   },
@@ -341,7 +342,7 @@ const runtimeMethods = [
   'ALLOC_NORMAL',
   'FS',
   'UTF8ToString',
-  'stringToNewUTF8',
+  
   'ccall',
   'getValue',
   'setValue',
@@ -424,5 +425,10 @@ build_proc.on('exit', function (code) {
     // Don't use --pre-js because it can get stripped out by closure.
     console.log('Prepending %s: \n%s\n', jsOutFile, preJs.trim());
     execSync(`cat <<EOF > ${jsOutFile}\n${preJs}\n$(cat ${jsOutFile})\nEOF`);
+
+    // Fix bug where Emscripten's Date.now returns a regular Number instead of BigInt (which WASM expects for time_t with WASM_BIGINT)
+    const patchCmd = `sed -i 's/function _time(ptr){var ret=Date\\.now()\\/1e3|0;if(ptr){HEAP32\\[ptr>>2\\]=ret}return ret}/function _time(ptr){var ret=Date.now()\\/1e3|0;if(ptr){HEAP32[ptr>>2]=ret}return BigInt(ret)}/g' ${jsOutFile}`;
+    console.log('Patching 64-bit _time bug in %s...', jsOutFile);
+    execSync(patchCmd);
   }
 });

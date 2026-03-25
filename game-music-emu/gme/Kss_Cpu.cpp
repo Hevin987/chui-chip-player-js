@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-// $package. http://www.slack.net/~ant/
-
-#include "Kss_Core.h"
-
-#include "blargg_endian.h"
-//#include "z80_cpu_log.h"
-
-/* Copyright (C) 2006-2008 Shay Green. This module is free software; you
-=======
 // Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
 
 /*
@@ -24,7 +14,6 @@ Last validated with zexall 2006.11.14 2:19 PM
 //#include "z80_cpu_log.h"
 
 /* Copyright (C) 2006 Shay Green. This module is free software; you
->>>>>>> db7344ebf (abc)
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version. This
@@ -35,23 +24,6 @@ details. You should have received a copy of the GNU Lesser General Public
 License along with this module; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
-<<<<<<< HEAD
-#include "blargg_source.h"
-
-#define OUT_PORT(  addr, data ) cpu_out( TIME(), addr, data )
-#define IN_PORT(   addr       ) cpu_in( TIME(), addr )
-#define WRITE_MEM( addr, data ) {FLUSH_TIME(); cpu_write( addr, data );}
-#define IDLE_ADDR               idle_addr
-#define CPU                     cpu
-
-#define CPU_BEGIN \
-bool Kss_Core::run_cpu( time_t end_time )\
-{\
-	cpu.set_end_time( end_time );
-
-	#include "Z80_Cpu_run.h"
-	
-=======
 #define SYNC_TIME()     (void) (s.time = s_time)
 #define RELOAD_TIME()   (void) (s_time = s.time)
 
@@ -1724,6 +1696,5 @@ out_of_time:
 	this->state_ = s;
 	this->state = &this->state_;
 
->>>>>>> db7344ebf (abc)
 	return warning;
 }

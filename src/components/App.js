@@ -33,9 +33,9 @@ import MDXPlayer from '../players/MDXPlayer';
 import VGMPlayer from '../players/VGMPlayer';
 
 import AppFooter from './AppFooter';
-import AppHeader from './AppHeader';
 import DropMessage from './DropMessage';
 import Visualizer from './Visualizer';
+import Oscilloscope from './Oscilloscope';
 import Toast, { ToastLevels } from './Toast';
 import MessageBox from './MessageBox';
 import Settings from './Settings';
@@ -140,9 +140,10 @@ class App extends React.Component {
         printErr: (msg) => console.debug('[stderr] ' + msg),
       });
     } catch (e) {
+      console.error("Failed to load chip-core WebAssembly:", e);
       // Browser doesn't support WASM (Safari in iOS Simulator)
       this.setState({ loading: false });
-      this.props.toastContext.enqueueToast({ message: 'Error loading player engine. Old browser?', level: ToastLevels.ERROR });
+      this.props.toastContext.enqueueToast('Error loading player engine. Old browser?', ToastLevels.ERROR);
       return;
     }
 
@@ -673,7 +674,7 @@ class App extends React.Component {
     const { title, subtitle } = titlesFromMetadata(this.state.currentSongMetadata);
     const currContext = this.sequencer?.getCurrContext();
     const currIdx = this.sequencer?.getCurrIdx();
-    const { settings } = this.props.userContext;
+    const { settings, updateSettings } = this.props.userContext;
     const showPlayerSettings = settings?.showPlayerSettings;
 
     return (
@@ -715,12 +716,26 @@ class App extends React.Component {
                 </div>
                 <div className="waveform-bg">
                   <div className="waveform-wrapper" style={{ width: '100%', height: '100%', position: 'relative' }}>
-                    {!isMobile.phone && !this.state.loading &&
+                    {!isMobile.phone && !this.state.loading && settings?.visualizerType !== 'oscilloscope' &&
                       <Visualizer audioCtx={this.audioCtx}
                                   sourceNode={this.playerNode}
                                   chipCore={this.chipCore}
                                   enabled={settings?.visualizerEnabled !== false}
                                   paused={this.state.ejected || this.state.paused}/>}
+                    {!isMobile.phone && !this.state.loading && settings?.visualizerType === 'oscilloscope' &&
+                      <Oscilloscope 
+                                  enabled={settings?.visualizerEnabled !== false}
+                                  paused={this.state.ejected || this.state.paused}/>}
+                    {!isMobile.phone && !this.state.loading && settings?.visualizerEnabled !== false && (
+                      <button
+                        className="box-button"
+                        style={{ position: 'absolute', top: 8, right: 8, zIndex: 10, padding: '2px 8px', fontSize: '10px' }}
+                        onClick={() => updateSettings({ visualizerType: settings?.visualizerType === 'oscilloscope' ? 'spectrogram' : 'oscilloscope' })}
+                        title="Toggle Visualizer Type"
+                      >
+                        Swap Visualizer
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

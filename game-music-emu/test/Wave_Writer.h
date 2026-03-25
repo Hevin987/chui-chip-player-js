@@ -26,30 +26,6 @@ void wave_close( void );
 class Wave_Writer {
 public:
 	typedef short sample_t;
-<<<<<<< HEAD
-	
-	// Create sound file with given sample rate (in Hz) and filename.
-	// Exits program if there's an error.
-	Wave_Writer( long sample_rate, char const* filename = "out.wav" );
-	
-	// Enable stereo output
-	void enable_stereo();
-	
-	// Append 'count' samples to file. Use every 'skip'th source sample; allows
-	// one channel of stereo sample pairs to be written by specifying a skip of 2.
-	void write( const sample_t*, long count, int skip = 1 );
-	
-	// Append 'count' floating-point samples to file. Use every 'skip'th source sample;
-	// allows one channel of stereo sample pairs to be written by specifying a skip of 2.
-	void write( const float*, long count, int skip = 1 );
-	
-	// Number of samples written so far
-	long sample_count() const;
-	
-	// Finish writing sound file and close it
-	void close();
-	
-=======
 
 	// Create sound file with given sample rate (in Hz) and filename.
 	// Exits program if there's an error.
@@ -72,7 +48,6 @@ public:
 	// Finish writing sound file and close it
 	void close();
 
->>>>>>> db7344ebf (abc)
 	~Wave_Writer();
 public:
 	// Deprecated
@@ -85,11 +60,7 @@ private:
 	long    rate;
 	long    buf_pos;
 	int     chan_count;
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> db7344ebf (abc)
 	void flush();
 };
 

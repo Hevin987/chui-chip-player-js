@@ -56,6 +56,7 @@ LOCAL_SRC_FILES := \
 	gme/Gbs_Emu.cpp \
 	gme/Gme_File.cpp \
 	gme/Gym_Emu.cpp \
+	gme/Hes_Apu_Adpcm.cpp \
 	gme/Hes_Apu.cpp \
 	gme/Hes_Cpu.cpp \
 	gme/Hes_Emu.cpp \
@@ -91,7 +92,6 @@ LOCAL_SRC_FILES := \
 	gme/Ym2612_GENS.cpp \
 	gme/Ym2612_MAME.cpp \
 	gme/ext/emu2413.c \
-	gme/ext/panning.c \
 	gme/gme.cpp
 
 LOCAL_EXPORT_C_INCLUDES = $(LOCAL_PATH)

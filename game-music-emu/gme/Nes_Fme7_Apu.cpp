@@ -1,16 +1,9 @@
-<<<<<<< HEAD
-// $package. http://www.slack.net/~ant/
-
-#include "Nes_Fme7_Apu.h"
-
-=======
 // Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
 
 #include "Nes_Fme7_Apu.h"
 
 #include <string.h>
 
->>>>>>> db7344ebf (abc)
 /* Copyright (C) 2003-2006 Shay Green. This module is free software; you
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
@@ -27,17 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 void Nes_Fme7_Apu::reset()
 {
 	last_time = 0;
-<<<<<<< HEAD
-	
-	for ( int i = 0; i < osc_count; i++ )
-		oscs [i].last_amp = 0;
-	
-=======
 
 	for ( int i = 0; i < osc_count; i++ )
 		oscs [i].last_amp = 0;
 
->>>>>>> db7344ebf (abc)
 	fme7_apu_state_t* state = this;
 	memset( state, 0, sizeof *state );
 }
@@ -55,33 +41,12 @@ unsigned char const Nes_Fme7_Apu::amp_table [16] =
 void Nes_Fme7_Apu::run_until( blip_time_t end_time )
 {
 	require( end_time >= last_time );
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> db7344ebf (abc)
 	for ( int index = 0; index < osc_count; index++ )
 	{
 		int mode = regs [7] >> index;
 		int vol_mode = regs [010 + index];
 		int volume = amp_table [vol_mode & 0x0F];
-<<<<<<< HEAD
-		
-		Blip_Buffer* const osc_output = oscs [index].output;
-		if ( !osc_output )
-			continue;
-		
-		// check for unsupported mode
-		#ifndef NDEBUG
-			if ( (mode & 011) <= 001 && vol_mode & 0x1F )
-				dprintf( "FME7 used unimplemented sound mode: %02X, vol_mode: %02X\n",
-						mode, vol_mode & 0x1F );
-		#endif
-		
-		if ( (mode & 001) | (vol_mode & 0x10) )
-			volume = 0; // noise and envelope aren't supported
-		
-=======
 
 		Blip_Buffer* const osc_output = oscs [index].output;
 		if ( !osc_output )
@@ -98,7 +63,6 @@ void Nes_Fme7_Apu::run_until( blip_time_t end_time )
 		if ( (mode & 001) | (vol_mode & 0x10) )
 			volume = 0; // noise and envelope aren't supported
 
->>>>>>> db7344ebf (abc)
 		// period
 		int const period_factor = 16;
 		unsigned period = (regs [index * 2 + 1] & 0x0F) * 0x100 * period_factor +
@@ -109,44 +73,24 @@ void Nes_Fme7_Apu::run_until( blip_time_t end_time )
 			if ( !period ) // on my AY-3-8910A, period doesn't have extra one added
 				period = period_factor;
 		}
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> db7344ebf (abc)
 		// current amplitude
 		int amp = volume;
 		if ( !phases [index] )
 			amp = 0;
-<<<<<<< HEAD
-		
-=======
->>>>>>> db7344ebf (abc)
 		{
 			int delta = amp - oscs [index].last_amp;
 			if ( delta )
 			{
 				oscs [index].last_amp = amp;
-<<<<<<< HEAD
-				osc_output->set_modified();
-				synth.offset( last_time, delta, osc_output );
-			}
-		}
-		
-=======
 				synth.offset( last_time, delta, osc_output );
 			}
 		}
 
->>>>>>> db7344ebf (abc)
 		blip_time_t time = last_time + delays [index];
 		if ( time < end_time )
 		{
 			int delta = amp * 2 - volume;
-<<<<<<< HEAD
-			osc_output->set_modified();
-=======
->>>>>>> db7344ebf (abc)
 			if ( volume )
 			{
 				do
@@ -156,11 +100,7 @@ void Nes_Fme7_Apu::run_until( blip_time_t end_time )
 					time += period;
 				}
 				while ( time < end_time );
-<<<<<<< HEAD
-				
-=======
 
->>>>>>> db7344ebf (abc)
 				oscs [index].last_amp = (delta + volume) >> 1;
 				phases [index] = (delta > 0);
 			}
@@ -169,15 +109,6 @@ void Nes_Fme7_Apu::run_until( blip_time_t end_time )
 				// maintain phase when silent
 				int count = (end_time - time + period - 1) / period;
 				phases [index] ^= count & 1;
-<<<<<<< HEAD
-				time += count * period;
-			}
-		}
-		
-		delays [index] = time - end_time;
-	}
-	
-=======
 				time += (int32_t) count * period;
 			}
 		}
@@ -185,7 +116,6 @@ void Nes_Fme7_Apu::run_until( blip_time_t end_time )
 		delays [index] = time - end_time;
 	}
 
->>>>>>> db7344ebf (abc)
 	last_time = end_time;
 }
 

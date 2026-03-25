@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-// Game_Music_Emu $vers. http://www.slack.net/~ant/
-
-#include "Gbs_Emu.h"
-
-/* Copyright (C) 2003-2009 Shay Green. This module is free software; you
-=======
 // Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
 
 #include "Gbs_Emu.h"
@@ -13,7 +6,6 @@
 #include <string.h>
 
 /* Copyright (C) 2003-2006 Shay Green. This module is free software; you
->>>>>>> db7344ebf (abc)
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version. This
@@ -26,17 +18,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 #include "blargg_source.h"
 
-<<<<<<< HEAD
-Gbs_Emu::equalizer_t const Gbs_Emu::handheld_eq   = { -47.0, 2000, 0,0,0,0,0,0,0,0 };
-Gbs_Emu::equalizer_t const Gbs_Emu::cgb_eq        = {   0.0,  300, 0,0,0,0,0,0,0,0 };
-Gbs_Emu::equalizer_t const Gbs_Emu::headphones_eq = {   0.0,   30, 0,0,0,0,0,0,0,0 }; // DMG
-
-Gbs_Emu::Gbs_Emu()
-{
-	sound_hardware = sound_gbs;
-	enable_clicking( false );
-	set_type( gme_gbs_type );
-=======
 Gbs_Emu::equalizer_t const Gbs_Emu::handheld_eq   =
 	Music_Emu::make_equalizer( -47.0, 2000 );
 Gbs_Emu::equalizer_t const Gbs_Emu::headphones_eq =
@@ -56,29 +37,18 @@ Gbs_Emu::Gbs_Emu()
 	};
 	set_voice_types( types );
 
->>>>>>> db7344ebf (abc)
 	set_silence_lookahead( 6 );
 	set_max_initial_silence( 21 );
 	set_gain( 1.2 );
 
-<<<<<<< HEAD
-	// kind of midway between headphones and speaker
-	static equalizer_t const eq = { -1.0, 120, 0,0,0,0,0,0,0,0 };
-	set_equalizer( eq );
-=======
 	set_equalizer( make_equalizer( -1.0, 120 ) );
->>>>>>> db7344ebf (abc)
 }
 
 Gbs_Emu::~Gbs_Emu() { }
 
 void Gbs_Emu::unload()
 {
-<<<<<<< HEAD
-	core_.unload();
-=======
 	rom.clear();
->>>>>>> db7344ebf (abc)
 	Music_Emu::unload();
 }
 
@@ -91,26 +61,6 @@ static void copy_gbs_fields( Gbs_Emu::header_t const& h, track_info_t* out )
 	GME_COPY_FIELD( h, out, copyright );
 }
 
-<<<<<<< HEAD
-static void hash_gbs_file( Gbs_Emu::header_t const& h, byte const* data, int data_size, Music_Emu::Hash_Function& out )
-{
-	out.hash_( &h.vers, sizeof(h.vers) );
-	out.hash_( &h.track_count, sizeof(h.track_count) );
-	out.hash_( &h.first_track, sizeof(h.first_track) );
-	out.hash_( &h.load_addr[0], sizeof(h.load_addr) );
-	out.hash_( &h.init_addr[0], sizeof(h.init_addr) );
-	out.hash_( &h.play_addr[0], sizeof(h.play_addr) );
-	out.hash_( &h.stack_ptr[0], sizeof(h.stack_ptr) );
-	out.hash_( &h.timer_modulo, sizeof(h.timer_modulo) );
-	out.hash_( &h.timer_mode, sizeof(h.timer_mode) );
-	out.hash_( data, data_size );
-}
-
-blargg_err_t Gbs_Emu::track_info_( track_info_t* out, int ) const
-{
-	copy_gbs_fields( header(), out );
-	return blargg_ok;
-=======
 blargg_err_t Gbs_Emu::track_info_( track_info_t* out, int ) const
 {
 	copy_gbs_fields( header_, out );
@@ -122,38 +72,10 @@ static blargg_err_t check_gbs_header( void const* header )
 	if ( memcmp( header, "GBS", 3 ) )
 		return gme_wrong_file_type;
 	return 0;
->>>>>>> db7344ebf (abc)
 }
 
 struct Gbs_File : Gme_Info_
 {
-<<<<<<< HEAD
-	Gbs_Emu::header_t const* h;
-	
-	Gbs_File() { set_type( gme_gbs_type ); }
-	
-	blargg_err_t load_mem_( byte const begin [], int size )
-	{
-		h = ( Gbs_Emu::header_t * ) begin;
-
-		set_track_count( h->track_count );
-		if ( !h->valid_tag() )
-			return blargg_err_file_type;
-		
-		return blargg_ok;
-	}
-	
-	blargg_err_t track_info_( track_info_t* out, int ) const
-	{
-		copy_gbs_fields( Gbs_Emu::header_t( *h ), out );
-		return blargg_ok;
-	}
-
-	blargg_err_t hash_( Hash_Function& out ) const
-	{
-		hash_gbs_file( *h, file_begin() + h->size, file_end() - file_begin() - h->size, out );
-		return blargg_ok;
-=======
 	Gbs_Emu::header_t h;
 
 	Gbs_File() { set_type( gme_gbs_type ); }
@@ -172,42 +94,19 @@ struct Gbs_File : Gme_Info_
 	{
 		copy_gbs_fields( h, out );
 		return 0;
->>>>>>> db7344ebf (abc)
 	}
 };
 
 static Music_Emu* new_gbs_emu () { return BLARGG_NEW Gbs_Emu ; }
 static Music_Emu* new_gbs_file() { return BLARGG_NEW Gbs_File; }
 
-<<<<<<< HEAD
-gme_type_t_ const gme_gbs_type [1] = {{ "Game Boy", 0, &new_gbs_emu, &new_gbs_file, "GBS", 1 }};
-=======
 static gme_type_t_ const gme_gbs_type_ = { "Game Boy", 0, &new_gbs_emu, &new_gbs_file, "GBS", 1 };
 extern gme_type_t const gme_gbs_type = &gme_gbs_type_;
->>>>>>> db7344ebf (abc)
 
 // Setup
 
 blargg_err_t Gbs_Emu::load_( Data_Reader& in )
 {
-<<<<<<< HEAD
-	RETURN_ERR( core_.load( in ) );
-	set_warning( core_.warning() );
-	set_track_count( header().track_count );
-	set_voice_count( Gb_Apu::osc_count );
-	core_.apu().volume( gain() );
-	
-	static const char* const names [Gb_Apu::osc_count] = {
-		"Square 1", "Square 2", "Wave", "Noise"
-	};
-	set_voice_names( names );
-	
-	static int const types [Gb_Apu::osc_count] = {
-		wave_type+1, wave_type+2, wave_type+3, mixed_type+1
-	};
-	set_voice_types( types );
-	
-=======
 	blaarg_static_assert( offsetof (header_t,copyright [32]) == header_size, "GBS Header layout incorrect!" );
 	RETURN_ERR( rom.load( in, header_size, &header_, 0 ) );
 
@@ -229,24 +128,16 @@ blargg_err_t Gbs_Emu::load_( Data_Reader& in )
 
 	apu.volume( gain() );
 
->>>>>>> db7344ebf (abc)
 	return setup_buffer( 4194304 );
 }
 
 void Gbs_Emu::update_eq( blip_eq_t const& eq )
 {
-<<<<<<< HEAD
-	core_.apu().treble_eq( eq );
-=======
 	apu.treble_eq( eq );
->>>>>>> db7344ebf (abc)
 }
 
 void Gbs_Emu::set_voice( int i, Blip_Buffer* c, Blip_Buffer* l, Blip_Buffer* r )
 {
-<<<<<<< HEAD
-	core_.apu().set_output( i, c, l, r );
-=======
 	apu.osc_output( i, c, l, r );
 }
 
@@ -304,31 +195,16 @@ void Gbs_Emu::cpu_jsr( gb_addr_t addr )
 	cpu::r.pc = addr;
 	cpu_write( --cpu::r.sp, idle_addr >> 8 );
 	cpu_write( --cpu::r.sp, idle_addr&0xFF );
->>>>>>> db7344ebf (abc)
 }
 
 void Gbs_Emu::set_tempo_( double t )
 {
-<<<<<<< HEAD
-	core_.set_tempo( t );
-=======
 	apu.set_tempo( t );
 	update_timer();
->>>>>>> db7344ebf (abc)
 }
 
 blargg_err_t Gbs_Emu::start_track_( int track )
 {
-<<<<<<< HEAD
-	sound_t mode = sound_hardware;
-	if ( mode == sound_gbs )
-		mode = (header().timer_mode & 0x80) ? sound_cgb : sound_dmg;
-	
-	RETURN_ERR( core_.start_track( track, (Gb_Apu::mode_t) mode ) );
-	
-	// clear buffer AFTER track is started, eliminating initial click
-	return Classic_Emu::start_track_( track );
-=======
 	RETURN_ERR( Classic_Emu::start_track_( track ) );
 
 	memset( ram, 0, 0x4000 );
@@ -362,21 +238,10 @@ blargg_err_t Gbs_Emu::start_track_( int track )
 	cpu_jsr( get_le16( header_.init_addr ) );
 
 	return 0;
->>>>>>> db7344ebf (abc)
 }
 
 blargg_err_t Gbs_Emu::run_clocks( blip_time_t& duration, int )
 {
-<<<<<<< HEAD
-	return core_.end_frame( duration );
-}
-
-blargg_err_t Gbs_Emu::hash_( Hash_Function& out ) const
-{
-	hash_gbs_file( header(), core_.rom_().begin(), core_.rom_().file_size(), out );
-	return blargg_ok;
-}
-=======
 	cpu_time = 0;
 	while ( cpu_time < duration )
 	{
@@ -426,4 +291,3 @@ blargg_err_t Gbs_Emu::hash_( Hash_Function& out ) const
 
 	return 0;
 }
->>>>>>> db7344ebf (abc)

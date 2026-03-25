@@ -1,20 +1,11 @@
-<<<<<<< HEAD
-// Game_Music_Emu $vers. http://www.slack.net/~ant/
-=======
 // Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
->>>>>>> db7344ebf (abc)
 
 #include "Classic_Emu.h"
 
 #include "Multi_Buffer.h"
-<<<<<<< HEAD
-
-/* Copyright (C) 2003-2008 Shay Green. This module is free software; you
-=======
 #include <string.h>
 
 /* Copyright (C) 2003-2006 Shay Green. This module is free software; you
->>>>>>> db7344ebf (abc)
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version. This
@@ -29,16 +20,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 Classic_Emu::Classic_Emu()
 {
-<<<<<<< HEAD
-	buf           = NULL;
-	stereo_buffer = NULL;
-	voice_types   = NULL;
-	
-	// avoid inconsistency in our duplicated constants
-	assert( (int) wave_type  == (int) Multi_Buffer::wave_type );
-	assert( (int) noise_type == (int) Multi_Buffer::noise_type );
-	assert( (int) mixed_type == (int) Multi_Buffer::mixed_type );
-=======
 	buf           = 0;
 	stereo_buffer = 0;
 	voice_types   = 0;
@@ -47,17 +28,11 @@ Classic_Emu::Classic_Emu()
 	blaarg_static_assert( (int) wave_type  == (int) Multi_Buffer::wave_type, "wave_type inconsistent across two classes using it" );
 	blaarg_static_assert( (int) noise_type == (int) Multi_Buffer::noise_type, "noise_type inconsistent across two classes using it"  );
 	blaarg_static_assert( (int) mixed_type == (int) Multi_Buffer::mixed_type, "mixed_type inconsistent across two classes using it"  );
->>>>>>> db7344ebf (abc)
 }
 
 Classic_Emu::~Classic_Emu()
 {
 	delete stereo_buffer;
-<<<<<<< HEAD
-	delete effects_buffer_;
-	effects_buffer_ = NULL;
-=======
->>>>>>> db7344ebf (abc)
 }
 
 void Classic_Emu::set_equalizer_( equalizer_t const& eq )
@@ -67,13 +42,8 @@ void Classic_Emu::set_equalizer_( equalizer_t const& eq )
 	if ( buf )
 		buf->bass_freq( (int) equalizer().bass );
 }
-<<<<<<< HEAD
-	
-blargg_err_t Classic_Emu::set_sample_rate_( int rate )
-=======
 
 blargg_err_t Classic_Emu::set_sample_rate_( long rate )
->>>>>>> db7344ebf (abc)
 {
 	if ( !buf )
 	{
@@ -84,15 +54,12 @@ blargg_err_t Classic_Emu::set_sample_rate_( long rate )
 	return buf->set_sample_rate( rate, 1000 / 20 );
 }
 
-<<<<<<< HEAD
-=======
 blargg_err_t Classic_Emu::set_multi_channel ( bool is_enabled )
 {
         RETURN_ERR( Music_Emu::set_multi_channel_( is_enabled ) );
         return 0;
 }
 
->>>>>>> db7344ebf (abc)
 void Classic_Emu::mute_voices_( int mask )
 {
 	Music_Emu::mute_voices_( mask );
@@ -100,19 +67,11 @@ void Classic_Emu::mute_voices_( int mask )
 	{
 		if ( mask & (1 << i) )
 		{
-<<<<<<< HEAD
-			set_voice( i, NULL, NULL, NULL );
-		}
-		else
-		{
-			Multi_Buffer::channel_t ch = buf->channel( i );
-=======
 			set_voice( i, 0, 0, 0 );
 		}
 		else
 		{
 			Multi_Buffer::channel_t ch = buf->channel( i, (voice_types ? voice_types [i] : 0) );
->>>>>>> db7344ebf (abc)
 			assert( (ch.center && ch.left && ch.right) ||
 					(!ch.center && !ch.left && !ch.right) ); // all or nothing
 			set_voice( i, ch.center, ch.left, ch.right );
@@ -120,25 +79,12 @@ void Classic_Emu::mute_voices_( int mask )
 	}
 }
 
-<<<<<<< HEAD
-void Classic_Emu::change_clock_rate( int rate )
-=======
 void Classic_Emu::change_clock_rate( uint32_t rate )
->>>>>>> db7344ebf (abc)
 {
 	clock_rate_ = rate;
 	buf->clock_rate( rate );
 }
 
-<<<<<<< HEAD
-blargg_err_t Classic_Emu::setup_buffer( int rate )
-{
-	change_clock_rate( rate );
-	RETURN_ERR( buf->set_channel_count( voice_count(), voice_types ) );
-	set_equalizer( equalizer() );
-	buf_changed_count = buf->channels_changed_count();
-	return blargg_ok;
-=======
 blargg_err_t Classic_Emu::setup_buffer( uint32_t rate )
 {
 	change_clock_rate( rate );
@@ -146,25 +92,12 @@ blargg_err_t Classic_Emu::setup_buffer( uint32_t rate )
 	set_equalizer( equalizer() );
 	buf_changed_count = buf->channels_changed_count();
 	return 0;
->>>>>>> db7344ebf (abc)
 }
 
 blargg_err_t Classic_Emu::start_track_( int track )
 {
 	RETURN_ERR( Music_Emu::start_track_( track ) );
 	buf->clear();
-<<<<<<< HEAD
-	return blargg_ok;
-}
-
-blargg_err_t Classic_Emu::play_( int count, sample_t out [] )
-{
-	// read from buffer, then refill buffer and repeat if necessary
-	int remain = count;
-	while ( remain )
-	{
-		buf->disable_immediate_removal();
-=======
 	return 0;
 }
 
@@ -173,7 +106,6 @@ blargg_err_t Classic_Emu::play_( long count, sample_t* out )
 	long remain = count;
 	while ( remain )
 	{
->>>>>>> db7344ebf (abc)
 		remain -= buf->read_samples( &out [count - remain], remain );
 		if ( remain )
 		{
@@ -182,23 +114,13 @@ blargg_err_t Classic_Emu::play_( long count, sample_t* out )
 				buf_changed_count = buf->channels_changed_count();
 				remute_voices();
 			}
-<<<<<<< HEAD
-			
-			// TODO: use more accurate length calculation
-			int msec = buf->length();
-			blip_time_t clocks_emulated = msec * clock_rate_ / 1000 - 100;
-=======
 			int msec = buf->length();
 			blip_time_t clocks_emulated = (int32_t) msec * clock_rate_ / 1000;
->>>>>>> db7344ebf (abc)
 			RETURN_ERR( run_clocks( clocks_emulated, msec ) );
 			assert( clocks_emulated );
 			buf->end_frame( clocks_emulated );
 		}
 	}
-<<<<<<< HEAD
-	return blargg_ok;
-=======
 	return 0;
 }
 
@@ -265,5 +187,4 @@ void Rom_Data_::set_addr_( long addr, int unit )
 		debug_printf( "rounded: %ld\n", rounded );
 		debug_printf( "mask: $%X\n", mask );
 	}
->>>>>>> db7344ebf (abc)
 }

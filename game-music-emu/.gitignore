@@ -1,10 +1,5 @@
 # Ignore "build" folder
 build/*
-<<<<<<< HEAD
-
-# Qt Creator local user settings files
-*.user
-=======
 build-*/
 
 # Intellij-based IDE local settings
@@ -12,7 +7,6 @@ build-*/
 
 # Qt Creator local user settings files
 *.user*
->>>>>>> db7344ebf (abc)
 
 # test data
 test/demo
@@ -22,10 +16,7 @@ test/curm/*
 test/new/*
 test/newm/*
 
-<<<<<<< HEAD
-=======
 # OS Junk
 .DS_Store
 Thumbs.db
 desktop.ini
->>>>>>> db7344ebf (abc)

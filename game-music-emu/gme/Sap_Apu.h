@@ -1,10 +1,6 @@
 // Atari POKEY sound chip emulator
 
-<<<<<<< HEAD
-// Game_Music_Emu $vers
-=======
 // Game_Music_Emu https://bitbucket.org/mpyne/game-music-emu/
->>>>>>> db7344ebf (abc)
 #ifndef SAP_APU_H
 #define SAP_APU_H
 
@@ -15,42 +11,6 @@ class Sap_Apu_Impl;
 
 class Sap_Apu {
 public:
-<<<<<<< HEAD
-// Basics
-
-	// Sets buffer to generate sound into, or 0 to mute
-	void set_output( Blip_Buffer* );
-	
-	// Emulates to time t, then writes data to addr
-	void write_data( blip_time_t t, int addr, int data );
-
-	// Emulates to time t, then subtracts t from the current time.
-	// OK if previous write call had time slightly after t.
-	void end_frame( blip_time_t t );
-	
-// More features
-
-	// Same as set_output(), but for a particular channel
-	enum { osc_count = 4 };
-	void set_output( int index, Blip_Buffer* );
-	
-	// Resets sound chip and sets Sap_Apu_Impl
-	void reset( Sap_Apu_Impl* impl );
-	
-	// Registers are at io_addr to io_addr+io_size-1
-	enum { io_addr = 0xD200 };
-	enum { io_size = 0x0A };
-	
-private:
-	// noncopyable
-	Sap_Apu( const Sap_Apu& );
-	Sap_Apu& operator = ( const Sap_Apu& );
-	
-// Implementation
-public:
-	Sap_Apu();
-	
-=======
 	static const int osc_count = 4;
 	void osc_output( int index, Blip_Buffer* );
 
@@ -64,7 +24,6 @@ public:
 
 public:
 	Sap_Apu();
->>>>>>> db7344ebf (abc)
 private:
 	struct osc_t
 	{
@@ -83,15 +42,6 @@ private:
 	int poly4_pos;
 	int polym_pos;
 	int control;
-<<<<<<< HEAD
-	
-	void calc_periods();
-	void run_until( blip_time_t );
-	
-	enum { poly4_len  = (1 <<  4) - 1 };
-	enum { poly9_len  = (1 <<  9) - 1 };
-	enum { poly17_len = (1 << 17) - 1 };
-=======
 
 	void calc_periods();
 	void run_until( blip_time_t );
@@ -99,34 +49,12 @@ private:
 	static const unsigned int poly4_len  = (1L <<  4) - 1;
 	static const unsigned int poly9_len  = (1L <<  9) - 1;
 	static const unsigned int poly17_len = (1L << 17) - 1;
->>>>>>> db7344ebf (abc)
 	friend class Sap_Apu_Impl;
 };
 
 // Common tables and Blip_Synth that can be shared among multiple Sap_Apu objects
 class Sap_Apu_Impl {
 public:
-<<<<<<< HEAD
-	// Set treble with synth.treble_eq()
-	Blip_Synth_Norm synth;
-	
-	// Sets overall volume, where 1.0is normal
-	void volume( double d ) { synth.volume( 1.0 / Sap_Apu::osc_count / 30 * d ); }
-	
-	
-// Implementation
-public:
-	Sap_Apu_Impl();
-
-private:
-	BOOST::uint8_t poly4  [Sap_Apu::poly4_len /8 + 1];
-	BOOST::uint8_t poly9  [Sap_Apu::poly9_len /8 + 1];
-	BOOST::uint8_t poly17 [Sap_Apu::poly17_len/8 + 1];
-	friend class Sap_Apu;
-};
-
-inline void Sap_Apu::set_output( int i, Blip_Buffer* b )
-=======
 	Blip_Synth<blip_good_quality,1> synth;
 
 	Sap_Apu_Impl();
@@ -141,7 +69,6 @@ private:
 };
 
 inline void Sap_Apu::osc_output( int i, Blip_Buffer* b )
->>>>>>> db7344ebf (abc)
 {
 	assert( (unsigned) i < osc_count );
 	oscs [i].output = b;
