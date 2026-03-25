@@ -1,5 +1,6 @@
 @import 'fonts/fonts.css';
 @import 'winamp.css';
+@import 'pixel.css';
 @import 'bluearchive.css';
 
 /* MSDOS 6.22 CSS Theme */
@@ -898,12 +899,12 @@ button.IconButton {
       }
     }
 
-    [data-theme="bluearchive"] .tab {
+    [data-theme="pixel"] .tab {
       width: 48%;
       height: 100%;
     }
 
-    [data-theme="bluearchive"] .tab-selected {
+    [data-theme="pixel"] .tab-selected {
       border-radius: 10px 10px 0 0 !important;
       text-transform: uppercase;
       letter-spacing: 0.05em;

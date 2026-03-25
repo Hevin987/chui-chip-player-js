@@ -12,6 +12,10 @@ const themes = [
     label: 'Winamp',
   },
   {
+    value: 'pixel',
+    label: 'Pixel Theme',
+  },
+  {
     value: 'bluearchive',
     label: 'Blue Archive',
   },
