@@ -68,7 +68,7 @@ export default class Oscilloscope extends Component {
       // Find true max channels by filtering out uninitialized or completely empty buffers (optional style choice)
     }
 
-    const cols = 2;
+    const cols = numChannels === 1 ? 1 : 2;
     // Dynamically calculate rows needed for up to 16+ channels (like Genesis 10 ch)
     const rows = Math.max(1, Math.ceil(numChannels / cols)); 
     
@@ -77,7 +77,12 @@ export default class Oscilloscope extends Component {
     ctx.strokeStyle = '#440000'; // Dark red like Image 1
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(width / 2, 0); ctx.lineTo(width / 2, height);
+    
+    // Only draw vertical center line if we have 2 columns
+    if (cols > 1) {
+      ctx.moveTo(width / 2, 0); ctx.lineTo(width / 2, height);
+    }
+    
     for(let r = 1; r < rows; r++) {
        ctx.moveTo(0, (r * height) / rows); ctx.lineTo(width, (r * height) / rows);
     }
@@ -121,11 +126,15 @@ export default class Oscilloscope extends Component {
       const col = c % cols;
       const row = Math.floor(c / cols);
 
-      // Draw Channel Label
+      // Draw Channel Label without blur
+      ctx.shadowBlur = 0;
       ctx.fillStyle = '#ffffff';
       ctx.font = "bold 14px monospace";
       const channelName = (typeof window !== "undefined" && window.voiceNames && window.voiceNames[c]) ? window.voiceNames[c] : `Channel ${c}`;
       ctx.fillText(channelName, col * channelWidth + 10, row * channelHeight + 24);
+
+      // Restore blur for the neon wave styling
+      ctx.shadowBlur = 4;
 
       // Find min, max, and DC average to handle unsigned waves (like SN76489 pulses)
       let minVal = 1.0;
