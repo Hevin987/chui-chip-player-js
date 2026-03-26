@@ -153,6 +153,8 @@ export default class VGMPlayer extends Player {
       if (!window.voiceBuffers) window.voiceBuffers = [];
       if (!window.voiceNames) window.voiceNames = [];
       const numVoices = this.core._lvgm_get_voice_count(this.vgmCtx) || 8;
+      window.voiceBuffers.length = numVoices;
+      window.voiceNames.length = numVoices;
       for (let v = 0; v < numVoices; v++) {
         if (!window.voiceBuffers[v]) window.voiceBuffers[v] = new Float32Array(this.bufferSize);
         window.voiceNames[v] = this.core.UTF8ToString(this.core._lvgm_get_voice_name(this.vgmCtx, v)) || `Channel ${v}`;

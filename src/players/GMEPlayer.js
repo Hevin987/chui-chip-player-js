@@ -109,6 +109,8 @@ export default class GMEPlayer extends Player {
           if (!window.voiceBuffers) window.voiceBuffers = [];
           if (!window.voiceNames) window.voiceNames = [];
           const numVoices = core._gme_voice_count(this.gmeCtx) || 8;
+          window.voiceBuffers.length = numVoices;
+          window.voiceNames.length = numVoices;
           for (let v = 0; v < numVoices; v++) {
             if (!window.voiceBuffers[v]) window.voiceBuffers[v] = new Float32Array(this.bufferSize);
             window.voiceNames[v] = core.UTF8ToString(core._gme_voice_name(this.gmeCtx, v)) || `Channel ${v}`;
@@ -131,7 +133,7 @@ export default class GMEPlayer extends Player {
             channels[1][i] += vR;
 
             // Store mixed mono for UI Oscilloscope view
-            if (typeof window !== "undefined" && window.voiceBuffers) {
+            if (typeof window !== "undefined" && window.voiceBuffers && window.voiceBuffers[v]) {
               window.voiceBuffers[v][i] = (vL + vR) / 2.0;
             }
           }
@@ -144,12 +146,12 @@ export default class GMEPlayer extends Player {
         if (typeof window !== "undefined") {
           if (!window.voiceBuffers) window.voiceBuffers = [];
           if (!window.voiceNames) window.voiceNames = [];
+          
+          window.voiceBuffers.length = 1;
+          window.voiceNames.length = 1;
+
           if (!window.voiceBuffers[0]) window.voiceBuffers[0] = new Float32Array(this.bufferSize);
           window.voiceNames[0] = "Master Mix";
-          // clear previous buffers so they render empty
-          for (let v = 1; v < window.voiceBuffers.length; v++) {
-            if (window.voiceBuffers[v]) window.voiceBuffers[v].fill(0);
-          }
         }
 
         for (i = 0; i < this.bufferSize; i++) {

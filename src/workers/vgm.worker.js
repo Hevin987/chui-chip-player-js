@@ -64,12 +64,8 @@ self.onmessage = async (e) => {
       core._lvgm_reset(vgmCtx);
       core._lvgm_start(vgmCtx);
       
-      const voiceMask = new Array(64).fill(false);
-      voiceMask[v] = true;
-      let bitmask = 0n;
-      voiceMask.forEach((isEnabled, i) => {
-        if (!isEnabled) bitmask += 1n << BigInt(i);
-      });
+      // Mute all except v
+      const bitmask = ~(1 << v) >>> 0;
       core._lvgm_set_voice_mask(vgmCtx, bitmask);
       
       try {
