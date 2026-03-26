@@ -82,6 +82,16 @@ export default class VGMPlayer extends Player {
       this.stop();
     }
 
+    // Initialize UI Oscilloscope buffers
+    if (typeof window !== "undefined") {
+      if (!window.voiceBuffers) window.voiceBuffers = [];
+      if (!window.voiceBuffers[0]) window.voiceBuffers[0] = new Float32Array(this.bufferSize);
+      // clear previous buffers so they render empty
+      for (let v = 1; v < 8; v++) {
+        if (window.voiceBuffers[v]) window.voiceBuffers[v].fill(0);
+      }
+    }
+
     for (ch = 0; ch < channels.length; ch++) {
       for (i = 0; i < this.bufferSize; i++) {
         channels[ch][i] = this.core.getValue(
@@ -90,6 +100,13 @@ export default class VGMPlayer extends Player {
           ch * 4,                 // channel offset * bytes per sample
           'i32'                   // the sample values are 32-bit integer
         ) / INT32_MAX;
+      }
+    }
+
+    // Render the master stereo mix for the visualizer
+    if (typeof window !== "undefined" && window.voiceBuffers) {
+      for (i = 0; i < this.bufferSize; i++) {
+        window.voiceBuffers[0][i] = (channels[0][i] + channels[1][i]) / 2.0;
       }
     }
   }
