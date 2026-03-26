@@ -62,8 +62,8 @@ self.onmessage = async (e) => {
       self.postMessage({ type: 'progress', percent: (v / MAX_VOICES) * 100 });
       
       core._lvgm_reset(vgmCtx);
+      core._lvgm_start(vgmCtx);
       
-      // Mute all except v
       const voiceMask = new Array(64).fill(false);
       voiceMask[v] = true;
       let bitmask = 0n;
@@ -71,7 +71,6 @@ self.onmessage = async (e) => {
         if (!isEnabled) bitmask += 1n << BigInt(i);
       });
       core._lvgm_set_voice_mask(vgmCtx, bitmask);
-      core._lvgm_start(vgmCtx);
       
       try {
         let currentFrame = 0;

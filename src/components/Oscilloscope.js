@@ -172,7 +172,7 @@ export default class Oscilloscope extends Component {
         const raw_v = buffer[startIdx + i]; 
         
         let normalizedPos = 0.5; // Default to center line for complete silence
-        if (amplitudeRange > 0.01) { // Prevents dividing by zero or magnifying extreme noise
+        if (amplitudeRange > 0.001) { // Prevents dividing by zero or magnifying extreme noise
             normalizedPos = (raw_v - minVal) / amplitudeRange;
         }
         
