@@ -1,6 +1,10 @@
 import Player from "./Player.js";
 import autoBind from 'auto-bind';
 import { allOrNone } from '../util';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import VGMWorker from 'worker-loader!../workers/vgm.worker.js';
+
+let visualizerWorker = null;
 
 const fileExtensions = [
   'vgm',
@@ -13,6 +17,21 @@ const fileExtensions = [
 const INT32_MAX = 0x8000000; // 2147483648
 
 export default class VGMPlayer extends Player {
+  paramDefs = [
+    {
+      id: 'debugChannel',
+      label: 'Debug Channel Mode',
+      type: 'enum',
+      options: [
+        {
+          label: 'Channel',
+          items: [{ value: -1, label: 'All Channels (Normal)' }]
+        }
+      ],
+      defaultValue: -1,
+    }
+  ];
+
   constructor(...args) {
     super(...args);
     autoBind(this);
@@ -23,6 +42,9 @@ export default class VGMPlayer extends Player {
     this.fileExtensions = fileExtensions;
     this.buffer = this.core._malloc(this.bufferSize * 4 * 2);
     this.vgmCtx = this.core._lvgm_init(this.sampleRate);
+    this.visualMap = null;
+    this.useMultichannel = false;
+    this.currentRenderFrame = 0;
   }
 
   loadData(data, filepath, persistedSettings) {
@@ -57,6 +79,50 @@ export default class VGMPlayer extends Player {
         allOrNone(' (', meta.date, ')'),
     };
     this.metadata = meta;
+    
+    this.currentRenderFrame = 0;
+    this.visualMap = null;
+    this.useMultichannel = persistedSettings.vgmMultichannel ?? false;
+
+    // Populate Debug Channel Solo Dropdown dynamically based on this specific file's voices
+    const numVoices = this.core._lvgm_get_voice_count(this.vgmCtx) || 8;
+    const debugItems = [{ value: -1, label: 'All Channels (Normal)' }];
+    for (let v = 0; v < numVoices; v++) {
+      const voiceName = this.core.UTF8ToString(this.core._lvgm_get_voice_name(this.vgmCtx, v)) || `Channel ${v}`;
+      debugItems.push({ value: v, label: `Channel ${v}: ${voiceName}` });
+    }
+    this.paramDefs[0].options[0].items = debugItems;
+
+    if (this.useMultichannel) {
+      if (visualizerWorker) {
+        visualizerWorker.terminate();
+      }
+      visualizerWorker = new VGMWorker();
+      
+      visualizerWorker.onerror = (e) => {
+        console.error("VGM Worker error:", e);
+      };
+
+      visualizerWorker.onmessage = (e) => {
+        if (e.data.type === 'done') {
+          this.visualMap = new Float32Array(e.data.visualBuffer);
+          this.totalVisualFrames = e.data.totalFrames;
+          this.maxVoices = e.data.MAX_VOICES;
+          console.log("Multichannel visualizer data ready. " + this.totalVisualFrames + " frames.");
+        } else if (e.data.type === 'error') {
+          console.error("VGM Worker explicitly reported error:", e.data.error);
+        } else if (e.data.type === 'progress') {
+          console.log("Visualizer Worker Progress: " + e.data.percent + "%");
+        }
+      };
+
+      visualizerWorker.postMessage({
+        type: 'analyze',
+        data: data.slice(0),
+        sampleRate: this.sampleRate,
+        bufferSize: this.bufferSize
+      });
+    }
 
     this.resolveParamValues(persistedSettings);
     this.setTempo(persistedSettings.tempo || 1);
@@ -85,10 +151,11 @@ export default class VGMPlayer extends Player {
     // Initialize UI Oscilloscope buffers
     if (typeof window !== "undefined") {
       if (!window.voiceBuffers) window.voiceBuffers = [];
-      if (!window.voiceBuffers[0]) window.voiceBuffers[0] = new Float32Array(this.bufferSize);
-      // clear previous buffers so they render empty
-      for (let v = 1; v < 8; v++) {
-        if (window.voiceBuffers[v]) window.voiceBuffers[v].fill(0);
+      if (!window.voiceNames) window.voiceNames = [];
+      const numVoices = this.core._lvgm_get_voice_count(this.vgmCtx) || 8;
+      for (let v = 0; v < numVoices; v++) {
+        if (!window.voiceBuffers[v]) window.voiceBuffers[v] = new Float32Array(this.bufferSize);
+        window.voiceNames[v] = this.core.UTF8ToString(this.core._lvgm_get_voice_name(this.vgmCtx, v)) || `Channel ${v}`;
       }
     }
 
@@ -103,10 +170,38 @@ export default class VGMPlayer extends Player {
       }
     }
 
-    // Render the master stereo mix for the visualizer
     if (typeof window !== "undefined" && window.voiceBuffers) {
-      for (i = 0; i < this.bufferSize; i++) {
-        window.voiceBuffers[0][i] = (channels[0][i] + channels[1][i]) / 2.0;
+      if (this.useMultichannel && this.visualMap) {
+        // Read pre-rendered multi-channel buffers!
+        const rawMs = this.getPositionMs();
+        // The worker saved raw frames linearly based on logical track bounds at 1.0x speed
+        const currentFrame = Math.floor((rawMs / 1000) * this.sampleRate / this.bufferSize);
+        
+        if (currentFrame < this.totalVisualFrames) {
+          const maxVoices = this.maxVoices || 8;
+          // Ensure window.voiceBuffers has enough arrays
+          while (window.voiceBuffers.length < maxVoices) {
+            window.voiceBuffers.push(new Float32Array(this.bufferSize));
+          }
+          // Trim if too many
+          if (window.voiceBuffers.length > maxVoices) {
+            window.voiceBuffers.length = maxVoices;
+          }
+
+          for (let v = 0; v < maxVoices; v++) {
+            const baseOffset = currentFrame * maxVoices * this.bufferSize + (v * this.bufferSize);
+            // Copy the Float32 subarray directly out of the shared visualMap
+            window.voiceBuffers[v].set(this.visualMap.subarray(baseOffset, baseOffset + this.bufferSize));
+          }
+        }
+      } else {
+        // Render the master stereo mix for the visualizer
+        for (i = 0; i < this.bufferSize; i++) {
+          window.voiceBuffers[0][i] = (channels[0][i] + channels[1][i]) / 2.0;
+        }
+        for (let v = 1; v < window.voiceBuffers.length; v++) {
+          window.voiceBuffers[v].fill(0);
+        }
       }
     }
   }
@@ -170,8 +265,10 @@ export default class VGMPlayer extends Player {
   }
 
   seekMs(seekMs) {
-    if (this.vgmCtx)
+    if (this.vgmCtx) {
       this.core._lvgm_seek_ms(this.vgmCtx, seekMs);
+      this.currentRenderFrame = Math.floor((seekMs / 1000) * this.sampleRate / this.bufferSize);
+    }
   }
 
   getVoiceName(index) {
@@ -207,5 +304,28 @@ export default class VGMPlayer extends Player {
     if (this.vgmCtx) this.core._lvgm_stop(this.vgmCtx);
     console.debug('VGMPlayer.stop()');
     this.emit('playerStateUpdate', { isStopped: true });
+  }
+
+  setParameter(id, value) {
+    if (id === 'debugChannel') {
+      this.params[id] = parseInt(value, 10);
+      if (this.vgmCtx) {
+        const debugVal = this.params[id];
+        if (debugVal === -1) {
+          this.core._lvgm_set_voice_mask(this.vgmCtx, 0n);
+        } else {
+          const numVoices = this.core._lvgm_get_voice_count(this.vgmCtx);
+          let bitmask = 0n;
+          for (let i = 0; i < numVoices; i++) {
+            if (i !== debugVal) {
+              bitmask += 1n << BigInt(i);
+            }
+          }
+          this.core._lvgm_set_voice_mask(this.vgmCtx, bitmask);
+        }
+      }
+    } else {
+      super.setParameter(id, value);
+    }
   }
 }

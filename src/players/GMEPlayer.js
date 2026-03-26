@@ -3,8 +3,11 @@ import SubBass from "../effects/SubBass";
 import { allOrNone, remap01 } from '../util';
 import path from 'path';
 import autoBind from 'auto-bind';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import GMEWorker from 'worker-loader!../workers/gme.worker.js';
 
 let core = null;
+let visualizerWorker = null;
 
 // "timesliced" seek in increments to prevent blocking UI/audio callback.
 const TIMESLICED_SEEK_MS_MAP = {
@@ -104,8 +107,11 @@ export default class GMEPlayer extends Player {
         // Expose voice waveforms for the UI Oscilloscope
         if (typeof window !== "undefined") {
           if (!window.voiceBuffers) window.voiceBuffers = [];
-          for (let v = 0; v < 8; v++) {
+          if (!window.voiceNames) window.voiceNames = [];
+          const numVoices = core._gme_voice_count(this.gmeCtx) || 8;
+          for (let v = 0; v < numVoices; v++) {
             if (!window.voiceBuffers[v]) window.voiceBuffers[v] = new Float32Array(this.bufferSize);
+            window.voiceNames[v] = core.UTF8ToString(core._gme_voice_name(this.gmeCtx, v)) || `Channel ${v}`;
           }
         }
 
@@ -137,9 +143,11 @@ export default class GMEPlayer extends Player {
         
         if (typeof window !== "undefined") {
           if (!window.voiceBuffers) window.voiceBuffers = [];
+          if (!window.voiceNames) window.voiceNames = [];
           if (!window.voiceBuffers[0]) window.voiceBuffers[0] = new Float32Array(this.bufferSize);
+          window.voiceNames[0] = "Master Mix";
           // clear previous buffers so they render empty
-          for (let v = 1; v < 8; v++) {
+          for (let v = 1; v < window.voiceBuffers.length; v++) {
             if (window.voiceBuffers[v]) window.voiceBuffers[v].fill(0);
           }
         }

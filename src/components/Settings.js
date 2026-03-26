@@ -50,6 +50,10 @@ function Settings(props) {
     updateSettings({ visualizerEnabled: e.target.value === 'true' });
   }, [updateSettings]);
 
+  const handleToggleMultichannel = useCallback((e) => {
+    updateSettings({ vgmMultichannel: e.target.value === 'true' });
+  }, [updateSettings]);
+
   return (
     <div className='Settings'>
       <h3>{sequencer?.getPlayer()?.name || 'Player'} Settings</h3>
@@ -91,6 +95,25 @@ function Settings(props) {
                defaultChecked={settings?.visualizerEnabled === false}
                name='visualizer-enabled'/>
         <label htmlFor='vis-off' className='inline'>Off</label>
+      </span>
+      <span className='PlayerParams-param'>
+        <label className='PlayerParams-label'>
+          VGM/SPC Multichannel Mode:{' '}
+        </label>
+        <input onClick={handleToggleMultichannel}
+               id='multi-on'
+               type='radio'
+               value="true"
+               defaultChecked={settings?.vgmMultichannel === true}
+               name='multichannel-enabled'/>
+        <label htmlFor='multi-on' className='inline'>On (CPU Heavy)</label>
+        <input onClick={handleToggleMultichannel}
+               id='multi-off'
+               type='radio'
+               value="false"
+               defaultChecked={settings?.vgmMultichannel !== true}
+               name='multichannel-enabled'/>
+        <label htmlFor='multi-off' className='inline'>Off</label>
       </span>
       <span className='PlayerParams-param'>
         <label htmlFor='theme' className="PlayerParams-label">
