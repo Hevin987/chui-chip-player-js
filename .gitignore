@@ -1,5 +1,7 @@
 *
 node_module/
 !build/
+!build/**/**/*
+!build/**/*
 !build/*
 !.gitignore
