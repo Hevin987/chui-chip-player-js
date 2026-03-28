@@ -5,10 +5,7 @@
 node_modules/
 emsdk/
 .emsdk
-<<<<<<< HEAD
 cmake-build-debug/
-
-=======
 dist/
 cmake-build-debug/
 *.a
@@ -24,7 +21,6 @@ src/chip-core.js
 server/catalog.json
 server/directories.json
 server/ecosystem.config.js
-catalog
 public/music
 src/config/firebaseConfig.js
 libxmp/a.out.js
