@@ -9,7 +9,6 @@ cmake-build-debug/
 dist/
 cmake-build-debug/
 *.a
-*.wasm
 *.wasm.map
 *.db
 lib*.js
