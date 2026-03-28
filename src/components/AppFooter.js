@@ -60,7 +60,7 @@ function AppFooter(props) {
         <div className="control-group">
           {/* Play/Pause */}
           <button className="control-btn btn-large box-button" onClick={togglePause} title={playPauseTitle} disabled={ejected}>
-            <img src={`${process.env.PUBLIC_URL || ''}/${paused ? 'play.png' : 'pause.png'}`} className="btn-icon" alt={playPauseTitle} style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <img src={`${process.env.PUBLIC_URL || ''}/chipPlayer/${paused ? 'play.png' : 'pause.png'}`} className="btn-icon" alt={playPauseTitle} style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
             <span style={{ display: 'none', fontSize: '2rem' }} className={`inline-icon ${playPauseClass}`} />
           </button>
         </div>
@@ -83,12 +83,12 @@ function AppFooter(props) {
             {currentSongNumSubtunes > 1 && (
               <div className="back-forward-controls" style={{ display: 'flex', gap: '4px', fontSize: '10px', alignItems: 'center' }}>
                 <button className="control-btn box-button" disabled={ejected} onClick={prevSubtune} style={{ padding: '0px 4px', display: 'flex', alignItems: 'center' }}>
-                  <img src={`${process.env.PUBLIC_URL || ''}/backward.png`} alt="Previous Subtune" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='inline-block'; }}/>
+                  <img src={`${process.env.PUBLIC_URL || ''}/chipPlayer/backward.png`} alt="Previous Subtune" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='inline-block'; }}/>
                   <span style={{ display: 'none' }} className="inline-icon icon-back"/>
                 </button>
                 <div style={{ padding: '2px 4px', display: 'flex', alignItems: 'center' }}>{currentSongSubtune + 1}/{currentSongNumSubtunes}</div>
                 <button className="control-btn box-button" disabled={ejected} onClick={nextSubtune} style={{ padding: '0px 4px', display: 'flex', alignItems: 'center' }}>
-                  <img src={`${process.env.PUBLIC_URL || ''}/forward.png`} alt="Next" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='inline-block'; }}/>
+                  <img src={`${process.env.PUBLIC_URL || ''}/chipPlayer/forward.png`} alt="Next" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='inline-block'; }}/>
                   <span style={{ display: 'none' }} className="inline-icon icon-forward"/>
                 </button>
               </div>
@@ -97,12 +97,12 @@ function AppFooter(props) {
 
           {/* Back */}
           <button className="control-btn btn-medium box-button" onClick={prevSong} title="Previous" disabled={ejected}>
-            <img src={`${process.env.PUBLIC_URL || ''}/previous.png`} alt="Previous" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <img src={`${process.env.PUBLIC_URL || ''}/chipPlayer/previous.png`} alt="Previous" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
             <span style={{ display: 'none', fontSize: '1.5rem' }} className="inline-icon icon-prev" />
           </button>
           {/* Next */}
           <button className="control-btn btn-medium box-button" onClick={nextSong} title="Next" disabled={ejected}>
-            <img src={`${process.env.PUBLIC_URL || ''}/next.png`} alt="Next" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <img src={`${process.env.PUBLIC_URL || ''}/chipPlayer/next.png`} alt="Next" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
             <span style={{ display: 'none', fontSize: '1.5rem' }} className="inline-icon icon-next" />
           </button>
         </div>
@@ -110,12 +110,12 @@ function AppFooter(props) {
         <div className="control-group" style={{ display: 'flex', gap: '0.5rem' }}>
           {/* Loop */}
           <button className={`control-btn btn-medium box-button ${repeat !== 0 ? 'active' : ''}`} onClick={handleCycleRepeat} title={`Repeat: ${REPEAT_LABELS[repeat]}`}>
-            <img src={`${process.env.PUBLIC_URL || ''}/loop.png`} alt="Loop" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <img src={`${process.env.PUBLIC_URL || ''}/chipPlayer/loop.png`} alt="Loop" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
             <span style={{ display: 'none', fontSize: '1.5rem' }} className="inline-icon icon-repeat" />
           </button>
           {/* Shuffle */}
           <button className={`control-btn btn-medium box-button ${shuffle !== 0 ? 'active' : ''}`} onClick={handleCycleShuffle} title={`Shuffle: ${SHUFFLE_LABELS[shuffle]}`}>
-            <img src={`${process.env.PUBLIC_URL || ''}/shuffle.png`} alt="Shuffle" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
+            <img src={`${process.env.PUBLIC_URL || ''}/chipPlayer/shuffle.png`} alt="Shuffle" style={{ maxHeight: '100%', maxWidth: '100%' }} onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}/>
             <span style={{ display: 'none', fontSize: '1.5rem' }} className="inline-icon icon-shuffle" />
           </button>
         </div>

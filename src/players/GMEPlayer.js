@@ -4,7 +4,7 @@ import { allOrNone, remap01 } from '../util';
 import path from 'path';
 import autoBind from 'auto-bind';
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import GMEWorker from 'worker-loader!../workers/gme.worker.js';
+import GMEWorker from 'worker-loader?name=chipPlayer/[contenthash].worker.js!../workers/gme.worker.js';
 
 let core = null;
 let visualizerWorker = null;

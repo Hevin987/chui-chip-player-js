@@ -336,7 +336,7 @@ const chipModules = [
 const compiler = process.env.EMPP_BIN || 'em++';
 const jsOutFile = 'src/chip-core.js';
 const wasmOutFile = 'src/chip-core.wasm';
-const wasmDir = paths.appPublic;
+const wasmDir = path.join(paths.appPublic, 'chipPlayer');
 const wasmMapOutFile = wasmOutFile + '.map';
 const wasmMapDir = path.resolve(paths.appPublic, '..');
 const runtimeMethods = [
@@ -415,6 +415,9 @@ const args = [].concat(flags, sourceFiles);
 const build_proc = spawn(compiler, args, {stdio: 'inherit'});
 build_proc.on('exit', function (code) {
   if (code === 0) {
+    if (!fs.existsSync(wasmDir)) {
+      fs.mkdirSync(wasmDir, { recursive: true });
+    }
     console.log('Moving %s to %s.', wasmOutFile, wasmDir);
     execSync(`mv ${wasmOutFile} ${wasmDir}`);
 

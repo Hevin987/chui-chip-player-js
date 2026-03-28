@@ -2,7 +2,7 @@ import Player from "./Player.js";
 import autoBind from 'auto-bind';
 import { allOrNone } from '../util';
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import VGMWorker from 'worker-loader!../workers/vgm.worker.js';
+import VGMWorker from 'worker-loader?name=chipPlayer/[contenthash].worker.js!../workers/vgm.worker.js';
 
 let visualizerWorker = null;
 

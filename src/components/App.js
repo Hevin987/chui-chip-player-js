@@ -133,7 +133,7 @@ class App extends React.Component {
         // Look for .wasm file in web root, not the same location as the app bundle (static/js).
         locateFile: (path, prefix) => {
           if (path.endsWith('.wasm') || path.endsWith('.wast'))
-            return `${BASE_URL}/${path}`;
+            return `${BASE_URL}/chipPlayer/${path}`;
           return prefix + path;
         },
         print: (msg) => console.debug('[stdout] ' + msg),
@@ -284,7 +284,7 @@ class App extends React.Component {
       // See https://bugs.chromium.org/p/chromium/issues/detail?id=944538
       //     https://github.com/GoogleChrome/samples/issues/637
       this.mediaSessionAudio = document.createElement('audio');
-      this.mediaSessionAudio.src = BASE_URL + '/5-seconds-of-silence.mp3';
+      this.mediaSessionAudio.src = BASE_URL + '/chipPlayer/5-seconds-of-silence.mp3';
       this.mediaSessionAudio.loop = true;
       this.mediaSessionAudio.volume = 0;
 
