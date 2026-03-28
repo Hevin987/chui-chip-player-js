@@ -213,15 +213,34 @@ class App extends React.Component {
       const params = queryString.parse(window.location.search.substring(1));
       if (params.play) {
         let playPath = params.play;
-        if (!playPath.startsWith('http')) {
-          // Server-relative path (e.g. /catalog/song.vgm) — fetch it directly
-          // from the same origin (works with any static file server, no API needed).
-          playPath = window.location.origin + (playPath.startsWith('/') ? '' : '/') + playPath;
+        let queuePaths = [playPath];
+
+        try {
+          const storedQueue = sessionStorage.getItem('chipPlayerQueue');
+          if (storedQueue) {
+            queuePaths = JSON.parse(storedQueue);
+            sessionStorage.removeItem('chipPlayerQueue');
+          }
+        } catch (e) {
+          console.error("Failed to read chipPlayerQueue", e);
         }
+
+        const resolvePath = (p) => {
+          if (!p.startsWith('http')) {
+            return window.location.origin + (p.startsWith('/') ? '' : '/') + p;
+          }
+          return p;
+        };
+
+        const resolvedPaths = queuePaths.map(resolvePath);
+        const resolvedPlayPath = resolvePath(playPath);
+        let playIdx = resolvedPaths.findIndex(p => p === resolvedPlayPath);
+        if (playIdx < 0) playIdx = 0;
+
         // Resume AudioContext — Chrome transfers user activation from the
         // page that triggered the navigation, allowing immediate playback.
         this.audioCtx.resume();
-        this.sequencer.playSonglist([playPath]);
+        this.sequencer.playContext(resolvedPaths, playIdx);
       }
     });
   }

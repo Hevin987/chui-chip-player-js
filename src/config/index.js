@@ -1,11 +1,11 @@
 let API_BASE = 'https://chiptune.app/api';
-let CATALOG_PREFIX = 'https://gifx.co/music';
-let SOUNDFONT_URL_PATH = 'https://gifx.co/soundfonts';
+let CATALOG_PREFIX = './catalog';
+let SOUNDFONT_URL_PATH = './soundfonts';
 
 if (process.env.NODE_ENV === 'development') {
   API_BASE = 'http://localhost:8080/api'; // npm run server - Node.js server on port 8080
-  CATALOG_PREFIX = 'http://localhost:8080/catalog';
-  SOUNDFONT_URL_PATH = 'http://localhost:8080/soundfonts';
+  CATALOG_PREFIX = './catalog';
+  SOUNDFONT_URL_PATH = './soundfonts';
 }
 
 const MAX_SAMPLE_RATE = 48000; // Higher rates are problematic for some players.

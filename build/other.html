@@ -666,6 +666,23 @@
             const filePath = currentPath === '/' ? '/' + filename : currentPath + '/' + filename;
             const ext = filename.split('.').pop().toLowerCase();
             if (AUDIO_FORMATS.has(ext)) {
+                // Collect all audio files in the current directory for the play queue
+                const currentFolder = fileSystem[currentPath];
+                let queue = [];
+                if (currentFolder && currentFolder.children) {
+                    queue = currentFolder.children
+                        .filter(name => {
+                            const e = name.split('.').pop().toLowerCase();
+                            return AUDIO_FORMATS.has(e) && !isFolder(currentPath === '/' ? '/' + name : currentPath + '/' + name);
+                        })
+                        .map(name => currentPath === '/' ? '/' + name : currentPath + '/' + name);
+                }
+                try {
+                    sessionStorage.setItem('chipPlayerQueue', JSON.stringify(queue));
+                } catch (e) {
+                    console.error("Failed to set sessionStorage", e);
+                }
+                
                 // Open chip player and auto-play this file.
                 window.location.href = CHIP_PLAYER_URL + '?play=' + encodeURIComponent(filePath);
             } else {

@@ -50,7 +50,12 @@ export default class MDXPlayer extends Player {
           // Force upper case in the URL, as the entire MDX archive is upper case.
           // MDX files were authored on old case-insensitive filesystems, but
           // the music server filesystem (and URLs in general) are case-sensitive.
-          const pdxUrl = pathJoin(CATALOG_PREFIX, dir, pdx.toUpperCase());
+          let pdxUrl;
+          if (filename.startsWith('http://') || filename.startsWith('https://')) {
+            pdxUrl = new URL(pdx.toUpperCase(), filename).toString();
+          } else {
+            pdxUrl = pathJoin(CATALOG_PREFIX, dir, pdx.toUpperCase());
+          }
           // Write MDX file into Emscripten filesystem.
           return ensureEmscFileWithUrl(this.core, pdxFilename, pdxUrl);
         }

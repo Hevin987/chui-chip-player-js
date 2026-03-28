@@ -31,11 +31,12 @@ export default class N64Player extends Player {
     let err;
     this.filepathMeta = Player.metadataFromFilepath(filename);
 
-    const miniusfStr = String.fromCharCode.apply(null, data);
-    const usflibs = miniusfStr.match(/_lib=([^\n]+)/).slice(1);
+    const miniusfStr = new TextDecoder("latin1").decode(data);
+    const usflibs = Array.from(miniusfStr.matchAll(/_lib(?:[0-9]+)?=([^\r\n]+)/g)).map(m => m[1]);
     if (usflibs.length === 0) {
       throw new Error(`No .usflib references found`);
     }
+
 
     const dir = path.dirname(filename);
     const fsFilename = pathJoin(MOUNTPOINT, filename);
@@ -43,7 +44,12 @@ export default class N64Player extends Player {
       ensureEmscFileWithData(this.core, fsFilename, data),
       ...usflibs.map(usflib => {
         const fsFilename = pathJoin(MOUNTPOINT, dir, usflib);
-        const url = pathJoin(CATALOG_PREFIX, dir, usflib);
+        let url;
+        if (filename.startsWith('http://') || filename.startsWith('https://')) {
+          url = new URL(usflib, filename).toString();
+        } else {
+          url = pathJoin(CATALOG_PREFIX, dir, usflib);
+        }
         return ensureEmscFileWithUrl(this.core, fsFilename, url);
       }),
     ];

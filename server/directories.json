@@ -1,5 +1,280 @@
 {
+  "/Super Mario 64": [
+    {
+      "path": "/Super Mario 64/02 Title Theme.miniusf",
+      "size": 222,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 0
+    },
+    {
+      "path": "/Super Mario 64/03 Peach's Message.miniusf",
+      "size": 219,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 1
+    },
+    {
+      "path": "/Super Mario 64/04 Opening.miniusf",
+      "size": 211,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 2
+    },
+    {
+      "path": "/Super Mario 64/05 Main Theme.miniusf",
+      "size": 221,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 3
+    },
+    {
+      "path": "/Super Mario 64/06 Slider.miniusf",
+      "size": 217,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 4
+    },
+    {
+      "path": "/Super Mario 64/07 Inside the Castle Walls.miniusf",
+      "size": 234,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 5
+    },
+    {
+      "path": "/Super Mario 64/08 Looping Steps.miniusf",
+      "size": 224,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 6
+    },
+    {
+      "path": "/Super Mario 64/09a Dire, Dire Docks.miniusf",
+      "size": 358,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 7
+    },
+    {
+      "path": "/Super Mario 64/09b Dire, Dire Docks (in water).miniusf",
+      "size": 306,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 8
+    },
+    {
+      "path": "/Super Mario 64/09c Dire, Dire Docks (underwater cave).miniusf",
+      "size": 246,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 9
+    },
+    {
+      "path": "/Super Mario 64/10 Lethal Lava Land.miniusf",
+      "size": 227,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 10
+    },
+    {
+      "path": "/Super Mario 64/11 Snow Mountain.miniusf",
+      "size": 224,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 11
+    },
+    {
+      "path": "/Super Mario 64/12 Haunted House.miniusf",
+      "size": 225,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 12
+    },
+    {
+      "path": "/Super Mario 64/13 Merry-Go-Round.miniusf",
+      "size": 225,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 13
+    },
+    {
+      "path": "/Super Mario 64/14a Cave Dungeon.miniusf",
+      "size": 237,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 14
+    },
+    {
+      "path": "/Super Mario 64/14b Cave Dungeon (Hazy Maze).miniusf",
+      "size": 249,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 15
+    },
+    {
+      "path": "/Super Mario 64/14c Cave Dungeon (both variations).miniusf",
+      "size": 242,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 16
+    },
+    {
+      "path": "/Super Mario 64/15 Piranha Plant's Lullaby.miniusf",
+      "size": 234,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 17
+    },
+    {
+      "path": "/Super Mario 64/16 Powerful Mario.miniusf",
+      "size": 213,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 18
+    },
+    {
+      "path": "/Super Mario 64/17 Metallic Mario.miniusf",
+      "size": 225,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 19
+    },
+    {
+      "path": "/Super Mario 64/18 File Select.miniusf",
+      "size": 222,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 20
+    },
+    {
+      "path": "/Super Mario 64/19 Correct Solution.miniusf",
+      "size": 220,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 21
+    },
+    {
+      "path": "/Super Mario 64/20 Toad's Message.miniusf",
+      "size": 218,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 22
+    },
+    {
+      "path": "/Super Mario 64/21 Power Star.miniusf",
+      "size": 214,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 23
+    },
+    {
+      "path": "/Super Mario 64/22 Race Fanfare.miniusf",
+      "size": 216,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 24
+    },
+    {
+      "path": "/Super Mario 64/23 Star Catch Fanfare.miniusf",
+      "size": 222,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 25
+    },
+    {
+      "path": "/Super Mario 64/24 Game Start.miniusf",
+      "size": 214,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 26
+    },
+    {
+      "path": "/Super Mario 64/25 Course Clear.miniusf",
+      "size": 216,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 27
+    },
+    {
+      "path": "/Super Mario 64/27 Stage Boss.miniusf",
+      "size": 222,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 28
+    },
+    {
+      "path": "/Super Mario 64/28 Koopa's Message.miniusf",
+      "size": 219,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 29
+    },
+    {
+      "path": "/Super Mario 64/29 Koopa's Road.miniusf",
+      "size": 223,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 30
+    },
+    {
+      "path": "/Super Mario 64/30 Koopa's Theme.miniusf",
+      "size": 224,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 31
+    },
+    {
+      "path": "/Super Mario 64/31 Koopa Clear.miniusf",
+      "size": 215,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 32
+    },
+    {
+      "path": "/Super Mario 64/32 Ultimate Koopa.miniusf",
+      "size": 226,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 33
+    },
+    {
+      "path": "/Super Mario 64/33 Ultimate Koopa Clear.miniusf",
+      "size": 224,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 34
+    },
+    {
+      "path": "/Super Mario 64/34 Ending Demo.miniusf",
+      "size": 215,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 35
+    },
+    {
+      "path": "/Super Mario 64/35 Staff Roll.miniusf",
+      "size": 214,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 36
+    },
+    {
+      "path": "/Super Mario 64/91  Lakitu's Message.miniusf",
+      "size": 220,
+      "type": "file",
+      "mtime": 1468599604,
+      "idx": 37
+    }
+  ],
   "/": [
+    {
+      "path": "/Super Mario 64",
+      "size": 8703,
+      "type": "directory",
+      "numChildren": 38,
+      "mtime": 1774721521
+    },
     {
       "path": "/Sonic the Hedgehog 2 - 01 - Opening Demo.vgm",
       "size": 1792,
