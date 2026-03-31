@@ -4,6 +4,8 @@ import ChipCore from '../chip-core';
 let corePromise = null;
 let core = null;
 
+const BASE_URL = process.env.PUBLIC_URL || self.location.origin;
+
 self.onmessage = async (e) => {
   const { type, data, sampleRate, bufferSize, track } = e.data;
 
@@ -11,7 +13,11 @@ self.onmessage = async (e) => {
     if (!corePromise) {
       corePromise = new ChipCore({
         noInitialRun: true,
-        locateFile: (path) => '/' + path
+        locateFile: (path) => {
+          if (path.endsWith('.wasm') || path.endsWith('.wast'))
+            return `${BASE_URL}/chipPlayer/${path}`;
+          return '/' + path;
+        }
       });
       core = await corePromise;
     }
@@ -22,7 +28,11 @@ self.onmessage = async (e) => {
     if (!corePromise) {
       corePromise = new ChipCore({
         noInitialRun: true,
-        locateFile: (path) => '/' + path
+        locateFile: (path) => {
+          if (path.endsWith('.wasm') || path.endsWith('.wast'))
+            return `${BASE_URL}/chipPlayer/${path}`;
+          return '/' + path;
+        }
       });
     }
     core = await corePromise;

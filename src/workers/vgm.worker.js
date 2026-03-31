@@ -6,6 +6,8 @@ let core = null;
 
 const INT32_MAX = 0x8000000;
 
+const BASE_URL = process.env.PUBLIC_URL || self.location.origin;
+
 self.onmessage = async (e) => {
   const { type, data, sampleRate, bufferSize } = e.data;
 
@@ -13,7 +15,11 @@ self.onmessage = async (e) => {
     if (!corePromise) {
       corePromise = new ChipCore({
         noInitialRun: true,
-        locateFile: (path) => '/' + path
+        locateFile: (path) => {
+          if (path.endsWith('.wasm') || path.endsWith('.wast'))
+            return `${BASE_URL}/chipPlayer/${path}`;
+          return '/' + path;
+        }
       });
       core = await corePromise;
     }
@@ -24,7 +30,11 @@ self.onmessage = async (e) => {
     if (!corePromise) {
       corePromise = new ChipCore({
         noInitialRun: true,
-        locateFile: (path) => '/' + path
+        locateFile: (path) => {
+          if (path.endsWith('.wasm') || path.endsWith('.wast'))
+            return `${BASE_URL}/chipPlayer/${path}`;
+          return '/' + path;
+        }
       });
     }
     core = await corePromise;
