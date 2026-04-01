@@ -83,7 +83,7 @@ class App extends React.Component {
     }
 
     const bufferSize = Math.max( // Make sure script node bufferSize is at least baseLatency
-      Math.pow(2, Math.ceil(Math.log2((audioCtx.baseLatency || 0.001) * audioCtx.sampleRate))), 2048);
+      Math.pow(2, Math.ceil(Math.log2((audioCtx.baseLatency || 0.001) * audioCtx.sampleRate))), 512);
     const gainNode = this.gainNode = audioCtx.createGain();
     gainNode.gain.value = 1;
     gainNode.connect(audioCtx.destination);
@@ -173,6 +173,21 @@ class App extends React.Component {
       for (let player of players) {
         if (player.stopped) continue;
         player.processAudio(channels);
+      }
+      
+      // Update global oscilloscope history so we can draw 60fps *AND* have 4096 samples to find perfect triggers!
+      if (typeof window !== 'undefined' && window.voiceBuffers) {
+        if (!window.oscilloscopeHistory) window.oscilloscopeHistory = [];
+        for (let c = 0; c < window.voiceBuffers.length; c++) {
+          if (window.voiceBuffers[c]) {
+            if (!window.oscilloscopeHistory[c]) window.oscilloscopeHistory[c] = new Float32Array(4096);
+            const hist = window.oscilloscopeHistory[c];
+            const buf = window.voiceBuffers[c];
+            const len = buf.length;
+            hist.copyWithin(0, len);
+            hist.set(buf, hist.length - len);
+          }
+        }
       }
     }
 

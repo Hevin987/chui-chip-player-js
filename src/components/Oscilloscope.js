@@ -136,7 +136,7 @@ export default class Oscilloscope extends Component {
     let currentFrameMax = 0.0;
     for (let idx = 0; idx < displayChannels && idx < (cols * rows); idx++) {
       const c = activeChannels[idx];
-      const buffer = window.voiceBuffers[c];
+      const buffer = window.oscilloscopeHistory ? window.oscilloscopeHistory[c] : window.voiceBuffers[c];
       if (buffer) {
         let minVal = 1.0;
         let maxVal = -1.0;
@@ -167,7 +167,7 @@ export default class Oscilloscope extends Component {
       ctx.strokeStyle = colors[idx % colors.length];
       ctx.shadowColor = colors[idx % colors.length];
 
-      const buffer = window.voiceBuffers[c];
+      const buffer = window.oscilloscopeHistory ? window.oscilloscopeHistory[c] : window.voiceBuffers[c];
       if (!buffer) continue;
       
       const bufferLength = buffer.length;
@@ -196,28 +196,40 @@ export default class Oscilloscope extends Component {
       }
       
       const average = sum / bufferLength;
+      // Scale drawn samples by width so it shows more wave in fullscreen (density)
+      const targetSamples = Math.min(bufferLength, Math.max(512, Math.floor(channelWidth * 2.0)));
+      
       let triggerLevel = average;
 
-      // Trigger on crossing the average for stable wave
-      let startIdx = 0;
-      if (maxVal - minVal > 0.001) { // Only try to sync if there's actual amplitude
-        for (let i = 0; i < bufferLength - 1; i++) {
-            if (buffer[i] <= triggerLevel && buffer[i+1] > triggerLevel) {
-                startIdx = i;
-                break;
-            }
+      // FM Synthesis creates very complex waveforms with multiple zero-crossings per cycle (ripples).
+      // To stabilize the trigger so it doesn't jump randomly, we must anchor it near the highest peak in our search window.
+      let startIdx = Math.max(0, bufferLength - targetSamples - 1024); // Search runway is 1024 samples (capable of anchoring down to ~40Hz sub-bass)
+      if (maxVal - minVal > 0.005) { 
+        let maxIdx = startIdx;
+        let localMax = -1.0;
+        
+        // Find the absolute highest peak in the search runway
+        for (let i = startIdx; i < startIdx + 1024 && i < bufferLength; i++) {
+          if (buffer[i] > localMax) {
+            localMax = buffer[i];
+            maxIdx = i;
+          }
+        }
+        
+        // Walk backwards from that peak to find its primary zero-crossing slope
+        for (let i = maxIdx; i > startIdx; i--) {
+          if (buffer[i] >= triggerLevel && buffer[i-1] < triggerLevel) {
+            startIdx = i - 1;
+            break;
+          }
         }
       }
 
-      // If drawing window would exceed buffer given the trigger, pull it back so we don't truncate
-      // Scale drawn samples by width so it shows more wave in fullscreen (density increases)
-      const DRAW_SAMPLES = Math.min(bufferLength, Math.max(512, Math.floor(channelWidth * 2.0)));
-      if (startIdx + DRAW_SAMPLES > bufferLength) {
-          startIdx = Math.max(0, bufferLength - DRAW_SAMPLES);
-      }
-
-      const actualSamplesToDraw = Math.min(DRAW_SAMPLES, bufferLength - startIdx);
-      const sliceWidth = channelWidth / actualSamplesToDraw;
+      const actualSamplesToDraw = Math.min(targetSamples, bufferLength - startIdx);
+      
+      // Calculate sliceWidth dynamically based on actualSamplesToDraw so the wave PERFECTLY spans 
+      // the full width of the channel box without abruptly ending when startIdx consumes some buffer!
+      const sliceWidth = channelWidth / Math.max(1, actualSamplesToDraw);
 
       let x = col * channelWidth;
       const centerY = (row * channelHeight) + (channelHeight / 2);
