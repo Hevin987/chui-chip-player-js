@@ -64,13 +64,26 @@ export default class Oscilloscope extends Component {
     let numChannels = window.voiceBuffers.length;
     if (numChannels === 1 && window.voiceBuffers[0].every(val => val === 0)) {
       numChannels = 1;
-    } else {
-      // Find true max channels by filtering out uninitialized or completely empty buffers (optional style choice)
-    }
+    } 
 
-    const cols = numChannels === 1 ? 1 : 2;
+    let activeChannels = [];
+    for (let i = 0; i < numChannels; i++) activeChannels.push(i);
+
+    let displayChannels = activeChannels.length;
+    let cols = 1;
+    if (displayChannels > 1) {
+      if (document.fullscreenElement) {
+        // Aim for very wide channels in fullscreen. e.g. 1920 -> 3 cols
+        cols = Math.max(1, Math.floor(width / 500));
+        if (cols > 3) cols = 3;
+      } else {
+        cols = 2; // Always default to 2 columns for normal view if > 1 ch
+      }
+      if (cols > displayChannels) cols = displayChannels;
+    }
+    
     // Dynamically calculate rows needed for up to 16+ channels (like Genesis 10 ch)
-    const rows = Math.max(1, Math.ceil(numChannels / cols)); 
+    const rows = Math.max(1, Math.ceil(displayChannels / cols)); 
     
     // Draw dynamic grid lines
     ctx.shadowBlur = 0;
@@ -78,9 +91,12 @@ export default class Oscilloscope extends Component {
     ctx.lineWidth = 1;
     ctx.beginPath();
     
-    // Only draw vertical center line if we have 2 columns
+    // Draw vertical center lines based on cols
     if (cols > 1) {
-      ctx.moveTo(width / 2, 0); ctx.lineTo(width / 2, height);
+      for (let c = 1; c < cols; c++) {
+        ctx.moveTo((c * width) / cols, 0); 
+        ctx.lineTo((c * width) / cols, height);
+      }
     }
     
     for(let r = 1; r < rows; r++) {
@@ -114,17 +130,50 @@ export default class Oscilloscope extends Component {
       '#ffcc33'  // Gold
     ];
 
-    for (let c = 0; c < numChannels && c < (cols * rows); c++) {
-      ctx.strokeStyle = colors[c % colors.length];
-      ctx.shadowColor = colors[c % colors.length];
+    // Track the absolute global peak to properly scale all waves relative to each other.
+    // We do NOT decay this quickly, otherwise quiet channels get auto-scaled up to 100% height when loud channels stop!
+    if (!window.globalVoiceMax) window.globalVoiceMax = 0.01;
+    let currentFrameMax = 0.0;
+    for (let idx = 0; idx < displayChannels && idx < (cols * rows); idx++) {
+      const c = activeChannels[idx];
+      const buffer = window.voiceBuffers[c];
+      if (buffer) {
+        let minVal = 1.0;
+        let maxVal = -1.0;
+        // Sample for max peak-to-peak amplitude in this frame
+        for (let i = 0; i < buffer.length; i+=16) {
+          if (buffer[i] < minVal) minVal = buffer[i];
+          if (buffer[i] > maxVal) maxVal = buffer[i];
+        }
+        const amplitude = (maxVal - minVal) / 2.0;
+        if (amplitude > currentFrameMax) currentFrameMax = amplitude;
+      }
+    }
+    // Only lock to the highest peak ever seen so relative volumes between channels remain authentic!
+    if (currentFrameMax > window.globalVoiceMax) {
+       window.globalVoiceMax = currentFrameMax;
+    } else {
+       // Extremely slow decay (over ~3 minutes) to adjust if next track is much quieter
+       window.globalVoiceMax = window.globalVoiceMax * 0.9998;
+    }
+    
+    // Add a bit of headroom (0.9 multiplier in fullscreen). 
+    // In windowed mode (not fullscreen), boost the scale by 1.5x so the waves look taller!
+    const baseScale = document.fullscreenElement ? 0.9 : 1.35;
+    const targetScale = baseScale / Math.max(0.01, window.globalVoiceMax);
+
+    for (let idx = 0; idx < displayChannels && idx < (cols * rows); idx++) {
+      const c = activeChannels[idx];
+      ctx.strokeStyle = colors[idx % colors.length];
+      ctx.shadowColor = colors[idx % colors.length];
 
       const buffer = window.voiceBuffers[c];
       if (!buffer) continue;
       
       const bufferLength = buffer.length;
 
-      const col = c % cols;
-      const row = Math.floor(c / cols);
+      const col = idx % cols;
+      const row = Math.floor(idx / cols);
 
       // Draw Channel Label without blur
       ctx.shadowBlur = 0;
@@ -161,7 +210,8 @@ export default class Oscilloscope extends Component {
       }
 
       // If drawing window would exceed buffer given the trigger, pull it back so we don't truncate
-      const DRAW_SAMPLES = 512;
+      // Scale drawn samples by width so it shows more wave in fullscreen (density increases)
+      const DRAW_SAMPLES = Math.min(bufferLength, Math.max(512, Math.floor(channelWidth * 2.0)));
       if (startIdx + DRAW_SAMPLES > bufferLength) {
           startIdx = Math.max(0, bufferLength - DRAW_SAMPLES);
       }
@@ -174,20 +224,20 @@ export default class Oscilloscope extends Component {
 
       ctx.beginPath();
 
-      // Auto-scale to ensure the wave completely fills the channel height
-      const amplitudeRange = maxVal - minVal;
-      
+      // Scale with the dynamically tracked targetScale. 
+      // This correctly shows true loudness envelopes bouncing naturally,
+      // avoiding making every wave auto-scale to identically 100% height!
       for (let i = 0; i < actualSamplesToDraw; i++) {
         const raw_v = buffer[startIdx + i]; 
         
-        let normalizedPos = 0.5; // Default to center line for complete silence
-        if (amplitudeRange > 0.001) { // Prevents dividing by zero or magnifying extreme noise
-            normalizedPos = (raw_v - minVal) / amplitudeRange;
-        }
+        // 0.5 puts silence on the center line. 
+        // We multiply the raw AC swing by targetScale, then *0.5 so it spans 0.0 to 1.0 
+        let normalizedPos = 0.5 + ((raw_v - average) * targetScale * 0.5); 
         
         // Map 0.0 - 1.0 (bottom to top) to actual pixels inside the channel box.
-        // Leave 15% padding on top and bottom so it doesn't touch the borders.
-        const padding = channelHeight * 0.15;
+        // Leave 15% padding on top and bottom so it doesn't touch the borders when fullscreen.
+        // When windowed, reduce padding so the wave can stretch taller!
+        const padding = document.fullscreenElement ? (channelHeight * 0.15) : (channelHeight * 0.05);
         const drawableHeight = channelHeight - (padding * 2);
         
         // Y goes down. normalizedPos = 1.0 (peak) -> top of drawable height (padding).
