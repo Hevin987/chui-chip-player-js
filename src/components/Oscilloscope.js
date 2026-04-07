@@ -200,49 +200,23 @@ export default class Oscilloscope extends Component {
       
       const average = (maxVal + minVal) / 2.0;
 
-      // Corrscope-style tracking with phase continuity:
-      // 1) predict where last lock should move after history shift,
-      // 2) search locally around prediction,
-      // 3) only widen search if correlation quality drops.
-      if (!window.oscilloscopeTrackers) window.oscilloscopeTrackers = [];
-      const historySeq = (window.oscilloscopeHistorySeq && window.oscilloscopeHistorySeq[c]) || 0;
-      const shiftPerChunk = (window.oscilloscopeHistoryShift && window.oscilloscopeHistoryShift[c]) || 0;
+      // Deterministic trigger: lock to a rising edge nearest a fixed anchor
+      // close to the right side of the trailing history window.
       const latestStart = Math.max(0, bufferLength - targetSamples);
-
-      let tracker = window.oscilloscopeTrackers[c];
-      if (!tracker) {
-        tracker = {
-          startIdx: latestStart,
-          hasLock: false,
-          lastSeq: historySeq,
-        };
-        window.oscilloscopeTrackers[c] = tracker;
-      }
-
-      if (typeof tracker.lastSeq !== 'number') {
-        tracker.lastSeq = historySeq;
-      }
-      tracker.lastSeq = historySeq;
 
       let startIdx = latestStart;
 
       if (maxVal - minVal > 0.005) {
         if (isLikelyNoiseChannel) {
           startIdx = latestStart;
-          tracker.startIdx = startIdx;
-          tracker.hasLock = false;
         } else {
-          // Find most recent rising edge in trailing window without prediction
-          const bestOffset = this.findTriggerOffset(buffer, average, latestStart);
+          const amplitude = maxVal - minVal;
+          const bestOffset = this.findTriggerOffset(buffer, average, amplitude, latestStart);
           startIdx = bestOffset >= 0 ? bestOffset : latestStart;
-          tracker.startIdx = startIdx;
-          tracker.hasLock = true;
         }
       } else {
         // Silence/noise floor
         startIdx = latestStart;
-        tracker.startIdx = startIdx;
-        tracker.hasLock = false;
       }
 
       // Safeguard boundaries
@@ -294,32 +268,39 @@ export default class Oscilloscope extends Component {
     }
   };
 
-  // Trigger lock by finding highest-slope rising edge in trailing window.
-  findTriggerOffset = (buffer, level, latestStart) => {
+  // Trigger lock by selecting a Schmitt-style rising edge nearest a fixed anchor.
+  findTriggerOffset = (buffer, level, amplitude, latestStart) => {
     const minIdx = Math.max(1, latestStart - 2048);
     const maxIdx = latestStart;
+    const anchor = Math.max(minIdx, latestStart - 64);
+    const low = level - (amplitude * 0.08);
+    const high = level + (amplitude * 0.08);
 
     let bestIdx = -1;
-    let bestScore = -Infinity;
+    let bestDist = Number.MAX_SAFE_INTEGER;
+    let bestSlope = -Infinity;
 
     for (let i = minIdx; i < maxIdx; i++) {
       const prev = buffer[i];
       const curr = buffer[i + 1];
-      if (curr >= level && prev < level) {
+      if (curr >= high && prev <= low) {
         const next = buffer[Math.min(buffer.length - 1, i + 2)];
         const slope = next - prev;
-        if (slope > bestScore) {
-          bestScore = slope;
-          bestIdx = i + 1;
+        const idx = i + 1;
+        const dist = Math.abs(idx - anchor);
+        if (dist < bestDist || (dist === bestDist && slope > bestSlope)) {
+          bestDist = dist;
+          bestSlope = slope;
+          bestIdx = idx;
         }
       }
     }
 
-    if (bestIdx < 0) {
-      return latestStart;
+    if (bestIdx >= 0) {
+      return this.refineTriggerEdge(buffer, bestIdx, level, latestStart);
     }
 
-    return Math.max(0, Math.min(bestIdx, latestStart));
+    return latestStart;
   };
 
   // Refine correlation anchor to nearest rising-edge crossing with strongest slope.
