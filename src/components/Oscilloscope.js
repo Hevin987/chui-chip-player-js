@@ -180,6 +180,7 @@ export default class Oscilloscope extends Component {
       ctx.fillStyle = '#ffffff';
       ctx.font = "bold 14px monospace";
       const channelName = (typeof window !== "undefined" && window.voiceNames && window.voiceNames[c]) ? window.voiceNames[c] : `Channel ${c}`;
+      const isLikelyNoiseChannel = /noise|snare|hat|cymbal|rim|tom|drum/i.test(channelName);
       ctx.fillText(channelName, col * channelWidth + 10, row * channelHeight + 24);
 
       // Restore blur for the neon wave styling
@@ -209,94 +210,37 @@ export default class Oscilloscope extends Component {
       const latestStart = Math.max(0, bufferLength - targetSamples);
 
       let tracker = window.oscilloscopeTrackers[c];
-      if (!tracker || !tracker.reference || tracker.reference.length !== triggerSamples) {
+      if (!tracker) {
         tracker = {
-          reference: new Float32Array(triggerSamples),
           startIdx: latestStart,
           hasLock: false,
           lastSeq: historySeq,
         };
-        for (let i = 0; i < triggerSamples; i++) {
-          tracker.reference[i] = buffer[latestStart + i];
-        }
         window.oscilloscopeTrackers[c] = tracker;
       }
 
       if (typeof tracker.lastSeq !== 'number') {
         tracker.lastSeq = historySeq;
       }
-      const chunkDelta = Math.max(0, historySeq - tracker.lastSeq);
-      const historyShift = chunkDelta * shiftPerChunk;
       tracker.lastSeq = historySeq;
 
-      let predictedStart = Math.max(0, Math.min(latestStart, tracker.startIdx - historyShift));
-      if (!tracker.hasLock) predictedStart = latestStart;
-
-      let startIdx = predictedStart;
+      let startIdx = latestStart;
 
       if (maxVal - minVal > 0.005) {
-        let searchStart = Math.max(0, latestStart - 1536);
-        let searchEnd = latestStart;
-
-        if (tracker.hasLock) {
-          const radius = Math.min(96, latestStart);
-          searchStart = Math.max(0, predictedStart - radius);
-          searchEnd = Math.min(latestStart, predictedStart + radius);
-        }
-
-        let bestScore = -2.0;
-        let bestCorrelation = -2.0;
-        let bestOffset = predictedStart;
-        let bestDistance = Number.MAX_SAFE_INTEGER;
-
-        for (let offset = searchStart; offset <= searchEnd; offset++) {
-          const correlation = this.computeCorrelation(buffer, tracker.reference, offset, triggerSamples);
-          const distance = Math.abs(offset - predictedStart);
-          const continuityPenalty = tracker.hasLock ? (distance * 0.0008) : 0;
-          const score = correlation - continuityPenalty;
-          if (score > bestScore || (Math.abs(score - bestScore) < 1e-6 && distance < bestDistance)) {
-            bestScore = score;
-            bestCorrelation = correlation;
-            bestOffset = offset;
-            bestDistance = distance;
-          }
-        }
-
-        // If local tracking quality collapses, relock with a wider trailing window.
-        if (tracker.hasLock && bestCorrelation < 0.45) {
-          const fallbackStart = Math.max(0, latestStart - 2048);
-          for (let offset = fallbackStart; offset <= latestStart; offset++) {
-            const correlation = this.computeCorrelation(buffer, tracker.reference, offset, triggerSamples);
-            const distance = Math.abs(offset - predictedStart);
-            const score = correlation - (distance * 0.0003);
-            if (score > bestScore || (Math.abs(score - bestScore) < 1e-6 && distance < bestDistance)) {
-              bestScore = score;
-              bestCorrelation = correlation;
-              bestOffset = offset;
-              bestDistance = distance;
-            }
-          }
-        }
-
-        // Keep continuity unless correlation strongly proves a new phase.
-        if (tracker.hasLock && Math.abs(bestOffset - predictedStart) > 32 && bestCorrelation < 0.94) {
-          bestOffset = predictedStart;
-        }
-
-        startIdx = Math.max(0, Math.min(bestOffset, latestStart));
-        startIdx = this.refineTriggerEdge(buffer, startIdx, average, latestStart);
-        tracker.startIdx = startIdx;
-        tracker.hasLock = true;
-
-        // Slowly adapt the reference to timbre/envelope changes without phase hopping.
-        if (bestCorrelation > 0.92 && Math.abs(startIdx - predictedStart) <= 24) {
-          for (let i = 0; i < triggerSamples; i++) {
-            tracker.reference[i] = (tracker.reference[i] * 0.95) + (buffer[startIdx + i] * 0.05);
-          }
+        if (isLikelyNoiseChannel) {
+          startIdx = latestStart;
+          tracker.startIdx = startIdx;
+          tracker.hasLock = false;
+        } else {
+          // Find most recent rising edge in trailing window without prediction
+          const bestOffset = this.findTriggerOffset(buffer, average, latestStart);
+          startIdx = bestOffset >= 0 ? bestOffset : latestStart;
+          tracker.startIdx = startIdx;
+          tracker.hasLock = true;
         }
       } else {
-        // Silence/noise floor: follow predicted motion and drop lock quality.
-        startIdx = predictedStart;
+        // Silence/noise floor
+        startIdx = latestStart;
         tracker.startIdx = startIdx;
         tracker.hasLock = false;
       }
@@ -350,39 +294,32 @@ export default class Oscilloscope extends Component {
     }
   };
 
-  // Compute normalized cross-correlation between reference waveform and current buffer at offset
-  // Returns correlation coefficient from -1.0 to 1.0 (higher = better match)
-  computeCorrelation = (buffer, reference, offset, windowSize) => {
-    const len = Math.min(reference.length, buffer.length - offset, windowSize);
-    if (len < 4 || offset < 0 || offset + len > buffer.length) return -2.0;
+  // Trigger lock by finding highest-slope rising edge in trailing window.
+  findTriggerOffset = (buffer, level, latestStart) => {
+    const minIdx = Math.max(1, latestStart - 2048);
+    const maxIdx = latestStart;
 
-    let sumRef = 0, sumBuf = 0;
-    let sumRefSq = 0, sumBufSq = 0;
-    let sumProduct = 0;
+    let bestIdx = -1;
+    let bestScore = -Infinity;
 
-    // First pass: compute means
-    for (let i = 0; i < len; i++) {
-      const ref = reference[i];
-      const buf = buffer[offset + i];
-      sumRef += ref;
-      sumBuf += buf;
-    }
-    const meanRef = sumRef / len;
-    const meanBuf = sumBuf / len;
-
-    // Second pass: compute correlation
-    for (let i = 0; i < len; i++) {
-      const ref = reference[i] - meanRef;
-      const buf = buffer[offset + i] - meanBuf;
-      sumProduct += ref * buf;
-      sumRefSq += ref * ref;
-      sumBufSq += buf * buf;
+    for (let i = minIdx; i < maxIdx; i++) {
+      const prev = buffer[i];
+      const curr = buffer[i + 1];
+      if (curr >= level && prev < level) {
+        const next = buffer[Math.min(buffer.length - 1, i + 2)];
+        const slope = next - prev;
+        if (slope > bestScore) {
+          bestScore = slope;
+          bestIdx = i + 1;
+        }
+      }
     }
 
-    const denominator = Math.sqrt(sumRefSq * sumBufSq);
-    if (denominator < 1e-10) return -2.0; // Avoid division by zero for silence
-    
-    return sumProduct / denominator;
+    if (bestIdx < 0) {
+      return latestStart;
+    }
+
+    return Math.max(0, Math.min(bestIdx, latestStart));
   };
 
   // Refine correlation anchor to nearest rising-edge crossing with strongest slope.

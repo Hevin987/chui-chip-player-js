@@ -178,6 +178,8 @@ class App extends React.Component {
       // Update global oscilloscope history so we can draw 60fps *AND* have 4096 samples to find perfect triggers!
       if (typeof window !== 'undefined' && window.voiceBuffers) {
         if (!window.oscilloscopeHistory) window.oscilloscopeHistory = [];
+        if (!window.oscilloscopeHistorySeq) window.oscilloscopeHistorySeq = [];
+        if (!window.oscilloscopeHistoryShift) window.oscilloscopeHistoryShift = [];
         for (let c = 0; c < window.voiceBuffers.length; c++) {
           if (window.voiceBuffers[c]) {
             if (!window.oscilloscopeHistory[c]) window.oscilloscopeHistory[c] = new Float32Array(4096);
@@ -186,6 +188,8 @@ class App extends React.Component {
             const len = buf.length;
             hist.copyWithin(0, len);
             hist.set(buf, hist.length - len);
+            window.oscilloscopeHistoryShift[c] = len;
+            window.oscilloscopeHistorySeq[c] = ((window.oscilloscopeHistorySeq[c] || 0) + 1) >>> 0;
           }
         }
       }
