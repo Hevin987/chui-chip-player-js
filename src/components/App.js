@@ -36,6 +36,7 @@ import AppFooter from './AppFooter';
 import DropMessage from './DropMessage';
 import Visualizer from './Visualizer';
 import Oscilloscope from './Oscilloscope';
+import DebugWav from './DebugWav';
 import Toast, { ToastLevels } from './Toast';
 import MessageBox from './MessageBox';
 import Settings from './Settings';
@@ -94,7 +95,7 @@ class App extends React.Component {
     console.log('Sample rate: %d hz. Base latency: %d. Buffer size: %d.',
       audioCtx.sampleRate, audioCtx.baseLatency * audioCtx.sampleRate, bufferSize);
 
-    this.state = {
+    this.state = { showDebugWav: false,
       loading: true,
       loadingLocalFiles: true,
       paused: true,
@@ -727,6 +728,12 @@ class App extends React.Component {
                       infoTexts={this.state.infoTexts}
                       toggleInfo={this.toggleInfo}/>
           <Toast/>
+          {this.state.showDebugWav && (
+            <DebugWav
+              player={this.sequencer?.getPlayer()}
+              onClose={() => this.setState({ showDebugWav: false })}
+            />
+          )}
 
           {/* BEGIN: Main Player Window */}
           <section className="retro-window main-player-window" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
@@ -764,14 +771,14 @@ class App extends React.Component {
                       <Oscilloscope 
                                   enabled={settings?.visualizerEnabled !== false}
                                   paused={this.state.ejected || this.state.paused}/>}
-                    {!isMobile.phone && !this.state.loading && settings?.visualizerEnabled !== false && (
+                    {!isMobile.phone && !this.state.loading && settings?.visualizerType === 'oscilloscope' && (
                       <button
                         className="box-button"
-                        style={{ position: 'absolute', top: 8, right: 8, zIndex: 10, padding: '2px 8px', fontSize: '10px' }}
-                        onClick={() => updateSettings({ visualizerType: settings?.visualizerType === 'oscilloscope' ? 'spectrogram' : 'oscilloscope' })}
-                        title="Toggle Visualizer Type"
+                        style={{ position: 'absolute', top: 8, right: 8, zIndex: 9999, padding: '4px 12px', fontSize: '12px', background: '#e74c3c', color: 'white', border: '1px solid black', borderRadius: '4px' }}
+                        onClick={() => this.setState({showDebugWav: true})}
+                        title="Show Pre-rendered Data"
                       >
-                        Swap Visualizer
+                        Debug Full WAV
                       </button>
                     )}
                   </div>

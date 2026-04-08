@@ -46,13 +46,13 @@ function Settings(props) {
     updateSettings({ theme: e.target.value });
   }, [updateSettings]);
 
-  const handleToggleVisualizer = useCallback((e) => {
-    updateSettings({ visualizerEnabled: e.target.value === 'true' });
-  }, [updateSettings]);
-
   const handleToggleMultichannel = useCallback((e) => {
     updateSettings({ vgmMultichannel: e.target.value === 'true' });
-  }, [updateSettings]);
+    const player = sequencer?.getPlayer();
+    if (player && settings?.visualizerType === 'oscilloscope' && (player.name === 'LibVGM Player' || player.name === 'Game Music Emu')) {
+      sequencer.playCurrentSong(player.subtune);
+    }
+  }, [updateSettings, sequencer, settings]);
 
   return (
     <div className='Settings'>
@@ -78,23 +78,37 @@ function Settings(props) {
         <div>(No active player)</div>}
       <h3>Global Settings</h3>
       <span className='PlayerParams-param'>
-        <label className='PlayerParams-label'>
+        <label htmlFor='visualizer' className='PlayerParams-label'>
           Visualizer:{' '}
         </label>
-        <input onClick={handleToggleVisualizer}
-               id='vis-on'
-               type='radio'
-               value="true"
-               defaultChecked={settings?.visualizerEnabled !== false}
-               name='visualizer-enabled'/>
-        <label htmlFor='vis-on' className='inline'>On</label>
-        <input onClick={handleToggleVisualizer}
-               id='vis-off'
-               type='radio'
-               value="false"
-               defaultChecked={settings?.visualizerEnabled === false}
-               name='visualizer-enabled'/>
-        <label htmlFor='vis-off' className='inline'>Off</label>
+        <select
+          id='visualizer'
+          onChange={(e) => {
+            const val = e.target.value;
+            let newlyOscilloscope = false;
+            let wasOscilloscope = settings?.visualizerType === 'oscilloscope';
+            if (val === 'none') {
+              updateSettings({ visualizerEnabled: false });
+            } else if (val === 'piano') {
+              updateSettings({ visualizerEnabled: true, visualizerType: 'spectrogram' });
+            } else if (val === 'oscilloscope') {
+              updateSettings({ visualizerEnabled: true, visualizerType: 'oscilloscope' });
+              newlyOscilloscope = true;
+            }
+            if (newlyOscilloscope && !wasOscilloscope) {
+              const player = sequencer?.getPlayer();
+              if (player && (player.name === 'LibVGM Player' || player.name === 'Game Music Emu')) {
+                 props.toastContext?.enqueueToast('Pre-rendering audio for oscilloscope...', 1);
+                 sequencer.playCurrentSong(player.subtune);
+              }
+            }
+          }}
+          value={settings?.visualizerEnabled === false ? 'none' : (settings?.visualizerType === 'oscilloscope' ? 'oscilloscope' : 'piano')}
+        >
+          <option value="piano">Piano</option>
+          <option value="oscilloscope">Oscilloscope</option>
+          <option value="none">None</option>
+        </select>
       </span>
       <span className='PlayerParams-param'>
         <label className='PlayerParams-label'>

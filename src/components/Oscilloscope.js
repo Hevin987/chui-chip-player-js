@@ -268,36 +268,20 @@ export default class Oscilloscope extends Component {
     }
   };
 
-  // Trigger lock by selecting a Schmitt-style rising edge nearest a fixed anchor.
+  // Trigger lock by selecting a Schmitt-style rising edge anchored near the right edge.
   findTriggerOffset = (buffer, level, amplitude, latestStart) => {
     const minIdx = Math.max(1, latestStart - 2048);
     const maxIdx = latestStart;
-    const anchor = Math.max(minIdx, latestStart - 64);
     const low = level - (amplitude * 0.08);
     const high = level + (amplitude * 0.08);
 
-    let bestIdx = -1;
-    let bestDist = Number.MAX_SAFE_INTEGER;
-    let bestSlope = -Infinity;
-
-    for (let i = minIdx; i < maxIdx; i++) {
-      const prev = buffer[i];
-      const curr = buffer[i + 1];
+    // Deterministic choice: pick the latest valid rising edge before the right boundary.
+    for (let i = maxIdx - 1; i >= minIdx; i--) {
+      const prev = buffer[i - 1];
+      const curr = buffer[i];
       if (curr >= high && prev <= low) {
-        const next = buffer[Math.min(buffer.length - 1, i + 2)];
-        const slope = next - prev;
-        const idx = i + 1;
-        const dist = Math.abs(idx - anchor);
-        if (dist < bestDist || (dist === bestDist && slope > bestSlope)) {
-          bestDist = dist;
-          bestSlope = slope;
-          bestIdx = idx;
-        }
+        return i;
       }
-    }
-
-    if (bestIdx >= 0) {
-      return this.refineTriggerEdge(buffer, bestIdx, level, latestStart);
     }
 
     return latestStart;

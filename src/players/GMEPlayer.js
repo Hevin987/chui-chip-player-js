@@ -232,7 +232,7 @@ export default class GMEPlayer extends Player {
     return core._gme_start_track(this.gmeCtx, subtune);
   }
 
-  loadData(data, filepath, persistedSettings, subtune = 0) {
+  async loadData(data, filepath, persistedSettings, subtune = 0) {
     this.subtune = subtune;
     this.fadingOut = false;
     this.seekTargetMs = null;
@@ -257,6 +257,42 @@ export default class GMEPlayer extends Player {
 
     core._gme_ignore_silence(this.gmeCtx, 0);
     this.resolveParamValues(persistedSettings);
+
+    if (persistedSettings.visualizerType === 'oscilloscope') {
+      if (visualizerWorker) {
+        visualizerWorker.terminate();
+      }
+      visualizerWorker = new GMEWorker();
+      
+      await new Promise((resolve) => {
+        visualizerWorker.onerror = (e) => {
+          console.error("GME Worker error:", e);
+          resolve(); 
+        };
+
+        visualizerWorker.onmessage = (e) => {
+          if (e.data.type === 'done') {
+            this.visualMap = new Int8Array(e.data.visualBuffer);
+            this.totalVisualFrames = e.data.totalFrames;
+            this.maxVoices = e.data.MAX_VOICES;
+            console.log("Multichannel GME data ready. " + this.totalVisualFrames + " frames.");
+            resolve();
+          } else if (e.data.type === 'error') {
+            console.error("GME Worker explicitly reported error:", e.data.error);
+            resolve();
+          }
+        };
+
+        visualizerWorker.postMessage({
+          type: 'analyze',
+          data: data.slice(0),
+          sampleRate: this.sampleRate,
+          bufferSize: this.bufferSize,
+          multichannel: persistedSettings.vgmMultichannel !== false,
+          subtune
+        });
+      });
+    }
     this.setTempo(persistedSettings.tempo || 1);
     this.resume();
     if (this.playSubtune(this.subtune) !== 0) {

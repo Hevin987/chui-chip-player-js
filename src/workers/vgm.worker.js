@@ -9,7 +9,7 @@ const INT32_MAX = 0x8000000;
 const BASE_URL = process.env.PUBLIC_URL || self.location.origin;
 
 self.onmessage = async (e) => {
-  const { type, data, sampleRate, bufferSize } = e.data;
+  const { type, data, sampleRate, bufferSize, multichannel } = e.data;
 
   if (type === 'init') {
     if (!corePromise) {
@@ -60,9 +60,9 @@ self.onmessage = async (e) => {
     // Dynamically take up to 16 voices for advanced chips (like Genesis which has ~10)
     let numVoices = core._lvgm_get_voice_count(vgmCtx);
     if (!numVoices || numVoices === 0) numVoices = 8;
-    const MAX_VOICES = Math.min(numVoices, 16);
+    const MAX_VOICES = multichannel ? Math.min(numVoices, 16) : 1;
     
-    const visualizerBuffer = new Float32Array(totalFrames * MAX_VOICES * bufferSize);
+    const visualizerBuffer = new Int8Array(totalFrames * MAX_VOICES * bufferSize);
     
     // Buffer for engine rendering
     const renderBuffer = core._malloc(bufferSize * 4 * 2); // 2 channels, 32-bit (4 bytes)
@@ -76,8 +76,10 @@ self.onmessage = async (e) => {
       
       // Mute all except v
       let bitmask = 0n;
-      for (let i = 0; i < 64; i++) {
-        if (i !== v) bitmask += 1n << BigInt(i);
+      if (multichannel) {
+        for (let i = 0; i < 64; i++) {
+          if (i !== v) bitmask += 1n << BigInt(i);
+        }
       }
       core._lvgm_set_voice_mask(vgmCtx, bitmask);
       
@@ -93,7 +95,7 @@ self.onmessage = async (e) => {
           for (let i = 0; i < bufferSize; i++) {
               const vL = core.getValue(renderBuffer + i * 8, 'i32') / INT32_MAX;
               const vR = core.getValue(renderBuffer + i * 8 + 4, 'i32') / INT32_MAX;
-              visualizerBuffer[baseOffset + i] = (vL + vR) / 2.0;
+              visualizerBuffer[baseOffset + i] = Math.round(((vL + vR) / 2.0) * 127);
           }
           
           currentFrame++;

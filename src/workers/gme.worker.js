@@ -59,7 +59,7 @@ self.onmessage = async (e) => {
     const maxSeconds = 180;
     const totalFrames = Math.ceil((maxSeconds * sampleRate) / bufferSize);
     
-    const visualizerBuffer = new Float32Array(totalFrames * MAX_VOICES * bufferSize);
+    const visualizerBuffer = new Int8Array(totalFrames * MAX_VOICES * bufferSize);
     
     // Allocate buffer for frames (2 channels, 16-bit)  (gme_play outputs 16-bit signed shorts)
     const renderBuffer = core._malloc(bufferSize * 2 * 2); 
@@ -93,7 +93,7 @@ self.onmessage = async (e) => {
           for (let i = 0; i < bufferSize; i++) {
               const vL = core.getValue(renderBuffer + i * 4, 'i16') / 32768.0;
               const vR = core.getValue(renderBuffer + i * 4 + 2, 'i16') / 32768.0;
-              visualizerBuffer[baseOffset + i] = (vL + vR) / 2.0;
+              visualizerBuffer[baseOffset + i] = Math.round(((vL + vR) / 2.0) * 127);
           }
           
           currentFrame++;

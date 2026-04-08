@@ -47,7 +47,7 @@ export default class VGMPlayer extends Player {
     this.currentRenderFrame = 0;
   }
 
-  loadData(data, filepath, persistedSettings) {
+  async loadData(data, filepath, persistedSettings) {
     const dataPtr = this.copyToHeap(data);
     const err = this.core._lvgm_load_data(this.vgmCtx, dataPtr, data.byteLength);
     this.core._free(dataPtr);
@@ -93,34 +93,40 @@ export default class VGMPlayer extends Player {
     }
     this.paramDefs[0].options[0].items = debugItems;
 
-    if (this.useMultichannel) {
+    if (persistedSettings.visualizerType === 'oscilloscope') {
       if (visualizerWorker) {
         visualizerWorker.terminate();
       }
       visualizerWorker = new VGMWorker();
       
-      visualizerWorker.onerror = (e) => {
-        console.error("VGM Worker error:", e);
-      };
+      await new Promise((resolve, reject) => {
+        visualizerWorker.onerror = (e) => {
+          console.error("VGM Worker error:", e);
+          resolve(); // Resolve anyway so music still plays if it fails
+        };
 
-      visualizerWorker.onmessage = (e) => {
-        if (e.data.type === 'done') {
-          this.visualMap = new Float32Array(e.data.visualBuffer);
-          this.totalVisualFrames = e.data.totalFrames;
-          this.maxVoices = e.data.MAX_VOICES;
-          console.log("Multichannel visualizer data ready. " + this.totalVisualFrames + " frames.");
-        } else if (e.data.type === 'error') {
-          console.error("VGM Worker explicitly reported error:", e.data.error);
-        } else if (e.data.type === 'progress') {
-          console.log("Visualizer Worker Progress: " + e.data.percent + "%");
-        }
-      };
+        visualizerWorker.onmessage = (e) => {
+          if (e.data.type === 'done') {
+            this.visualMap = new Int8Array(e.data.visualBuffer);
+            this.totalVisualFrames = e.data.totalFrames;
+            this.maxVoices = e.data.MAX_VOICES;
+            console.log("Multichannel visualizer data ready. " + this.totalVisualFrames + " frames.");
+            resolve();
+          } else if (e.data.type === 'error') {
+            console.error("VGM Worker explicitly reported error:", e.data.error);
+            resolve();
+          } else if (e.data.type === 'progress') {
+            console.log("Visualizer Worker Progress: " + e.data.percent + "%");
+          }
+        };
 
-      visualizerWorker.postMessage({
-        type: 'analyze',
-        data: data.slice(0),
-        sampleRate: this.sampleRate,
-        bufferSize: this.bufferSize
+        visualizerWorker.postMessage({
+          type: 'analyze',
+          data: data.slice(0),
+          sampleRate: this.sampleRate,
+          bufferSize: this.bufferSize,
+          multichannel: this.useMultichannel
+        });
       });
     }
 
@@ -173,7 +179,7 @@ export default class VGMPlayer extends Player {
     }
 
     if (typeof window !== "undefined" && window.voiceBuffers) {
-      if (this.useMultichannel && this.visualMap) {
+      if (this.visualMap) {
         // Read pre-rendered multi-channel buffers!
         const rawMs = this.getPositionMs();
         // The worker saved raw frames linearly based on logical track bounds at 1.0x speed
@@ -193,7 +199,9 @@ export default class VGMPlayer extends Player {
           for (let v = 0; v < maxVoices; v++) {
             const baseOffset = currentFrame * maxVoices * this.bufferSize + (v * this.bufferSize);
             // Copy the Float32 subarray directly out of the shared visualMap
-            window.voiceBuffers[v].set(this.visualMap.subarray(baseOffset, baseOffset + this.bufferSize));
+            const chunk = this.visualMap.subarray(baseOffset, baseOffset + this.bufferSize);
+            const target = window.voiceBuffers[v];
+            for (let i = 0; i < this.bufferSize; i++) target[i] = chunk[i] / 128.0;
           }
         }
       } else {
